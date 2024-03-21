@@ -1,0 +1,1226 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="设计模式, 认言知">
+    <meta name="description" content="1.创建型模式1.1 工厂模式工厂模式又称工厂方法模式，是一种创建型设计模式，其在父类中提供一个创建对象的方法， 允许子类决定实例化对象的类型。
+这种设计模式也是 Java 开发中最常见的一种模式，它的主要意图是定义一个创建对象的接口，让其">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>设计模式 | 认言知</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">认言知</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">认言知</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">设计模式</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/design-mode/" class="post-category">
+                                design mode
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2024-01-21
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    13 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="1-创建型模式"><a href="#1-创建型模式" class="headerlink" title="1.创建型模式"></a>1.创建型模式</h1><h2 id="1-1-工厂模式"><a href="#1-1-工厂模式" class="headerlink" title="1.1 工厂模式"></a>1.1 工厂模式</h2><p>工厂模式又称工厂方法模式，是一种创建型设计模式，<strong>其在父类中提供一个创建对象的方法， 允许子类决定实例化对象的类型。</strong></p>
+<p>这种设计模式也是 Java 开发中最常见的一种模式，它的主要意图是定义一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。</p>
+<p><strong>简单说就是为了提供代码结构的扩展性，屏蔽每一个功能类中的具体实现逻辑。让外部可以更加简单的只是知道调用即可</strong>，同时，这也是去掉众多<code>ifelse</code>的方式。当然这可能也有一些缺点，比如需要实现的类非常多，如何去维护，怎样减低开发成本。但这些问题都可以在后续的设计模式结合使用中，逐步降低。</p>
+<h3 id="1-1-1-实战"><a href="#1-1-1-实战" class="headerlink" title="1.1.1 实战"></a>1.1.1 实战</h3><p>在营销场景中经常会有某个用户做了一些操作；打卡、分享、留言、邀请注册等等，进行返利积分，最后通过积分在兑换商品，从而促活和拉新。</p>
+<p>那么在这里我们模拟积分兑换中的发放多种类型商品，假如现在我们有如下三种类型的商品接口；</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>类型</th>
+<th>接口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>优惠券</td>
+<td><code>CouponResult sendCoupon(String uId, String couponNumber, String uuid)</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>实物商品</td>
+<td><code>Boolean deliverGoods(DeliverReq req)</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>第三方爱奇艺兑换卡</td>
+<td><code>void grantToken(String bindMobileNumber, String cardId)</code></td>
+</tr>
+</tbody></table>
+<p><strong>从以上接口来看有如下信息：</strong></p>
+<ul>
+<li>三个接口返回类型不同，有对象类型、布尔类型、还有一个空类型。</li>
+<li>入参不同，发放优惠券需要仿重、兑换卡需要卡ID、实物商品需要发货位置(对象中含有)。</li>
+<li>另外可能会随着后续的业务的发展，会新增其他种商品类型。因为你所有的开发需求都是随着业务对市场的拓展而带来的</li>
+</ul>
+<h3 id="普通实现"><a href="#普通实现" class="headerlink" title="普通实现"></a><strong>普通实现</strong></h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PrizeController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger logger= LoggerFactory.getLogger(PrizeController.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> AwardRes <span class="title function_">awardToUser</span><span class="params">(AwardReq req)</span>&#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">reqJson</span> <span class="operator">=</span> JSON.toJSONString(req);</span><br><span class="line">        <span class="type">AwardRes</span> <span class="variable">awardRes</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;奖品发放开始&#123;&#125;。req:&#123;&#125;&quot;</span>, req.getUId(), reqJson);</span><br><span class="line">            <span class="comment">// 按照不同类型方法商品[1优惠券、2实物商品、3第三方兑换卡(爱奇艺)]</span></span><br><span class="line">            <span class="keyword">if</span> (req.getAwardType() == <span class="number">1</span>) &#123;</span><br><span class="line">                <span class="type">CouponService</span> <span class="variable">couponService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CouponService</span>();</span><br><span class="line">                <span class="type">CouponResult</span> <span class="variable">couponResult</span> <span class="operator">=</span> couponService.sendCoupon(req.getUId(), req.getAwardNumber(), req.getBizId());</span><br><span class="line">                <span class="keyword">if</span> (<span class="string">&quot;0000&quot;</span>.equals(couponResult.getCode())) &#123;</span><br><span class="line">                    awardRes = <span class="keyword">new</span> <span class="title class_">AwardRes</span>(<span class="string">&quot;0000&quot;</span>, <span class="string">&quot;发放成功&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    awardRes = <span class="keyword">new</span> <span class="title class_">AwardRes</span>(<span class="string">&quot;0001&quot;</span>, couponResult.getInfo());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (req.getAwardType() == <span class="number">2</span>) &#123;</span><br><span class="line">                <span class="type">GoodsService</span> <span class="variable">goodsService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GoodsService</span>();</span><br><span class="line">                <span class="type">DeliverReq</span> <span class="variable">deliverReq</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeliverReq</span>();</span><br><span class="line">                deliverReq.setUserName(queryUserName(req.getUId()));</span><br><span class="line">                deliverReq.setUserPhone(queryUserPhoneNumber(req.getUId()));</span><br><span class="line">                deliverReq.setSku(req.getAwardNumber());</span><br><span class="line">                deliverReq.setOrderId(req.getBizId());</span><br><span class="line">                deliverReq.setConsigneeUserName(req.getExtMap().get(<span class="string">&quot;consigneeUserName&quot;</span>));</span><br><span class="line">                deliverReq.setConsigneeUserPhone(req.getExtMap().get(<span class="string">&quot;consigneeUserPhone&quot;</span>));</span><br><span class="line">                deliverReq.setConsigneeUserAddress(req.getExtMap().get(<span class="string">&quot;consigneeUserAddress&quot;</span>));</span><br><span class="line">                <span class="type">Boolean</span> <span class="variable">isSuccess</span> <span class="operator">=</span> goodsService.deliverGoods(deliverReq);</span><br><span class="line">                <span class="keyword">if</span> (isSuccess) &#123;</span><br><span class="line">                    awardRes = <span class="keyword">new</span> <span class="title class_">AwardRes</span>(<span class="string">&quot;0000&quot;</span>, <span class="string">&quot;发放成功&quot;</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    awardRes = <span class="keyword">new</span> <span class="title class_">AwardRes</span>(<span class="string">&quot;0001&quot;</span>, <span class="string">&quot;发放失败&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (req.getAwardType() == <span class="number">3</span>) &#123;</span><br><span class="line">                <span class="type">String</span> <span class="variable">bindMobileNumber</span> <span class="operator">=</span> queryUserPhoneNumber(req.getUId());</span><br><span class="line">                <span class="type">IQiYiCardService</span> <span class="variable">iQiYiCardService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IQiYiCardService</span>();</span><br><span class="line">                iQiYiCardService.grantToken(bindMobileNumber, req.getAwardNumber());</span><br><span class="line">                awardRes = <span class="keyword">new</span> <span class="title class_">AwardRes</span>(<span class="string">&quot;0000&quot;</span>, <span class="string">&quot;发放成功&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(<span class="string">&quot;奖品发放完成&#123;&#125;。&quot;</span>, req.getUId());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            logger.error(<span class="string">&quot;奖品发放失败&#123;&#125;。req:&#123;&#125;&quot;</span>, req.getUId(), reqJson, e);</span><br><span class="line">            awardRes = <span class="keyword">new</span> <span class="title class_">AwardRes</span>(<span class="string">&quot;0001&quot;</span>, e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> awardRes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">queryUserName</span><span class="params">(String uId)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;花花&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">queryUserPhoneNumber</span><span class="params">(String uId)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;15200101&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>核心逻辑: 通过if else 判断返回的奖品是什么类型再根据类型执行相应的逻辑,此种方法虽然简单但不易于维护, 若系统需要拓展则只能通过添加该类中的方法代码实现拓展效果</p>
+<h3 id="工厂模式实现"><a href="#工厂模式实现" class="headerlink" title="工厂模式实现"></a>工厂模式实现</h3><p>发放商品接口</p>
+<p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240317141720563.png" alt="image-20240317141720563"></p>
+<p>商品工厂</p>
+<p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240317141812548.png" alt="image-20240317141812548"></p>
+<p>根据需求从工厂拿到需要的发放类, 传入参数即可完成需求</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test_commodity</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">StoreFactory</span> <span class="variable">storeFactory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StoreFactory</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 优惠券</span></span><br><span class="line">    <span class="type">ICommodity</span> <span class="variable">commodityService_1</span> <span class="operator">=</span> storeFactory.getCommodityService(<span class="number">1</span>);</span><br><span class="line">    commodityService_1.sendCommodity(<span class="string">&quot;10001&quot;</span>, <span class="string">&quot;EGM1023938910232121323432&quot;</span>, <span class="string">&quot;791098764902132&quot;</span>, <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 实物商品</span></span><br><span class="line">    <span class="type">ICommodity</span> <span class="variable">commodityService_2</span> <span class="operator">=</span> storeFactory.getCommodityService(<span class="number">2</span>);</span><br><span class="line">    Map&lt;String,String&gt; extMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String,String&gt;();</span><br><span class="line">    extMap.put(<span class="string">&quot;consigneeUserName&quot;</span>, <span class="string">&quot;谢飞机&quot;</span>);</span><br><span class="line">    extMap.put(<span class="string">&quot;consigneeUserPhone&quot;</span>, <span class="string">&quot;15200292123&quot;</span>);</span><br><span class="line">    extMap.put(<span class="string">&quot;consigneeUserAddress&quot;</span>, <span class="string">&quot;吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109&quot;</span>);</span><br><span class="line"></span><br><span class="line">    commodityService_2.sendCommodity(<span class="string">&quot;10001&quot;</span>,<span class="string">&quot;9820198721311&quot;</span>,<span class="string">&quot;1023000020112221113&quot;</span>,<span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, String&gt;() &#123;&#123;</span><br><span class="line">        put(<span class="string">&quot;consigneeUserName&quot;</span>, <span class="string">&quot;谢飞机&quot;</span>);</span><br><span class="line">        put(<span class="string">&quot;consigneeUserPhone&quot;</span>, <span class="string">&quot;15200292123&quot;</span>);</span><br><span class="line">        put(<span class="string">&quot;consigneeUserAddress&quot;</span>, <span class="string">&quot;吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109&quot;</span>);</span><br><span class="line">    &#125;&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 第三方兑换卡(爱奇艺)</span></span><br><span class="line">    <span class="type">ICommodity</span> <span class="variable">commodityService_3</span> <span class="operator">=</span> storeFactory.getCommodityService(<span class="number">3</span>);</span><br><span class="line">    commodityService_3.sendCommodity(<span class="string">&quot;10001&quot;</span>,<span class="string">&quot;AQY1xjkUodl8LO975GdfrYUio&quot;</span>,<span class="literal">null</span>,<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-抽象工厂模式"><a href="#1-2-抽象工厂模式" class="headerlink" title="1.2 抽象工厂模式"></a>1.2 抽象工厂模式</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318125434700.png" alt="image-20240318125434700"></p>
+<p>抽象工厂模式与工厂方法模式虽然主要意图都是为了解决，<strong>接口选择</strong>问题。但在实现上，抽象工厂是一个中心工厂，创建其他工厂的模式。</p>
+<h3 id="1-2-1-场景模拟"><a href="#1-2-1-场景模拟" class="headerlink" title="1.2.1 场景模拟"></a>1.2.1 场景模拟</h3><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318125546836.png" alt="image-20240318125546836"></p>
+<p>预估<code>QPS较低</code>、<code>系统压力较小</code>、<code>并发访问不大</code>、<code>近一年没有大动作</code>等等，在考虑时间投入成本的前提前，并不会投入特别多的人力去构建非常完善的系统。就像对 <code>Redis</code> 的使用，往往可能只要是单机的就可以满足现状。</p>
+<p>但随着业务超过预期的快速发展，系统的负载能力也要随着跟上。原有的单机 <code>Redis</code> 已经满足不了系统需求。这时候就需要更换为更为健壮的Redis集群服务，虽然需要修改但是不能影响目前系统的运行，还要平滑过渡过去。</p>
+<p>随着这次的升级，可以预见的问题会有；</p>
+<ol>
+<li>很多服务用到了Redis需要一起升级到集群。</li>
+<li>需要兼容集群A和集群B，便于后续的灾备。</li>
+<li>两套集群提供的接口和方法各有差异，需要做适配。</li>
+<li>不能影响到目前正常运行的系统。</li>
+</ol>
+<ul>
+<li>模拟单机redisUtils:</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RedisUtils</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Logger logger= LoggerFactory.getLogger(RedisUtils.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; dataMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, String&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">get</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;redis获取数据 key: &#123;&#125;&quot;</span>,key);</span><br><span class="line">        <span class="keyword">return</span> dataMap.get(key);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;Redis写入数据 key：&#123;&#125; val：&#123;&#125;&quot;</span>, key, value);</span><br><span class="line">        dataMap.put(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;Redis写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;&quot;</span>, key, value, timeout, timeUnit.toString());</span><br><span class="line">        dataMap.put(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">del</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;Redis删除数据 key：&#123;&#125;&quot;</span>, key);</span><br><span class="line">        dataMap.remove(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>模拟集群EGM</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EGM</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(EGM.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; dataMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, String&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">gain</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;EGM获取数据 key：&#123;&#125;&quot;</span>, key);</span><br><span class="line">        <span class="keyword">return</span> dataMap.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;EGM写入数据 key：&#123;&#125; val：&#123;&#125;&quot;</span>, key, value);</span><br><span class="line">        dataMap.put(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setEx</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;EGM写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;&quot;</span>, key, value, timeout, timeUnit.toString());</span><br><span class="line">        dataMap.put(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;EGM删除数据 key：&#123;&#125;&quot;</span>, key);</span><br><span class="line">        dataMap.remove(key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>模拟集群IIR</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IIR</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(IIR.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; dataMap = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, String&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">get</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;IIR获取数据 key：&#123;&#125;&quot;</span>, key);</span><br><span class="line">        <span class="keyword">return</span> dataMap.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;IIR写入数据 key：&#123;&#125; val：&#123;&#125;&quot;</span>, key, value);</span><br><span class="line">        dataMap.put(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setExpire</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;IIR写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;&quot;</span>, key, value, timeout, timeUnit.toString());</span><br><span class="line">        dataMap.put(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">del</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        logger.info(<span class="string">&quot;IIR删除数据 key：&#123;&#125;&quot;</span>, key);</span><br><span class="line">        dataMap.remove(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>两套集群,实现了同样的功能</p>
+<h3 id="1-2-2-单集群代码使用"><a href="#1-2-2-单集群代码使用" class="headerlink" title="1.2.2  单集群代码使用"></a>1.2.2  单集群代码使用</h3><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318130700401.png" alt="image-20240318130700401"></p>
+<h3 id="1-2-3-普通方式实现单机升级为集群-if-else"><a href="#1-2-3-普通方式实现单机升级为集群-if-else" class="headerlink" title="1.2.3 普通方式实现单机升级为集群(if else)"></a>1.2.3 普通方式实现单机升级为集群(if else)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">normalServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">normalService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">RedisUtils</span> <span class="variable">redisUtils</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RedisUtils</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">EGM</span> <span class="variable">egm</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">EGM</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">IIR</span> <span class="variable">iir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IIR</span>();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">get</span><span class="params">(String key, <span class="type">int</span> redisType)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span> == redisType) &#123;</span><br><span class="line">            <span class="keyword">return</span> egm.gain(key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="number">2</span> == redisType) &#123;</span><br><span class="line">            <span class="keyword">return</span> iir.get(key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> redisUtils.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value, <span class="type">int</span> redisType)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span> == redisType) &#123;</span><br><span class="line">            egm.set(key, value);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="number">2</span> == redisType) &#123;</span><br><span class="line">            iir.set(key, value);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        redisUtils.set(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit, <span class="type">int</span> redisType)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span> == redisType) &#123;</span><br><span class="line">            egm.setEx(key, value, timeout, timeUnit);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="number">2</span> == redisType) &#123;</span><br><span class="line">            iir.setExpire(key, value, timeout, timeUnit);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        redisUtils.set(key, value, timeout, timeUnit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">del</span><span class="params">(String key, <span class="type">int</span> redisType)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="number">1</span> == redisType) &#123;</span><br><span class="line">            egm.delete(key);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="number">2</span> == redisType) &#123;</span><br><span class="line">            iir.del(key);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        redisUtils.del(key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>显然,核心就是在每个方法中都使用if和else判断传入的集群类型</p>
+<h3 id="1-2-4-抽象工厂模式实现重构"><a href="#1-2-4-抽象工厂模式实现重构" class="headerlink" title="1.2.4 抽象工厂模式实现重构"></a>1.2.4 抽象工厂模式实现重构</h3><p>这里的抽象工厂的创建和获取方式，会采用代理类的方式进行实现。所被代理的类就是目前的Redis操作方法类，让这个类在不需要任何修改下，就可以实现调用集群A和集群B的数据服务。</p>
+<p>并且这里还有一点非常重要，由于集群A和集群B在部分方法提供上是不同的，因此需要做一个接口适配，而这个适配类就相当于工厂中的工厂，用于创建把不同的服务抽象为统一的接口做相同的业务</p>
+<p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318131513407.png" alt="image-20240318131513407"></p>
+<p>适配接口:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ICacheAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    String <span class="title function_">get</span><span class="params">(String key)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">del</span><span class="params">(String key)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ul>
+<li>这个类的主要作用是让所有集群的提供方，能在统一的方法名称下进行操作。也方面后续的拓展。</li>
+</ul>
+<p><strong>EGMCacheAdapter</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EGMCacheAdapter</span> <span class="keyword">implements</span> <span class="title class_">ICacheAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">EGM</span> <span class="variable">egm</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">EGM</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">get</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> egm.gain(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value)</span> &#123;</span><br><span class="line">        egm.set(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit)</span> &#123;</span><br><span class="line">        egm.setEx(key, value, timeout, timeUnit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">del</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        egm.delete(key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>IIRCacheAdapter</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IIRCacheAdapter</span> <span class="keyword">implements</span> <span class="title class_">ICacheAdapter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">IIR</span> <span class="variable">iir</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">IIR</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">get</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> iir.get(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value)</span> &#123;</span><br><span class="line">        iir.set(key, value);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(String key, String value, <span class="type">long</span> timeout, TimeUnit timeUnit)</span> &#123;</span><br><span class="line">        iir.setExpire(key, value, timeout, timeUnit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">del</span><span class="params">(String key)</span> &#123;</span><br><span class="line">        iir.del(key);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>抽象工程代理类实现:</p>
+<p><strong>JDKProxy</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; T <span class="title function_">getProxy</span><span class="params">(Class&lt;T&gt; interfaceClass, ICacheAdapter cacheAdapter)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">InvocationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JDKInvocationHandler</span>(cacheAdapter);</span><br><span class="line">    <span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> Thread.currentThread().getContextClassLoader();</span><br><span class="line">    Class&lt;?&gt;[] classes = interfaceClass.getInterfaces();</span><br><span class="line">    <span class="keyword">return</span> (T) Proxy.newProxyInstance(classLoader, <span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;classes[<span class="number">0</span>]&#125;, handler);</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里主要的作用就是完成代理类，同时对于使用哪个集群有外部通过入参进行传递。</li>
+</ul>
+<p><strong>JDKInvocationHandler</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JDKInvocationHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ICacheAdapter cacheAdapter;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">JDKInvocationHandler</span><span class="params">(ICacheAdapter cacheAdapter)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.cacheAdapter = cacheAdapter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="keyword">return</span> ICacheAdapter.class.getMethod(method.getName(), 	ClassLoaderUtils.getClazzByArgs(args)).invoke(cacheAdapter, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在代理类的实现中其实也非常简单，通过穿透进来的集群服务进行方法操作。</li>
+<li>另外在<code>invoke</code>中通过使用获取方法名称反射方式，调用对应的方法功能，也就简化了整体的使用。</li>
+<li>到这我们就已经将整体的功能实现完成了，关于抽象工厂这部分也可以使用非代理的方式进行实现</li>
+</ul>
+<p>测试:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test_CacheService</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="type">CacheService</span> <span class="variable">proxy_EGM</span> <span class="operator">=</span> JDKProxy.getProxy(CacheServiceImpl.class, <span class="keyword">new</span> <span class="title class_">EGMCacheAdapter</span>());</span><br><span class="line">    proxy_EGM.set(<span class="string">&quot;user_name_01&quot;</span>,<span class="string">&quot;Dylan&quot;</span>);</span><br><span class="line">    <span class="type">String</span> <span class="variable">val01</span> <span class="operator">=</span> proxy_EGM.get(<span class="string">&quot;user_name_01&quot;</span>);</span><br><span class="line">    System.out.println(val01);</span><br><span class="line">    </span><br><span class="line">    <span class="type">CacheService</span> <span class="variable">proxy_IIR</span> <span class="operator">=</span> JDKProxy.getProxy(CacheServiceImpl.class, <span class="keyword">new</span> <span class="title class_">IIRCacheAdapter</span>());</span><br><span class="line">    proxy_IIR.set(<span class="string">&quot;user_name_01&quot;</span>,<span class="string">&quot;Dylan&quot;</span>);</span><br><span class="line">    <span class="type">String</span> <span class="variable">val02</span> <span class="operator">=</span> proxy_IIR.get(<span class="string">&quot;user_name_01&quot;</span>);</span><br><span class="line">    System.out.println(val02);</span><br><span class="line">&#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Dylan Pan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://dyylan99.github.io/2024/01/21/she-ji-mo-shi-xue-xi/">https://dyylan99.github.io/2024/01/21/she-ji-mo-shi-xue-xi/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Dylan Pan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2024/01/21/xiao-tu-xian/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="小兔鲜">
+                        
+                        <span class="card-title">小兔鲜</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2024-01-21
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E5%89%8D%E7%AB%AF/" class="post-category">
+                                    前端
+                                </a>
+                            
+                            <a href="/categories/%E5%89%8D%E7%AB%AF/vue/" class="post-category">
+                                    vue
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2024/01/11/miao-sha-xiang-mu/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="秒杀实战">
+                        
+                        <span class="card-title">秒杀实战</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2024-01-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/" class="post-category">
+                                    中间件
+                                </a>
+                            
+                            <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/" class="post-category">
+                                    redis
+                                </a>
+                            
+                            <a href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/redis/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" class="post-category">
+                                    微服务
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="song"
+                   id="26807310"
+                   fixed='true'
+                   autoplay='true'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.3'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2024</span>
+            
+            <a href="/about" target="_blank">Dylan Pan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">263.6k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/DylanToT99" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1975131479@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1975131479" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1975131479" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
