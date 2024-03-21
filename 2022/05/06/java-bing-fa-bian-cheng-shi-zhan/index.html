@@ -1,0 +1,1231 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="java并发编程, 认言知">
+    <meta name="description" content="第一部分:基础知识第一章:线程安全性要编写出线程安全的代码, 其核心在于对状态访问操作进行管理, 特别是对**共享的(shared)和可变的(mutable)**状态的访问.
+
+共享意味着变量可以由多个线程同时访问
+
+可变则意味着变量的值在">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>java并发编程 | 认言知</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+
+
+    <!-- bg-cover style     -->
+
+
+
+<link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+<link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+<link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+<link rel="stylesheet" type="text/css" href="/css/matery.css">
+<link rel="stylesheet" type="text/css" href="/css/my.css">
+<link rel="stylesheet" type="text/css" href="/css/dark.css" media="none" onload="if(media!='all')media='all'">
+
+
+
+
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+    <link rel="stylesheet" href="/css/post.css">
+
+
+
+
+    
+        <link rel="stylesheet" type="text/css" href="/css/reward.css">
+    
+
+
+
+    <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
+
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">认言知</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+  <li>
+    <a href="javascript:;" class="waves-effect waves-light" onclick="switchNightMode()" title="深色/浅色模式" >
+      <i id="sum-moon-icon" class="fas fa-sun" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">认言知</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+        <li><div class="divider"></div></li>
+        <li>
+            <a href="https://github.com/blinkfox/hexo-theme-matery" class="waves-effect waves-light" target="_blank">
+                <i class="fab fa-github-square fa-fw"></i>Fork Me
+            </a>
+        </li>
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+            <style>
+    .nav-transparent .github-corner {
+        display: none !important;
+    }
+
+    .github-corner {
+        position: absolute;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        border: 0;
+        transform: scale(1.1);
+    }
+
+    .github-corner svg {
+        color: #0f9d58;
+        fill: #fff;
+        height: 64px;
+        width: 64px;
+    }
+
+    .github-corner:hover .octo-arm {
+        animation: a 0.56s ease-in-out;
+    }
+
+    .github-corner .octo-arm {
+        animation: none;
+    }
+
+    @keyframes a {
+        0%,
+        to {
+            transform: rotate(0);
+        }
+        20%,
+        60% {
+            transform: rotate(-25deg);
+        }
+        40%,
+        80% {
+            transform: rotate(10deg);
+        }
+    }
+</style>
+
+<a href="https://github.com/blinkfox/hexo-theme-matery" class="github-corner tooltipped hide-on-med-and-down" target="_blank"
+   data-tooltip="Fork Me" data-position="left" data-delay="50">
+    <svg viewBox="0 0 250 250" aria-hidden="true">
+        <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+        <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+              fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+        <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+              fill="currentColor" class="octo-body"></path>
+    </svg>
+</a>
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">java并发编程</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/java%E5%B9%B6%E5%8F%91/">
+                                <span class="chip bg-color">java并发</span>
+                            </a>
+                        
+                            <a href="/tags/javaSE/">
+                                <span class="chip bg-color">javaSE</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/java%E5%B9%B6%E5%8F%91/" class="post-category">
+                                java并发
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-05-06
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    5.3k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    19 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.min.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="第一部分-基础知识"><a href="#第一部分-基础知识" class="headerlink" title="第一部分:基础知识"></a>第一部分:基础知识</h1><h2 id="第一章-线程安全性"><a href="#第一章-线程安全性" class="headerlink" title="第一章:线程安全性"></a>第一章:线程安全性</h2><p>要编写出线程安全的代码, 其核心在于对状态访问操作进行管理, 特别是对**共享的(shared)<strong>和</strong>可变的(mutable)**状态的访问.</p>
+<ul>
+<li><p><strong>共享</strong>意味着变量可以由多个线程同时访问</p>
+</li>
+<li><p><strong>可变</strong>则意味着变量的值在其生命周期内可以发生变化.</p>
+</li>
+</ul>
+<p>一个对象是否需要线程安全, 取决于它是否会被多个线程访问. 要使得对象是线程安全的, 需要采用<strong>同步机制</strong>来协同对对象可变状态的访问.</p>
+<p>java的同步机制包括: synchronized关键字, volatile类型的变量, 显示锁(Explicit Lock)和原子变量.</p>
+<h3 id="1-1什么是线程安全性"><a href="#1-1什么是线程安全性" class="headerlink" title="1.1什么是线程安全性:"></a>1.1什么是线程安全性:</h3><p>​	当多个线程访问某个类时, 这个类始终都能表现出正确的行为, 那么就称这个类是线程安全的.</p>
+<p>看一个简单实例, 一个无状态的servlet:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StatelessFactorizer</span> <span class="keyword">extends</span> <span class="title class_">GenericServlet</span> <span class="keyword">implements</span> <span class="title class_">Servlet</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(ServletRequest request, ServletResponse response)</span>&#123;</span><br><span class="line">        BigInteger i=extractFromRequest(request);</span><br><span class="line">        BigInteger[]factors=factor(i);</span><br><span class="line">        encodeIntoResponse(response, factors);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">encodeIntoResponse</span><span class="params">(ServletResponse response, BigInteger[] factors)</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> BigInteger[] factor(BigInteger i) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BigInteger</span>[]&#123;i&#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> BigInteger <span class="title function_">extractFromRequest</span><span class="params">(ServletRequest request)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BigInteger</span>(<span class="string">&quot;7&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">   ......&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与多数Servlet相同，StatelessFactorizer是无状态的。访问StatelessFactorizer的线程不会影响另一个访问同一个StatelessFactorizer的线程的计算结果，因为这两个线程并没有共享状态，就好像它们在访问不同的实例。</p>
+<p><strong>有状态就是有数据存储功能。有状态对象(Stateful Bean)，就是有实例变量的对象 ，可以保存数据，是非线程安全的。在不同方法调用间不保留任何状态。</strong></p>
+<p><strong>无状态就是一次操作，不能保存数据。无状态对象(Stateless Bean)，就是没有实例变量的对象 .不能保存数据，是不变类，是线程安全的。</strong></p>
+<hr>
+<h3 id="1-2原子性-Atomicity"><a href="#1-2原子性-Atomicity" class="headerlink" title="1.2原子性(Atomicity)"></a>1.2原子性(Atomicity)</h3><p>原子性的意思代表着——<em><strong>不可分割</strong></em>；</p>
+<p>看下一个例子UnsafeCountingFactorizer:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//       2-2    在没有同步的情况下统计已处理请求数量的Servlet（不要这么做）</span></span><br><span class="line"><span class="meta">@NotThreadSafe</span> <span class="comment">//注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UnsafeCountingFactorizer</span> <span class="keyword">implements</span> <span class="title class_">Servlet</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> <span class="variable">count</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getCount</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> count;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(ServletRequest req, ServletResponse resp)</span> &#123;</span><br><span class="line">        <span class="type">BigInteger</span> <span class="variable">i</span> <span class="operator">=</span> extractFromRequest(req);</span><br><span class="line">        BigInteger[] factors = factor(i);</span><br><span class="line">        ++count;</span><br><span class="line">        encodeIntoResponse(resp, factors);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>UnsafeCountingFactorizer并非是线程安全的，尽管它在单线程环境中能正确运行。++count看起来是一个操作，但这个操作并非原子性的，因为它可以被分成三个独立的步骤:<br>①读取count的值<br>②值加一<br>③将计算结果写入count<br>这是一个”读取-修改-写入”的操作序列，并且结果状态依赖于之前的状态。下图给出了两个线程在没有同步的情况下对同一个计数器执行递增操作发生的情况。</p>
+<p>下图给出了两个线程在没有同步的情况下对同一个计数器执行递增操作发生的情况。</p>
+<p><img src="https://gitee.com/DylanToT99/images/raw/master/images/20170801174753900" alt="这里写图片描述"></p>
+<p>在一些特定的场景下这是致命的.</p>
+<h3 id="1-3-竞态条件-race-condition"><a href="#1-3-竞态条件-race-condition" class="headerlink" title="1.3 竞态条件(race condition)"></a>1.3 竞态条件(race condition)</h3><p>是指设备或系统出现不恰当的执行时序，而得到不正确的结果。</p>
+<p>最常见的竞态条件类型就是”先检查后执行(Check-Then-Act)”操作，这有可能通过一个可能失效的观测结果来决定下一步的动作.</p>
+<p><img src="https://gitee.com/DylanToT99/images/raw/master/images/20170801175517750" alt="这里写图片描述"></p>
+<p>例如:首先观测到某个条件为真(假如文件X不存在)，然后根据这个结果采用相应的动作(创建文件X)，但事实上，在你观察到这个结果以及开始创建文件之间，观测结果可能变得无效(另一个线程在这期间创建了文件X)，从而导致各种问题(未预期的异常，数据被覆盖，文件被破坏等)。</p>
+<p>“先检查后执行”的一种常见情况就是延迟初始化，其目的是将对象的初始化操作推迟到实际被使用时才进行，同时要确保只被初始化一次。下面是LazyInitRace示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//             2-3          延迟初始化中的竞态条件（不要这么做）</span></span><br><span class="line"><span class="meta">@NotThreadSafe</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LazyInitRace</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">ExpensiveObject</span> <span class="variable">instance</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> ExpensiveObject <span class="title function_">getInstance</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="literal">null</span>)</span><br><span class="line">            instance = <span class="keyword">new</span> <span class="title class_">ExpensiveObject</span>();</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ExpensiveObject</span> &#123; &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-4-复合操作-Compound-Actions"><a href="#1-4-复合操作-Compound-Actions" class="headerlink" title="1.4 复合操作(Compound Actions)"></a>1.4 复合操作(Compound Actions)</h3><p>要避免竞态条件问题，就必须在某个线程修改该变量时，通过某中方式防止其他线程使用这个变量，从而确保其他线程只能在修改完成之前或之后读取和修改状态，而不是在修改状态的过程中。</p>
+<p>假定有操作A和B，如果对于执行A的线程来说，当另一个线程执行B时，要么全部执行完，要不完全不执行，那么A和B对彼此来说就是原子性的。</p>
+<p>我们将”先检查后执行”以及”读取-修改-写入”等操作称为复合操作:包含了一组必须以原子方式执行的操作以确保线程安全性。</p>
+<p>我们现在使用一个现有的线程安全类来修复这个问题，如下面的CountingFactorizer:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//      2-4     使用AtomicLong类型的变量来统计已处理请求的数量</span></span><br><span class="line"><span class="meta">@ThreadSafe</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CountingFactorizer</span> <span class="keyword">extends</span> <span class="title class_">GenericServlet</span> <span class="keyword">implements</span> <span class="title class_">Servlet</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">AtomicLong</span> <span class="variable">count</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AtomicLong</span>(<span class="number">0</span>);   <span class="comment">//final修饰的类不能被继承</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getCount</span><span class="params">()</span> &#123; <span class="keyword">return</span> count.get(); &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(ServletRequest req, ServletResponse resp)</span> &#123;</span><br><span class="line">        <span class="type">BigInteger</span> <span class="variable">i</span> <span class="operator">=</span> extractFromRequest(req);</span><br><span class="line">        BigInteger[] factors = factor(i);</span><br><span class="line">        count.incrementAndGet();   <span class="comment">//使用atomic中的方法</span></span><br><span class="line">        encodeIntoResponse(resp, factors);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">encodeIntoResponse</span><span class="params">(ServletResponse res, BigInteger[] factors)</span> &#123;&#125;</span><br><span class="line">    BigInteger <span class="title function_">extractFromRequest</span><span class="params">(ServletRequest req)</span> &#123;<span class="keyword">return</span> <span class="literal">null</span>; &#125;</span><br><span class="line">    BigInteger[] factor(BigInteger i) &#123; <span class="keyword">return</span> <span class="literal">null</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在java.util.concurrent.atomic包中包含了一些原子变量类，用于实现在数值和对象引用上的原子状态转换。通过用AtomicLong来代替long类型的计时器，能够确保所有对计数器状态的访问操作都是原子的。因为计数器是线程安全的，所以这里的Servlet也是线程安全的。<br><em><strong>原子操作( atomic operations)</strong></em><br>原子操作指的是在一步之内就完成而且不能被中断。</p>
+<p>为什么long型赋值不是原子操作呢？<br>例如：<br>long foo &#x3D; 65465498L;<br>实时上java会分两步写入这个long变量，先写前32位，再写后32位。这样就线程不安全了。</p>
+<p>当在无状态的类中添加一个状态时，如果该状态完全由线程安全的对象来管理，那这个类仍是线程安全的。</p>
+<p>在实际情况中，应尽可能使用现有的线程安全对象(例如AtomicLong)来管理类的状态，与非线程安全的对象相比，判断线程安全对象的可能状态及其状态转换情况要更加容易，从而更容易维护和验证线程安全性。</p>
+<h3 id="1-5-加锁机制"><a href="#1-5-加锁机制" class="headerlink" title="1.5 加锁机制"></a>1.5 加锁机制</h3><p>当在无状态的类中添加一个状态时，可以用线程安全你的对象来管理类的状态以维护类的安全性，但是如果假如更多状态时，就不能一味得添加更多线程安全状态变量。</p>
+<p>假如我们希望提升性能，将最近的计算结果缓存起来，当两个连续的请求对相同的数值进行因数分解时，可以直接使用上一次的计算结果。要实现该缓存策略，需要保存两个状态：最近执行过因数分解的数值，以及结果。</p>
+<p>我们尝试用添加线程安全状态变量来完成这件事，UnsafeCachingFactorizer的代码为:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//    2-5  该Servlet在没有足够原子性保证的情况下对最近计算结果进行缓存（不要这么做）</span></span><br><span class="line"><span class="meta">@NotThreadSafe</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UnsafeCachingFactorizer</span> <span class="keyword">extends</span> <span class="title class_">GenericServlet</span> <span class="keyword">implements</span> <span class="title class_">Servlet</span> &#123;</span><br><span class="line">    <span class="comment">//AtomicReference是作用是对&quot;对象&quot;进行原子操作</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AtomicReference&lt;BigInteger&gt; lastNumber</span><br><span class="line">            = <span class="keyword">new</span> <span class="title class_">AtomicReference</span>&lt;BigInteger&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AtomicReference&lt;BigInteger[]&gt; lastFactors</span><br><span class="line">            = <span class="keyword">new</span> <span class="title class_">AtomicReference</span>&lt;BigInteger[]&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(ServletRequest req, ServletResponse resp)</span> &#123;</span><br><span class="line">        <span class="type">BigInteger</span> <span class="variable">i</span> <span class="operator">=</span> extractFromRequest(req);</span><br><span class="line">        <span class="keyword">if</span> (i.equals(lastNumber.get()))</span><br><span class="line">            encodeIntoResponse(resp, lastFactors.get());</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            BigInteger[] factors = factor(i);</span><br><span class="line">            lastNumber.set(i);</span><br><span class="line">            lastFactors.set(factors);</span><br><span class="line">            encodeIntoResponse(resp, factors);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">encodeIntoResponse</span><span class="params">(ServletResponse resp, BigInteger[] factors)</span> &#123;<span class="comment">//保存执行过因数分解的数值及其结果</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="title function_">extractFromRequest</span><span class="params">(ServletRequest req)</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BigInteger</span>(<span class="string">&quot;7&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger[] factor(BigInteger i) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BigInteger</span>[]&#123;i&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然而，尽管这些原子引用本身各自都是线程安全的，但在UnsafeCachingFactorizer中存在着竞态条件，这可能导致错误。</p>
+<p>在线程安全性的定义中要求，多个线程之间的操作无论采用何种执行顺序或交替方式，都要保证不变性条件不被破坏。UnsafeCachingFactorizer的不变性条件之一是:在lastFactors中缓存的因数之积应该等于在lastNumber中缓存的数值。只有确保了这个不变性条件不被破坏，上面的Servlet才是正确的。当在不变性条件中涉及多个变量时，各个变量之间并不是彼此独立的，而是某个变量的值会对其他变量的值产生约束。因此，在更新某一个变量时，需要在同一个原子操作中队其他变量同时进行更新。</p>
+<p>在使用AtomicReference的情况下，尽管对set方法的每次调用都是原子de，但仍然无法同时更新lastNumber和lastFactors。如果只修改了其中一个变量，那么在这两次修改操作之间，其他线程将发现不变性条件被破环了。同样，我们也不能确保会同时获取两个值:线程A获取这两个值得过程中，线程B可能修改了它们，这样线程A也会发现不变性条件被破坏了。<br><em><strong>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量</strong></em></p>
+<h3 id="1-6-内置锁"><a href="#1-6-内置锁" class="headerlink" title="1.6 内置锁"></a>1.6 内置锁</h3><p>Java提供一种内置的锁机制来支持原子性:同步代码块(Synchronized Block).同步代码块包括两部分:一<strong>个作为锁的对象引用</strong>，<strong>一个作为这个锁保护的代码块。</strong>以关键字synchronized(同步的)来修饰的方法就是一种横跨整个方法体的同步代码块，其中该同步代码块的锁就是方法调用所在的对象。静态的synchronized方法以Class对象作为锁。<br>synchronized(lock){<br>&#x2F;&#x2F;访问或修改由锁保护的共享状态<br>}<br>每个Java对象都可以用做一个实现同步的锁， 这些锁被称为内置锁(Intrinsic Lock)或者监视锁(Monitor Lock)。</p>
+<p>线程在进入代码块之前会自动获得锁，并且在退出同步代码块时自动释放锁,无论是通过正常路径退出<strong>还是通过从代码块中抛出异常退出。</strong>获得内置锁的唯一路径就是进入由这个锁保护的同步代码块或方法。</p>
+<p>Java的内置锁相当于一种<strong>互斥体(或互斥锁)，</strong>这意味这最多只有一个线程能持有这种锁。如果线程A尝试获取一个由线程B持有的锁时，线程A必须<strong>等待或者阻塞</strong>，知道B释放这个锁。如果B一直不释放这个锁，那么A将<strong>一直等待。</strong></p>
+<p>由于每次只能有一个线程执行内置锁保护的代码块，因此，由这个锁保护的同步代码块会以原子方式执行，多个线程在执行该代码块也不会相互干扰。</p>
+<p>并发环境中的原子性与事务应用程序中的原子性有着相同的含义——<strong>一组语句作为不可分割的单元被执行。</strong></p>
+<p>下面我们使用synchronized关键字来改进：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//   2-6    这个Servlet能正确缓存最新的计算结果，但并发性却非常糟糕(不要这么做)</span></span><br><span class="line"><span class="meta">@ThreadSafe</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SynchronizedFactorizer</span> <span class="keyword">extends</span> <span class="title class_">GenericServlet</span> <span class="keyword">implements</span> <span class="title class_">Servlet</span> &#123;</span><br><span class="line">    <span class="meta">@GuardedBy(&quot;this&quot;)</span> <span class="keyword">private</span> BigInteger lastNumber;</span><br><span class="line">    <span class="meta">@GuardedBy(&quot;this&quot;)</span> <span class="keyword">private</span> BigInteger[] lastFactors;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(ServletRequest req,</span></span><br><span class="line"><span class="params">                                     ServletResponse resp)</span> &#123;</span><br><span class="line">        <span class="type">BigInteger</span> <span class="variable">i</span> <span class="operator">=</span> extractFromRequest(req);</span><br><span class="line">        <span class="keyword">if</span> (i.equals(lastNumber))</span><br><span class="line">            encodeIntoResponse(resp, lastFactors);</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            BigInteger[] factors = factor(i);</span><br><span class="line">            lastNumber = i;</span><br><span class="line">            lastFactors = factors;</span><br><span class="line">            encodeIntoResponse(resp, factors);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>尽管SynchronizedFactorizer是线程安全，然而这种方法却过于极端，因为多个客户端无法同时使用因数分解Servlet，服务的响应性非常低。</p>
+<h3 id="1-7-重入"><a href="#1-7-重入" class="headerlink" title="1.7 重入"></a>1.7 重入</h3><p>内置锁是可重入的，如果某个线程试图获得一个已经由它持有的锁，那么这个请求就会成功。”重入“获取锁操作的<strong>基本单位是“线程”而不是”调用“。</strong>重入的一种实现方法是，为每个锁关联一个获取计数值和一个所有者线程。当计数值为0时，这个锁就被认为是没有被任何线程持有。当线程请求一个未被持有的锁时，JVM将记下锁的持有者，并将获取值设置为1，如果同一线程再次获取这个锁，计数值递增，而当线程退出同步代码块时，计数器会相应地递减，当计数值为0时，这个锁将被释放。</p>
+<p>”重入“进一步替身了加锁行为的封装性(encapsulation),因此简化了面向对象(Object-Oriented)并发代码的开发。</p>
+<p>在以下代码中，子类改写了synchronized修饰的方法，然后调用父类中方法，如果没有可重入的时，这段代码将产生死锁。由于子类和父类的doSomething方法都是synchronized方法，因此每个doSomething方法在执行前都会获取Widget上的锁。如果内置锁是不可重入，那么在调用super.doSomething时将无法获得Widget上的锁，因为这个锁已经被持有，从而线程将永远停顿下去。重入避免了这种死锁情况的发生。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//        2-7    如果内置锁不是可重入的，这段代码将发生死锁</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoggingWidget</span> <span class="keyword">extends</span> <span class="title class_">Widget</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">doSomething</span><span class="params">()</span> &#123;</span><br><span class="line">         System.out.println(toString() + <span class="string">&quot;: calling doSomething&quot;</span>);</span><br><span class="line">         <span class="built_in">super</span>.doSomething();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-8-用锁来保护状态"><a href="#1-8-用锁来保护状态" class="headerlink" title="1.8 用锁来保护状态"></a>1.8 用锁来保护状态</h3><p>锁能以<strong>串行</strong>形式访问其保护的代码路径，因此可以通过锁来构造一些协议以实现对共享状态的独占访问。只要始终遵守这些协议，就能确保状态的一致性。</p>
+<p>对于可能被多个线程同时访问的可变状态变量，在访问它时都需要持有同一个锁，在这种情况下，我们成状态变量是由这个锁保护的。</p>
+<p>上面的SynchronizedFactorizer(实现了Servlet接口)中，lastNumber和lastFactors这两个变量都是由Servlet对象的内置锁来保护的。</p>
+<p>对象的内置锁与其状态之间没有内在的关联。虽然大多数类都将内置锁用做一种有效的加锁机制，对对象的域并一定要通过内置锁来保护。当获取与对象关联的锁时，并不能阻止其他线程访问该对象。某个线程在获得对象的锁之后，只能阻止其他线程获得同一个锁。之所以每个对象都有一个内置锁，是为了免去显式地创建锁对象。需自行构造加锁协议或同步策略来实现对共享状态的安全访问，并且在程序中一直使用它们。</p>
+<p><strong>每个共享和可变的变量都应该只由一个锁来保护，从而使维护人员知道是哪一个锁。</strong></p>
+<p>一种常见的加锁约定是，将所有的可变状态都封装在对象内部，并通过对象的内置锁对所有访问可变状态的代码路径进行同步，使得对该对象不会发生并发访问<strong>。例如Vector和其他的同步集合类都使用了这种模式。</strong>在这种情况下，对象状态中的所有变量都由对象的内置锁保护起来。如果在添加新的方法或代码路径时忘记使用同步，那么这种加锁协议就很容易被破坏。</p>
+<p>只有被多个线程同时访问的可变数据才需要通过锁来保护，单线程程序不需要同步。</p>
+<p>对于每个包含多个变量的不变性条件，其中涉及的所有变量都需要由同一个锁来保护。</p>
+<p><strong>不加区别地滥用synchronized，可能导致程序中出现过度哦的同步。此外即使将每个方法都作为同步方法，在某些操作中仍然存在竞态条件。还会导致活跃性问题(Liveness)或性能问题(Performance)。</strong></p>
+<h3 id="1-9活跃性-Liveness-和性能-Performance"><a href="#1-9活跃性-Liveness-和性能-Performance" class="headerlink" title="1.9活跃性(Liveness)和性能(Performance)"></a>1.9活跃性(Liveness)和性能(Performance)</h3><p>ynchronizedFactorizer中，通过Servlet对象的内置锁来保护每一个状态变量，该策略的实现方式也就是对整个service方法进行同步。虽然这种简单且粗鲁的方法能确保线程安全，但代价却很高。</p>
+<p>Servlet需要能同时处理多个请求，SynchronizedFactorizer违背了这个初衷。其他客户端必须等待Servlet处理完当前的请求，才能开始新的因数分解运算。这浪费了很多时间和减低了CPU的使用率。</p>
+<p>下图给出了当多个请求同时达到因数分解Servlet时发生的情况：这些请求将排队等待处理。我们将这种Web应用程序称为<strong>不良并发</strong>(Poor Concurrency)应用程序:<strong>可同时调用的数量，不仅受到可用处理资源的限制，还受到应用程序本身结构的限制。</strong></p>
+<p><img src="https://gitee.com/DylanToT99/images/raw/master/images/20170801235552344" alt="这里写图片描述"></p>
+<p>通过**缩小同步代码块的作用范围,**我们很容易做到既确保Servlet的并发性，同时又维护线程安全性。</p>
+<p>CachedFactorizer将Servlet的代码修改为使用两个独立的同步代码块，一个同步代码块负责保护判断是否只需返回缓存结构的”先检查后执行”操作序列，另一个同步代码块负责确保对缓存的数值和因数分解结果进行同步更新。此外我们还引入了“命中计数器”，添加了“缓存命中”计数器，并在第一个同步代码块中更新这两个变量。由于这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步。位于同步代码块之外的代码将以独占方式来访问局部（位于栈上的）变量，这些变量不会在多个线程贡献，因此不需要同步。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//   2-8     缓存最近执行因数分解的数值以及其计算结果的Servlet</span></span><br><span class="line"><span class="meta">@ThreadSafe</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CachedFactorizer</span> <span class="keyword">extends</span> <span class="title class_">GenericServlet</span> <span class="keyword">implements</span> <span class="title class_">Servlet</span> &#123;</span><br><span class="line">    <span class="meta">@GuardedBy(&quot;this&quot;)</span> <span class="keyword">private</span> BigInteger lastNumber;</span><br><span class="line">    <span class="meta">@GuardedBy(&quot;this&quot;)</span> <span class="keyword">private</span> BigInteger[] lastFactors;</span><br><span class="line">    <span class="meta">@GuardedBy(&quot;this&quot;)</span> <span class="keyword">private</span> <span class="type">long</span> hits;</span><br><span class="line">    <span class="meta">@GuardedBy(&quot;this&quot;)</span> <span class="keyword">private</span> <span class="type">long</span> cacheHits;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">long</span> <span class="title function_">getHits</span><span class="params">()</span> &#123; <span class="comment">//这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步</span></span><br><span class="line">        <span class="keyword">return</span> hits;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">double</span> <span class="title function_">getCacheHitRatio</span><span class="params">()</span> &#123;<span class="comment">//这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步</span></span><br><span class="line">        <span class="keyword">return</span> (<span class="type">double</span>) cacheHits / (<span class="type">double</span>) hits;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">service</span><span class="params">(ServletRequest req, ServletResponse resp)</span> &#123;</span><br><span class="line">        <span class="type">BigInteger</span> <span class="variable">i</span> <span class="operator">=</span> extractFromRequest(req);</span><br><span class="line">        BigInteger[] factors = <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;     <span class="comment">//负责保护判断是否只需返回缓存结构的&quot;先检查后执行&quot;操作序列</span></span><br><span class="line">            ++hits;</span><br><span class="line">            <span class="keyword">if</span> (i.equals(lastNumber)) &#123;</span><br><span class="line">                ++cacheHits;</span><br><span class="line">                factors = lastFactors.clone();<span class="comment">//clone()会复制对象。所谓的复制对象，首先要分配一个和源对象同样大小的空间，在这个空间中创建一个新的对象。</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (factors == <span class="literal">null</span>) &#123;</span><br><span class="line">            factors = factor(i);</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;       <span class="comment">//负责确保对缓存的数值和因数分解结果进行同步更新。</span></span><br><span class="line">                lastNumber = i;</span><br><span class="line">                lastFactors = factors.clone();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        encodeIntoResponse(resp, factors);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">encodeIntoResponse</span><span class="params">(ServletResponse resp, BigInteger[] factors)</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger <span class="title function_">extractFromRequest</span><span class="params">(ServletRequest req)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BigInteger</span>(<span class="string">&quot;7&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BigInteger[] factor(BigInteger i) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">BigInteger</span>[]&#123;i&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里没有使用AtomicLong类型的命中计数器，而是使用long类型。对单个变量上实现原子操作来说，原子变量是很有用，但我们已经使用了同步代码块来构造原子操作，而使用两种不同的同步机制不仅会带来混乱，也不会在性能或安全性上带来任何好处，所以这里不使用原子变量。</p>
+<p>CachedFactorizer与SynchronizedFactorizer相比，实现了简单性（对整个方法进行同步）与并发性（对尽可能短的代码路径进行同步）之间的平衡。在获取与释放锁等操作上都需要一定开销，如果同步代码块分得太细(例如将++this分解为一个同步代码块)，那样通常不好。</p>
+<p>通常，在简单性与性能之间存在着互相制约因素。当实现某个同步策略时，一定不要盲目为了性能牺牲简单性，这可能破坏安全性。</p>
+<p><strong>当执行时间较长的计算或者无法快速完成的操作时（例如，网络I&#x2F;O或控制台I&#x2F;O），一定不要持有锁。</strong></p>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Dylan Pan</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://example.com/2022/05/06/java-bing-fa-bian-cheng-shi-zhan/">http://example.com/2022/05/06/java-bing-fa-bian-cheng-shi-zhan/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Dylan Pan</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/java%E5%B9%B6%E5%8F%91/">
+                                    <span class="chip bg-color">java并发</span>
+                                </a>
+                            
+                                <a href="/tags/javaSE/">
+                                    <span class="chip bg-color">javaSE</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.jpg" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat.jpg" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/06/09/tu-jie-http/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="图解http">
+                        
+                        <span class="card-title">图解http</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-06-09
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" class="post-category">
+                                    计算机网络
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+                        <span class="chip bg-color">计算机网络</span>
+                    </a>
+                    
+                    <a href="/tags/http/">
+                        <span class="chip bg-color">http</span>
+                    </a>
+                    
+                    <a href="/tags/tcp-ip/">
+                        <span class="chip bg-color">tcp/ip</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/01/02/bing-fa-juc/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="JUC并发编程">
+                        
+                        <span class="card-title">JUC并发编程</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-01-02
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/java%E5%B9%B6%E5%8F%91/" class="post-category">
+                                    java并发
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
+                        <span class="chip bg-color">并发编程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+
+  <!-- 是否加载使用自带的 prismjs. -->
+  <script type="text/javascript" src="/libs/prism/prism.min.js"></script>
+
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="song"
+                   id="26807310"
+                   fixed='true'
+                   autoplay='true'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.4'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="/libs/aplayer/Meting.min.js"></script>
+
+    
+
+    <div class="container row center-align"
+         style="margin-bottom: 0px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2024</span>
+            
+            <a href="/about" target="_blank">Dylan Pan</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            
+            <br>
+            
+                &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                        class="white-color">196.4k</span>
+            
+            
+            
+                
+            
+            
+                <span id="busuanzi_container_site_pv">
+                &nbsp;|&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;
+                    <span id="busuanzi_value_site_pv" class="white-color"></span>
+            </span>
+            
+            
+                <span id="busuanzi_container_site_uv">
+                &nbsp;|&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;
+                    <span id="busuanzi_value_site_uv" class="white-color"></span>
+            </span>
+            
+            <br>
+
+            <!-- 运行天数提醒. -->
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/DylanToT99" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:1975131479@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1975131479" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1975131479" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fas fa-rss"></i>
+    </a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 白天和黑夜主题 -->
+<div class="stars-con">
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>  
+</div>
+
+<script>
+    function switchNightMode() {
+        $('<div class="Cuteen_DarkSky"><div class="Cuteen_DarkPlanet"></div></div>').appendTo($('body')),
+        setTimeout(function () {
+            $('body').hasClass('DarkMode') 
+            ? ($('body').removeClass('DarkMode'), localStorage.setItem('isDark', '0'), $('#sum-moon-icon').removeClass("fa-sun").addClass('fa-moon')) 
+            : ($('body').addClass('DarkMode'), localStorage.setItem('isDark', '1'), $('#sum-moon-icon').addClass("fa-sun").removeClass('fa-moon')),
+            
+            setTimeout(function () {
+            $('.Cuteen_DarkSky').fadeOut(1e3, function () {
+                $(this).remove()
+            })
+            }, 2e3)
+        })
+    }
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    
+
+    
+    
+    
+
+    <!-- 雪花特效 -->
+    
+
+    <!-- 鼠标星星特效 -->
+     
+        <script type="text/javascript">
+            // 只在桌面版网页启用特效
+            var windowWidth = $(window).width();
+            if (windowWidth > 768) {
+                document.write('<script type="text/javascript" src="/libs/others/star.js"><\/script>');
+            }
+        </script>
+    
+
+     
+        <script src="https://ssl.captcha.qq.com/TCaptcha.js"></script>
+        <script src="/libs/others/TencentCaptcha.js"></script>
+        <button id="TencentCaptcha" data-appid="xxxxxxxxxx" data-cbfn="callback" type="button" hidden></button>
+    
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    <!--腾讯兔小巢-->
+    
+    
+
+    
+
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
