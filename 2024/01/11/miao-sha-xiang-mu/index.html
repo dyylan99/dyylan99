@@ -403,14 +403,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.2k
+                    3.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    14 分
+                    13 分
                 </div>
                 
 
@@ -434,65 +434,65 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="一-项目前导"><a href="#一-项目前导" class="headerlink" title="一. 项目前导"></a>一. 项目前导</h1><h2 id="1-1-前后端分离-如何解决跨域问题"><a href="#1-1-前后端分离-如何解决跨域问题" class="headerlink" title="1.1 前后端分离,如何解决跨域问题"></a>1.1 前后端分离,如何解决跨域问题</h2><p>在微服务项目中 ,请求到达服务前一般会经过网关服务, 所以跨域问题可以交由网关解决. 本项目的网关采用了springcloud-gateway, 编辑配置类:</p>
-<pre><code class="java">@Configuration
-public class CorsConfig &#123;
-    @Bean
-    public CorsWebFilter corsFilter() &#123;
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
-        CorsConfiguration config = new CorsConfiguration();
-        // 允许cookies跨域
-        config.setAllowCredentials(true);
-        // #允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin
-        config.addAllowedOrigin(&quot;*&quot;);
-        // #允许访问的头信息,*表示全部
-        config.addAllowedHeader(&quot;*&quot;);
-        // 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了
-        config.setMaxAge(18000L);
-        // 允许提交请求的方法，*表示全部允许
-        config.addAllowedMethod(&quot;*&quot;);
-        source.registerCorsConfiguration(&quot;/**&quot;, config);
-        return new CorsWebFilter(source);
-    &#125;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CorsConfig</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> <span class="token class-name">CorsWebFilter</span> <span class="token function">corsFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">UrlBasedCorsConfigurationSource</span> source <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UrlBasedCorsConfigurationSource</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PathPatternParser</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">CorsConfiguration</span> config <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CorsConfiguration</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 允许cookies跨域</span>
+        config<span class="token punctuation">.</span><span class="token function">setAllowCredentials</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// #允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin</span>
+        config<span class="token punctuation">.</span><span class="token function">addAllowedOrigin</span><span class="token punctuation">(</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// #允许访问的头信息,*表示全部</span>
+        config<span class="token punctuation">.</span><span class="token function">addAllowedHeader</span><span class="token punctuation">(</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了</span>
+        config<span class="token punctuation">.</span><span class="token function">setMaxAge</span><span class="token punctuation">(</span><span class="token number">18000L</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 允许提交请求的方法，*表示全部允许</span>
+        config<span class="token punctuation">.</span><span class="token function">addAllowedMethod</span><span class="token punctuation">(</span><span class="token string">"*"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        source<span class="token punctuation">.</span><span class="token function">registerCorsConfiguration</span><span class="token punctuation">(</span><span class="token string">"/**"</span><span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">CorsWebFilter</span><span class="token punctuation">(</span>source<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h2 id="1-2-在微服务中如何获取用户真实登录的ip"><a href="#1-2-在微服务中如何获取用户真实登录的ip" class="headerlink" title="1.2 在微服务中如何获取用户真实登录的ip"></a>1.2 在微服务中如何获取用户真实登录的ip</h2><p>请求线路:</p>
 <p><strong>用户ip—&gt;  网关(网关ip)—&gt; 微服务</strong></p>
 <p>要想服务能够获取用户ip, 则在网关层面需要将用户ip加入到请求明文中, 也就是请求头中</p>
 <p>通过过滤器实现:</p>
-<pre><code class="java">@Component
-public class CommonFilter implements GlobalFilter &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Component</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CommonFilter</span> <span class="token keyword">implements</span> <span class="token class-name">GlobalFilter</span> <span class="token punctuation">&#123;</span>
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">StringRedisTemplate</span> redisTemplate<span class="token punctuation">;</span>
 
-    @Override
-    public Mono&lt;Void&gt; filter(ServerWebExchange exchange, GatewayFilterChain chain) &#123;
-        /**
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">Mono</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Void</span><span class="token punctuation">></span></span> <span class="token function">filter</span><span class="token punctuation">(</span><span class="token class-name">ServerWebExchange</span> exchange<span class="token punctuation">,</span> <span class="token class-name">GatewayFilterChain</span> chain<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">/**
          * pre拦截逻辑
          * 在请求去到微服务之前，做了两个处理
          * 1.把客户端真实IP通过请求头的方式传递给微服务
          * 2.在请求头中添加FEIGN_REQUEST的请求头，值为0，标记请求不是Feign调用，而是客户端调用
-         */
-        ServerHttpRequest request = exchange.getRequest().mutate().
-                //拿到ip地址,将其添加到请求头中发到为服务里
-                header(CommonConstants.REAL_IP,exchange.getRequest().getRemoteAddress().getHostString()).
-                header(CommonConstants.FEIGN_REQUEST_KEY,CommonConstants.FEIGN_REQUEST_FALSE).
-                build();
-        return chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(()-&gt;&#123;
-            /**
+         */</span>
+        <span class="token class-name">ServerHttpRequest</span> request <span class="token operator">=</span> exchange<span class="token punctuation">.</span><span class="token function">getRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mutate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+                <span class="token comment">//拿到ip地址,将其添加到请求头中发到为服务里</span>
+                <span class="token function">header</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">REAL_IP</span><span class="token punctuation">,</span>exchange<span class="token punctuation">.</span><span class="token function">getRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getRemoteAddress</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getHostString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+                <span class="token function">header</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">FEIGN_REQUEST_KEY</span><span class="token punctuation">,</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">FEIGN_REQUEST_FALSE</span><span class="token punctuation">)</span><span class="token punctuation">.</span>
+                <span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> chain<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>exchange<span class="token punctuation">.</span><span class="token function">mutate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">request</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token class-name">Mono</span><span class="token punctuation">.</span><span class="token function">fromRunnable</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token punctuation">&#123;</span>
+            <span class="token comment">/**
              * post拦截逻辑
              * 在请求执行完微服务之后,需要刷新token在redis的时间
              * 判断token不为空 &amp;&amp; Redis还存在这个token对于的key,这时候需要延长Redis中对应key的有效时间.
-             */
-            String token,redisKey;
-            if(!StringUtils.isEmpty(token =exchange.getRequest().getHeaders().getFirst(CommonConstants.TOKEN_NAME))
-                    &amp;&amp; redisTemplate.hasKey(redisKey = CommonRedisKey.USER_TOKEN.getRealKey(token)))&#123;
-                redisTemplate.expire(redisKey, CommonRedisKey.USER_TOKEN.getExpireTime(), CommonRedisKey.USER_TOKEN.getUnit());
-            &#125;
-        &#125;));
-    &#125;
-&#125;
-</code></pre>
+             */</span>
+            <span class="token class-name">String</span> token<span class="token punctuation">,</span>redisKey<span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>token <span class="token operator">=</span>exchange<span class="token punctuation">.</span><span class="token function">getRequest</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getHeaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getFirst</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">TOKEN_NAME</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+                    <span class="token operator">&amp;&amp;</span> redisTemplate<span class="token punctuation">.</span><span class="token function">hasKey</span><span class="token punctuation">(</span>redisKey <span class="token operator">=</span> <span class="token class-name">CommonRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_TOKEN</span><span class="token punctuation">.</span><span class="token function">getRealKey</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                redisTemplate<span class="token punctuation">.</span><span class="token function">expire</span><span class="token punctuation">(</span>redisKey<span class="token punctuation">,</span> <span class="token class-name">CommonRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_TOKEN</span><span class="token punctuation">.</span><span class="token function">getExpireTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">CommonRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_TOKEN</span><span class="token punctuation">.</span><span class="token function">getUnit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>此filter做了两件事:</p>
 <ol>
 <li>将来自客户端的请求(CommonConstants.FEIGN_REQUEST_KEY,CommonConstants.FEIGN_REQUEST_FALSE)而不是微服务之间的远程调用, 其请求ip添加到请求头中</li>
@@ -501,112 +501,114 @@ public class CommonFilter implements GlobalFilter &#123;
 <h2 id="1-3-登录流程"><a href="#1-3-登录流程" class="headerlink" title="1.3 登录流程"></a>1.3 登录流程</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240320115329599.png" alt="image-20240320115329599"></p>
 <h2 id="1-4-清理七天未登录的用户"><a href="#1-4-清理七天未登录的用户" class="headerlink" title="1.4 清理七天未登录的用户"></a>1.4 清理七天未登录的用户</h2><p>上图中伴随token一起存入redis的userInfo设置有过期时间, redis会自动清除. 但是写入redis中的hash和zset的userlogin没有设置过期时间, 若用户长期未登录就会浪费内存空间:</p>
 <p>我们使用xxl-job来清理超过七天未登录的用户:</p>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * 用于处理用户缓存的定时任务
  * 为了保证Redis中的内存的有效使用。
  * 我们默认保留7天内的用户缓存数据，每天凌晨的时候会把7天前的用户登录缓存数据删除掉
- */
-@Component
-@Setter
-@Getter
-@RefreshScope
-@Slf4j
-public class UserCacheJob implements SimpleJob &#123;
-    @Value(&quot;$&#123;job.userCache.cron&#125;&quot;)
-    private String cron;
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+ */</span>
+<span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@Setter</span>
+<span class="token annotation punctuation">@Getter</span>
+<span class="token annotation punctuation">@RefreshScope</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserCacheJob</span> <span class="token keyword">implements</span> <span class="token class-name">SimpleJob</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&#123;job.userCache.cron&#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> cron<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">StringRedisTemplate</span> redisTemplate<span class="token punctuation">;</span>
 
-    @Override
-    public void execute(ShardingContext shardingContext) &#123;
-        doWork();
-    &#125;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">ShardingContext</span> shardingContext<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">doWork</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    private void doWork() &#123;
-        // 获取日历对象
-        Calendar calendar = Calendar.getInstance();
-        // 在当前时间天数的基础上做加法操作
-        // 7天前 = 当前天 - 7
-        calendar.add(Calendar.DATE, -7);
-        //获取7天前的日期
-        Long max = calendar.getTime().getTime();
-        String userZSetKey = JobRedisKey.USER_ZSET.join(&quot;&quot;);
-        String userHashKey = JobRedisKey.USER_HASH.join(&quot;&quot;);
-        //根据排序找到在七天前登录的用户
-        Set&lt;String&gt; ids = redisTemplate.opsForZSet().rangeByScore(userZSetKey, 0, max);
-        //删除7天前的用户缓存数据
-        if (ids.size() &gt; 0) &#123;
-            redisTemplate.opsForHash().delete(userHashKey, ids.toArray());
-            redisTemplate.opsForZSet().removeRangeByScore(userZSetKey, 0, max);
-        &#125;
-    &#125;
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">doWork</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 获取日历对象</span>
+        <span class="token class-name">Calendar</span> calendar <span class="token operator">=</span> <span class="token class-name">Calendar</span><span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 在当前时间天数的基础上做加法操作</span>
+        <span class="token comment">// 7天前 = 当前天 - 7</span>
+        calendar<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token class-name">Calendar</span><span class="token punctuation">.</span><span class="token constant">DATE</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//获取7天前的日期</span>
+        <span class="token class-name">Long</span> max <span class="token operator">=</span> calendar<span class="token punctuation">.</span><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getTime</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> userZSetKey <span class="token operator">=</span> <span class="token class-name">JobRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_ZSET</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> userHashKey <span class="token operator">=</span> <span class="token class-name">JobRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_HASH</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//根据排序找到在七天前登录的用户</span>
+        <span class="token class-name">Set</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> ids <span class="token operator">=</span> redisTemplate<span class="token punctuation">.</span><span class="token function">opsForZSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">rangeByScore</span><span class="token punctuation">(</span>userZSetKey<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//删除7天前的用户缓存数据</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>ids<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            redisTemplate<span class="token punctuation">.</span><span class="token function">opsForHash</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>userHashKey<span class="token punctuation">,</span> ids<span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            redisTemplate<span class="token punctuation">.</span><span class="token function">opsForZSet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">removeRangeByScore</span><span class="token punctuation">(</span>userZSetKey<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> max<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
 
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <h2 id="1-5-未认证用户拦截-feign请求放行"><a href="#1-5-未认证用户拦截-feign请求放行" class="headerlink" title="1.5 未认证用户拦截&amp;feign请求放行"></a>1.5 未认证用户拦截&amp;feign请求放行</h2><p>首先在共用模块服务封装了一个feign方法拦截器,在每个feign请求前为其添加新的请求头, 标记这是一个feign请求</p>
-<pre><code class="java">public class FeignRequestInterceptor implements RequestInterceptor &#123;
-    @Override
-    public void apply(RequestTemplate template) &#123;
-        // 发起 Feign 请求之前执行
-        // 往 Feign 请求中携带新的请求头，标识这一次请求是 Feign 请求
-        template.header(CommonConstants.FEIGN_REQUEST_KEY, CommonConstants.FEIGN_REQUEST_TRUE);
-    &#125;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FeignRequestInterceptor</span> <span class="token keyword">implements</span> <span class="token class-name">RequestInterceptor</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">apply</span><span class="token punctuation">(</span><span class="token class-name">RequestTemplate</span> template<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">// 发起 Feign 请求之前执行</span>
+        <span class="token comment">// 往 Feign 请求中携带新的请求头，标识这一次请求是 Feign 请求</span>
+        template<span class="token punctuation">.</span><span class="token function">header</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">FEIGN_REQUEST_KEY</span><span class="token punctuation">,</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">FEIGN_REQUEST_TRUE</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>再新增一个拦截器:</p>
-<pre><code class="java">public class RequireLoginInterceptor implements HandlerInterceptor &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RequireLoginInterceptor</span> <span class="token keyword">implements</span> <span class="token class-name">HandlerInterceptor</span> <span class="token punctuation">&#123;</span>
 
-    private StringRedisTemplate redisTemplate;
+    <span class="token keyword">private</span> <span class="token class-name">StringRedisTemplate</span> redisTemplate<span class="token punctuation">;</span>
 
-    public RequireLoginInterceptor(StringRedisTemplate redisTemplate) &#123;
-        this.redisTemplate = redisTemplate;
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">RequireLoginInterceptor</span><span class="token punctuation">(</span><span class="token class-name">StringRedisTemplate</span> redisTemplate<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>redisTemplate <span class="token operator">=</span> redisTemplate<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception &#123;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">preHandle</span><span class="token punctuation">(</span><span class="token class-name">HttpServletRequest</span> request<span class="token punctuation">,</span> <span class="token class-name">HttpServletResponse</span> response<span class="token punctuation">,</span> <span class="token class-name">Object</span> handler<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">&#123;</span>
 
-        // 判断当前请求是否是一个 api 请求
-        if (handler instanceof HandlerMethod) &#123;
-            HandlerMethod handlerMethod = (HandlerMethod) handler;
-            // 从请求头中获取 Feign 请求标识，以此来判断该请求是否是 Feign
-            String feignRequest = request.getHeader(CommonConstants.FEIGN_REQUEST_KEY);
+        <span class="token comment">// 判断当前请求是否是一个 api 请求</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>handler <span class="token keyword">instanceof</span> <span class="token class-name">HandlerMethod</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">HandlerMethod</span> handlerMethod <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token class-name">HandlerMethod</span><span class="token punctuation">)</span> handler<span class="token punctuation">;</span>
+            <span class="token comment">// 从请求头中获取 Feign 请求标识，以此来判断该请求是否是 Feign</span>
+            <span class="token class-name">String</span> feignRequest <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">FEIGN_REQUEST_KEY</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            // Feign请求标识不为空 &amp;&amp; 不是 Feign 请求 &amp;&amp; 访问的接口方法贴了 @RequireLogin
-            if (!StringUtils.isEmpty(feignRequest)
-                    &amp;&amp; CommonConstants.FEIGN_REQUEST_FALSE.equals(feignRequest)
-                    &amp;&amp; handlerMethod.getMethodAnnotation(RequireLogin.class) != null) &#123;
+            <span class="token comment">// Feign请求标识不为空 &amp;&amp; 不是 Feign 请求 &amp;&amp; 访问的接口方法贴了 @RequireLogin</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>feignRequest<span class="token punctuation">)</span>
+                    <span class="token operator">&amp;&amp;</span> <span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">FEIGN_REQUEST_FALSE</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>feignRequest<span class="token punctuation">)</span>
+                    <span class="token operator">&amp;&amp;</span> handlerMethod<span class="token punctuation">.</span><span class="token function">getMethodAnnotation</span><span class="token punctuation">(</span><span class="token class-name">RequireLogin</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
-                // 设置响应类型为 json
-                response.setContentType(&quot;application/json;charset=utf-8&quot;);
-                // 从请求头中获取 token
-                String token = request.getHeader(CommonConstants.TOKEN_NAME);
-                if (StringUtils.isEmpty(token)) &#123;
-                    // 如果 token 为空，返回 token 无效信息
-                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.TOKEN_INVALID)));
-                    return false;
-                &#125;
-                UserInfo userInfo = JSON.parseObject(redisTemplate.opsForValue().get(CommonRedisKey.USER_TOKEN.getRealKey(token)), UserInfo.class);
-                // 基于 token 从 redis 中获取当前用户，如果获取不到，说明 token 无效
-                if (userInfo == null) &#123;
-                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.TOKEN_INVALID)));
-                    return false;
-                &#125;
-                // 从请求头中获取 ip 地址
-                /*String ip = request.getHeader(CommonConstants.REAL_IP);
+                <span class="token comment">// 设置响应类型为 json</span>
+                response<span class="token punctuation">.</span><span class="token function">setContentType</span><span class="token punctuation">(</span><span class="token string">"application/json;charset=utf-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">// 从请求头中获取 token</span>
+                <span class="token class-name">String</span> token <span class="token operator">=</span> request<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token class-name">CommonConstants</span><span class="token punctuation">.</span><span class="token constant">TOKEN_NAME</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">StringUtils</span><span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    <span class="token comment">// 如果 token 为空，返回 token 无效信息</span>
+                    response<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">toJSONString</span><span class="token punctuation">(</span><span class="token class-name">Result</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token class-name">CommonCodeMsg</span><span class="token punctuation">.</span><span class="token constant">TOKEN_INVALID</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+                <span class="token class-name">UserInfo</span> userInfo <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parseObject</span><span class="token punctuation">(</span>redisTemplate<span class="token punctuation">.</span><span class="token function">opsForValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">CommonRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_TOKEN</span><span class="token punctuation">.</span><span class="token function">getRealKey</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">UserInfo</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">// 基于 token 从 redis 中获取当前用户，如果获取不到，说明 token 无效</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>userInfo <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    response<span class="token punctuation">.</span><span class="token function">getWriter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">write</span><span class="token punctuation">(</span><span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">toJSONString</span><span class="token punctuation">(</span><span class="token class-name">Result</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token class-name">CommonCodeMsg</span><span class="token punctuation">.</span><span class="token constant">TOKEN_INVALID</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+                <span class="token comment">// 从请求头中获取 ip 地址</span>
+                <span class="token comment">/*String ip = request.getHeader(CommonConstants.REAL_IP);
                 if (!userInfo.getLoginIp().equals(ip)) &#123;
                     // 判断如果用户时的 ip 与当前访问接口的 ip 地址不一致，就拦截并提示 ip 已经改变，请重新登录
                     response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.LOGIN_IP_CHANGE)));
                     return false;
-                &#125;*/
-            &#125;
-        &#125;
+                &#125;*/</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
 
-        // 如果不是接口请求，就直接放行
-        return true;
-    &#125;
-&#125;
-</code></pre>
+        <span class="token comment">// 如果不是接口请求，就直接放行</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>逻辑:</p>
 <ol>
 <li><p>如果feign请求标识不为空 &amp;&amp; 不是feign请求 &amp;&amp; 方法接口标有@RequireLogin注解, 说明这是由外部访问服务的需要登录后的接口:</p>
@@ -618,189 +620,193 @@ public class UserCacheJob implements SimpleJob &#123;
 </li>
 </ol>
 <h2 id="1-6-聚合秒杀商品列表和定时缓存"><a href="#1-6-聚合秒杀商品列表和定时缓存" class="headerlink" title="1.6 聚合秒杀商品列表和定时缓存"></a>1.6 聚合秒杀商品列表和定时缓存</h2><p>数据库中有两张表, 分别是秒杀库中的seckill-product和商品库中的product,我们要将这两张表中的部分信息聚合在一起展示到前端的秒杀页面中:</p>
-<pre><code class="java">@Override
-public List&lt;SeckillProductVo&gt; selectTodayListByTime(Integer time) &#123;
-    // 1. 调用秒杀服务接口, 基于今天的时间, 查询今天的所有秒杀商品数据
-    List&lt;SeckillProduct&gt; todayList = seckillProductMapper.queryCurrentlySeckillProduct(time);
-    if (todayList.size() == 0) &#123;
-        return Collections.emptyList();
-    &#125;
-    // 2. 遍历秒杀商品列表, 得到商品 id 列表
-    List&lt;Long&gt; productIdList = todayList.stream() // Stream&lt;SeckillProduct&gt;
-            .map(SeckillProduct::getProductId) // SeckillProduct =&gt; Long
-            .distinct()
-            .collect(Collectors.toList());
-    // 3. 根据商品 id 列表, 调用商品服务查询接口, 得到商品列表
-    Result&lt;List&lt;Product&gt;&gt; result = productFeignApi.selectByIdList(productIdList);
-    /**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SeckillProductVo</span><span class="token punctuation">></span></span> <span class="token function">selectTodayListByTime</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> time<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 1. 调用秒杀服务接口, 基于今天的时间, 查询今天的所有秒杀商品数据</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SeckillProduct</span><span class="token punctuation">></span></span> todayList <span class="token operator">=</span> seckillProductMapper<span class="token punctuation">.</span><span class="token function">queryCurrentlySeckillProduct</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>todayList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">emptyList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// 2. 遍历秒杀商品列表, 得到商品 id 列表</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Long</span><span class="token punctuation">></span></span> productIdList <span class="token operator">=</span> todayList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// Stream&lt;SeckillProduct></span>
+            <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span><span class="token class-name">SeckillProduct</span><span class="token operator">::</span><span class="token function">getProductId</span><span class="token punctuation">)</span> <span class="token comment">// SeckillProduct => Long</span>
+            <span class="token punctuation">.</span><span class="token function">distinct</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 3. 根据商品 id 列表, 调用商品服务查询接口, 得到商品列表</span>
+    <span class="token class-name">Result</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">Product</span><span class="token punctuation">></span><span class="token punctuation">></span></span> result <span class="token operator">=</span> productFeignApi<span class="token punctuation">.</span><span class="token function">selectByIdList</span><span class="token punctuation">(</span>productIdList<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">/**
      * result 可能存在的几种情况:
      *  1. 远程接口正常返回, code == 200, data == 想要的数据
      *  2. 远程接口出现异常, code != 200
      *  3. 接口被熔断降级, data == null
-     */
-    if (result.hasError() || result.getData() == null) &#123;
-        throw new BusinessException(new CodeMsg(result.getCode(), result.getMsg()));
-    &#125;
+     */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">hasError</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> result<span class="token punctuation">.</span><span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">BusinessException</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">CodeMsg</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">getCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> result<span class="token punctuation">.</span><span class="token function">getMsg</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    List&lt;Product&gt; products = result.getData();
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Product</span><span class="token punctuation">></span></span> products <span class="token operator">=</span> result<span class="token punctuation">.</span><span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    // 4. 遍历秒杀商品列表, 将商品对象与秒杀商品对象聚合到一起
-    // List&lt;SeckillProduct&gt; =&gt; List&lt;SeckillProductVo&gt;
-    List&lt;SeckillProductVo&gt; productVoList = todayList.stream()
-            .map(sp -&gt; &#123;
-                SeckillProductVo vo = new SeckillProductVo();
-                BeanUtils.copyProperties(sp, vo);
+    <span class="token comment">// 4. 遍历秒杀商品列表, 将商品对象与秒杀商品对象聚合到一起</span>
+    <span class="token comment">// List&lt;SeckillProduct> => List&lt;SeckillProductVo></span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SeckillProductVo</span><span class="token punctuation">></span></span> productVoList <span class="token operator">=</span> todayList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>sp <span class="token operator">-></span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">SeckillProductVo</span> vo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SeckillProductVo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">BeanUtils</span><span class="token punctuation">.</span><span class="token function">copyProperties</span><span class="token punctuation">(</span>sp<span class="token punctuation">,</span> vo<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                // 遍历远程查询的商品列表，判断是否与当前的秒杀商品关联的商品对象一致
-                // 如果是一致的，将该对象返回并将属性拷贝到 vo 对象中
-                List&lt;Product&gt; list = products.stream().filter(p -&gt; sp.getProductId().equals(p.getId())).collect(Collectors.toList());
-                if (!list.isEmpty()) &#123;
-                    Product product = list.get(0);
-                    BeanUtils.copyProperties(product, vo);
-                &#125;
-                vo.setId(sp.getId());
+                <span class="token comment">// 遍历远程查询的商品列表，判断是否与当前的秒杀商品关联的商品对象一致</span>
+                <span class="token comment">// 如果是一致的，将该对象返回并将属性拷贝到 vo 对象中</span>
+                <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Product</span><span class="token punctuation">></span></span> list <span class="token operator">=</span> products<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>p <span class="token operator">-></span> sp<span class="token punctuation">.</span><span class="token function">getProductId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>p<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>list<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    <span class="token class-name">Product</span> product <span class="token operator">=</span> list<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token class-name">BeanUtils</span><span class="token punctuation">.</span><span class="token function">copyProperties</span><span class="token punctuation">(</span>product<span class="token punctuation">,</span> vo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+                vo<span class="token punctuation">.</span><span class="token function">setId</span><span class="token punctuation">(</span>sp<span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                return vo;
-            &#125;) // Stream&lt;SeckillProductVo&gt;
-            .collect(Collectors.toList());
+                <span class="token keyword">return</span> vo<span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span><span class="token punctuation">)</span> <span class="token comment">// Stream&lt;SeckillProductVo></span>
+            <span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    return productVoList;
-&#125;
-</code></pre>
+    <span class="token keyword">return</span> productVoList<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <p>一般场景下,秒杀会有预热, 每天将需要秒杀的商品提前存入到redis中, 后续的查询也从redis中查询</p>
-<pre><code class="java">@Override
-public List&lt;SeckillProductVo&gt; selectTodayListByTimeFromRedis(Integer time) &#123;
-    String key = SeckillRedisKey.SECKILL_PRODUCT_LIST.join(time + &quot;&quot;);
-    //拿到所有数据
-    List&lt;String&gt; stringList = redisTemplate.opsForList().range(key, 0, -1);
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SeckillProductVo</span><span class="token punctuation">></span></span> <span class="token function">selectTodayListByTimeFromRedis</span><span class="token punctuation">(</span><span class="token class-name">Integer</span> time<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token class-name">SeckillRedisKey</span><span class="token punctuation">.</span><span class="token constant">SECKILL_PRODUCT_LIST</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>time <span class="token operator">+</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//拿到所有数据</span>
+    <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">></span></span> stringList <span class="token operator">=</span> redisTemplate<span class="token punctuation">.</span><span class="token function">opsForList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">range</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    if (stringList == null || stringList.size() == 0) &#123;
-        log.warn(&quot;[秒杀商品] 查询秒杀商品列表异常, Redis 中没有数据, 从 DB 中查询...&quot;);
-        return this.selectTodayListByTime(time);
-    &#125;
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>stringList <span class="token operator">==</span> <span class="token keyword">null</span> <span class="token operator">||</span> stringList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"[秒杀商品] 查询秒杀商品列表异常, Redis 中没有数据, 从 DB 中查询..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">selectTodayListByTime</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    return stringList.stream().map(json -&gt; JSON.parseObject(json, SeckillProductVo.class)).collect(Collectors.toList());
-&#125;
-</code></pre>
+    <span class="token keyword">return</span> stringList<span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>json <span class="token operator">-></span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parseObject</span><span class="token punctuation">(</span>json<span class="token punctuation">,</span> <span class="token class-name">SeckillProductVo</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span><span class="token class-name">Collectors</span><span class="token punctuation">.</span><span class="token function">toList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>每天的预热任务:</p>
-<pre><code class="java">@Component
-@Setter
-@Getter
-@RefreshScope
-@Slf4j
-public class SeckillProductInitJob implements SimpleJob &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Component</span>
+<span class="token annotation punctuation">@Setter</span>
+<span class="token annotation punctuation">@Getter</span>
+<span class="token annotation punctuation">@RefreshScope</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SeckillProductInitJob</span> <span class="token keyword">implements</span> <span class="token class-name">SimpleJob</span> <span class="token punctuation">&#123;</span>
 
-    @Value(&quot;$&#123;job.seckillProduct.cron&#125;&quot;)
-    private String cron;
-    @Value(&quot;$&#123;job.seckillProduct.shardingCount&#125;&quot;)
-    private Integer shardingCount;
-    @Value(&quot;$&#123;job.seckillProduct.shardingParameters&#125;&quot;)
-    private String shardingParameters;
-    @Value(&quot;$&#123;job.seckillProduct.dataFlow&#125;&quot;)
-    private boolean dataFlow;
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&#123;job.seckillProduct.cron&#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> cron<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&#123;job.seckillProduct.shardingCount&#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">Integer</span> shardingCount<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&#123;job.seckillProduct.shardingParameters&#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> shardingParameters<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&#123;job.seckillProduct.dataFlow&#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> dataFlow<span class="token punctuation">;</span>
 
-    @Autowired
-    private SeckillProductFeignApi seckillProductFeignApi;
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">SeckillProductFeignApi</span> seckillProductFeignApi<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">StringRedisTemplate</span> stringRedisTemplate<span class="token punctuation">;</span>
 
-    @Override
-    public void execute(ShardingContext shardingContext) &#123;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token class-name">ShardingContext</span> shardingContext<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
 
-        // 分片参数利用场次进行分片
-        String time = shardingContext.getShardingParameter();
+        <span class="token comment">// 分片参数利用场次进行分片</span>
+        <span class="token class-name">String</span> time <span class="token operator">=</span> shardingContext<span class="token punctuation">.</span><span class="token function">getShardingParameter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        // 先清空之前的数据
-        String key = SeckillRedisKey.SECKILL_PRODUCT_LIST.join(time);
-        stringRedisTemplate.delete(key);
+        <span class="token comment">// 先清空之前的数据</span>
+        <span class="token class-name">String</span> key <span class="token operator">=</span> <span class="token class-name">SeckillRedisKey</span><span class="token punctuation">.</span><span class="token constant">SECKILL_PRODUCT_LIST</span><span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        stringRedisTemplate<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        // 调用秒杀服务的接口, 查询秒杀商品 数据
-        Result&lt;List&lt;SeckillProductVo&gt;&gt; result = seckillProductFeignApi.selectTodayListByTime(Integer.valueOf(time));
-        if (result.hasError() || result.getData() == null) &#123;
-            log.warn(&quot;[秒杀商品数据预热] 查询秒杀商品数据失败, 远程服务异常. res=&#123;&#125;&quot;, JSON.toJSONString(result));
-            return;
-        &#125;
+        <span class="token comment">// 调用秒杀服务的接口, 查询秒杀商品 数据</span>
+        <span class="token class-name">Result</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">List</span><span class="token punctuation">&lt;</span><span class="token class-name">SeckillProductVo</span><span class="token punctuation">></span><span class="token punctuation">></span></span> result <span class="token operator">=</span> seckillProductFeignApi<span class="token punctuation">.</span><span class="token function">selectTodayListByTime</span><span class="token punctuation">(</span><span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span><span class="token function">hasError</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">||</span> result<span class="token punctuation">.</span><span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            log<span class="token punctuation">.</span><span class="token function">warn</span><span class="token punctuation">(</span><span class="token string">"[秒杀商品数据预热] 查询秒杀商品数据失败, 远程服务异常. res=&#123;&#125;"</span><span class="token punctuation">,</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">toJSONString</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        List&lt;SeckillProductVo&gt; productVoList = result.getData();
-        log.info(&quot;[秒杀商品数据预热] 准备开始预热秒杀商品数据, 当前场次:&#123;&#125;, 本次缓存的数据:&#123;&#125;&quot;, time, productVoList.size());
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SeckillProductVo</span><span class="token punctuation">></span></span> productVoList <span class="token operator">=</span> result<span class="token punctuation">.</span><span class="token function">getData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"[秒杀商品数据预热] 准备开始预热秒杀商品数据, 当前场次:&#123;&#125;, 本次缓存的数据:&#123;&#125;"</span><span class="token punctuation">,</span> time<span class="token punctuation">,</span> productVoList<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        // 将数据存入 Redis : List
-        // key=TODAY:&#123;time&#125;:SECKILL:PRODUCTS
-        // value=SeckillProductVo =&gt; &#123;json&#125;
-        for (SeckillProductVo vo : productVoList) &#123;
-            String json = JSON.toJSONString(vo);
-            stringRedisTemplate.opsForList().rightPush(key, json);
-        &#125;
-        log.info(&quot;[秒杀商品数据预热] 数据预热完成...&quot;);
-    &#125;
-&#125;
-</code></pre>
+        <span class="token comment">// 将数据存入 Redis : List</span>
+        <span class="token comment">// key=TODAY:&#123;time&#125;:SECKILL:PRODUCTS</span>
+        <span class="token comment">// value=SeckillProductVo => &#123;json&#125;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token class-name">SeckillProductVo</span> vo <span class="token operator">:</span> productVoList<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">String</span> json <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">toJSONString</span><span class="token punctuation">(</span>vo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            stringRedisTemplate<span class="token punctuation">.</span><span class="token function">opsForList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">rightPush</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> json<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"[秒杀商品数据预热] 数据预热完成..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h1 id="二-秒杀功能"><a href="#二-秒杀功能" class="headerlink" title="二.秒杀功能"></a>二.秒杀功能</h1><h2 id="2-1-用户参数解析器"><a href="#2-1-用户参数解析器" class="headerlink" title="2.1 用户参数解析器"></a>2.1 用户参数解析器</h2><p>进行秒杀功能的前提是用户必须登录, 同时从前端传入的token中拿到用户的信息, 每次都需要用token在接口中去取.</p>
 <p>很不方便.springboot提供了参数解析器的功能,其可以在从controller前将参数解析完毕,并传入到接口方法中. 比如</p>
 <p>@RequestHeader(“token”)String token, 该注解就可以将请求头中的token解析到token参数中.</p>
 <p>实现原理:</p>
 <p>类RequestHeaderMethodArgumentResolver专门用来解析@RequestHeader,</p>
 <p>其继承了HandlerMethodArgumentResolver接口:</p>
-<pre><code class="java">public interface HandlerMethodArgumentResolver &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">HandlerMethodArgumentResolver</span> <span class="token punctuation">&#123;</span>
 
-    //支持的类型
-    boolean supportsParameter(MethodParameter parameter);
+    <span class="token comment">//支持的类型</span>
+    <span class="token keyword">boolean</span> <span class="token function">supportsParameter</span><span class="token punctuation">(</span><span class="token class-name">MethodParameter</span> parameter<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 
-    //解析的逻辑
-    @Nullable
-    Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
-          NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception;
+    <span class="token comment">//解析的逻辑</span>
+    <span class="token annotation punctuation">@Nullable</span>
+    <span class="token class-name">Object</span> <span class="token function">resolveArgument</span><span class="token punctuation">(</span><span class="token class-name">MethodParameter</span> parameter<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> <span class="token class-name">ModelAndViewContainer</span> mavContainer<span class="token punctuation">,</span>
+          <span class="token class-name">NativeWebRequest</span> webRequest<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> <span class="token class-name">WebDataBinderFactory</span> binderFactory<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span><span class="token punctuation">;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>实现的方法:</p>
-<pre><code class="java">    @Override
-    public boolean supportsParameter(MethodParameter parameter) &#123;
-        return (parameter.hasParameterAnnotation(RequestHeader.class) &amp;&amp;
-                !Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType()));
-    &#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Override</span>
+<span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">supportsParameter</span><span class="token punctuation">(</span><span class="token class-name">MethodParameter</span> parameter<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token punctuation">(</span>parameter<span class="token punctuation">.</span><span class="token function">hasParameterAnnotation</span><span class="token punctuation">(</span><span class="token class-name">RequestHeader</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+			<span class="token operator">!</span><span class="token class-name">Map</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">isAssignableFrom</span><span class="token punctuation">(</span>parameter<span class="token punctuation">.</span><span class="token function">nestedIfOptional</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getNestedParameterType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>我们只需要仿照该方式即可完成自己的参数解析器</p>
 <p>自定义注解:</p>
-<pre><code class="java">@Target(ElementType.PARAMETER)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RequestUser &#123;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">PARAMETER</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span><span class="token class-name">RetentionPolicy</span><span class="token punctuation">.</span><span class="token constant">RUNTIME</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token annotation punctuation">@interface</span> <span class="token class-name">RequestUser</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>参数解析器:</p>
-<pre><code class="java">public class UserInfoMethodArgumentResolver implements HandlerMethodArgumentResolver &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserInfoMethodArgumentResolver</span> <span class="token keyword">implements</span> <span class="token class-name">HandlerMethodArgumentResolver</span> <span class="token punctuation">&#123;</span>
 
-    @Resource
-    private  StringRedisTemplate redisTemplate;
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span>  <span class="token class-name">StringRedisTemplate</span> redisTemplate<span class="token punctuation">;</span>
 
 
-    //该解析器是否支持这个参数
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) &#123;
-        //判断参数类型是否是要处理的类型,并且注解了@RequestUser
-        return parameter.hasParameterAnnotation(RequestUser.class)&amp;&amp;parameter.getParameterType()== UserInfo.class;
-    &#125;
+    <span class="token comment">//该解析器是否支持这个参数</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">supportsParameter</span><span class="token punctuation">(</span><span class="token class-name">MethodParameter</span> parameter<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//判断参数类型是否是要处理的类型,并且注解了@RequestUser</span>
+        <span class="token keyword">return</span> parameter<span class="token punctuation">.</span><span class="token function">hasParameterAnnotation</span><span class="token punctuation">(</span><span class="token class-name">RequestUser</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token operator">&amp;&amp;</span>parameter<span class="token punctuation">.</span><span class="token function">getParameterType</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">==</span> <span class="token class-name">UserInfo</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception &#123;
-        //从请求头中获取token
-        String token = webRequest.getHeader(&quot;token&quot;);
-        return JSON.parseObject(redisTemplate.opsForValue().get(CommonRedisKey.USER_TOKEN.getRealKey(token)), UserInfo.class);
-    &#125;
-&#125;
-</code></pre>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">resolveArgument</span><span class="token punctuation">(</span><span class="token class-name">MethodParameter</span> parameter<span class="token punctuation">,</span> <span class="token class-name">ModelAndViewContainer</span> mavContainer<span class="token punctuation">,</span> <span class="token class-name">NativeWebRequest</span> webRequest<span class="token punctuation">,</span> <span class="token class-name">WebDataBinderFactory</span> binderFactory<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//从请求头中获取token</span>
+        <span class="token class-name">String</span> token <span class="token operator">=</span> webRequest<span class="token punctuation">.</span><span class="token function">getHeader</span><span class="token punctuation">(</span><span class="token string">"token"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">parseObject</span><span class="token punctuation">(</span>redisTemplate<span class="token punctuation">.</span><span class="token function">opsForValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">CommonRedisKey</span><span class="token punctuation">.</span><span class="token constant">USER_TOKEN</span><span class="token punctuation">.</span><span class="token function">getRealKey</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token class-name">UserInfo</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在秒杀模块中引入该解析器</p>
-<pre><code class="java">@Bean
-public UserInfoMethodArgumentResolver userInfoMethodArgumentResolver()&#123;
-    return new UserInfoMethodArgumentResolver();
-&#125;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> <span class="token class-name">UserInfoMethodArgumentResolver</span> <span class="token function">userInfoMethodArgumentResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">UserInfoMethodArgumentResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-    @Override
-    public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; resolvers) &#123;
-        resolvers.add(userInfoMethodArgumentResolver());
-    &#125;
-</code></pre>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addArgumentResolvers</span><span class="token punctuation">(</span><span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">HandlerMethodArgumentResolver</span><span class="token punctuation">></span></span> resolvers<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        resolvers<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">userInfoMethodArgumentResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <p>之后, 在任何服务再想拿到登录的用户信息就很方便了</p>
 <h2 id="2-2-分布式锁解决超卖问题"><a href="#2-2-分布式锁解决超卖问题" class="headerlink" title="2.2 分布式锁解决超卖问题"></a>2.2 分布式锁解决超卖问题</h2><h3 id="2-2-1超卖"><a href="#2-2-1超卖" class="headerlink" title="2.2.1超卖"></a>2.2.1超卖</h3><p>用户下单流程:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240320155647902.png" alt="image-20240320155647902"></p>
@@ -817,37 +823,35 @@ public UserInfoMethodArgumentResolver userInfoMethodArgumentResolver()&#123;
 <li>当线程获取不到锁时,执行什么策略: 阻塞&#x2F;自旋(限制次数)&#x2F;抛出异常</li>
 </ul>
 <p><strong>redis锁</strong></p>
-<pre><code class="java"> @Override
-    @CacheEvict(key=&quot;&#39;selectByIdAndTime:&#39; + #id&quot;)
-    public void decrStockCount(Long id, Integer time)  &#123;
-        String key=&quot;seckill:product:stockcount:&quot; + time + &quot;:&quot; + id;
-        try &#123;
-            //如果自旋次数超过5,则抛出异常
-            int count=0;
-            Boolean absent;
-            do&#123;
-                //注意,当一个进程拿到了锁但jvm突然挂掉时, 该锁就永远不会释放,造成死锁
-                absent = redisTemplate.opsForValue().setIfAbsent(key, Thread.currentThread().getName());
-               if (Boolean.FALSE.equals(absent))&#123;
-                   Thread.sleep(10);
-               &#125;
-               AssertUtils.isTrue((count++) &lt; 5, &quot;系统繁忙,请稍后再试&quot;);
-            &#125; while (Boolean.FALSE.equals(absent));
-            int stockCount = seckillProductMapper.getStockCount(id);
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"> <span class="token annotation punctuation">@Override</span>
+    <span class="token annotation punctuation">@CacheEvict</span><span class="token punctuation">(</span>key<span class="token operator">=</span><span class="token string">"'selectByIdAndTime:' + #id"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">decrStockCount</span><span class="token punctuation">(</span><span class="token class-name">Long</span> id<span class="token punctuation">,</span> <span class="token class-name">Integer</span> time<span class="token punctuation">)</span>  <span class="token punctuation">&#123;</span>
+        <span class="token class-name">String</span> key<span class="token operator">=</span><span class="token string">"seckill:product:stockcount:"</span> <span class="token operator">+</span> time <span class="token operator">+</span> <span class="token string">":"</span> <span class="token operator">+</span> id<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">//如果自旋次数超过5,则抛出异常</span>
+            <span class="token keyword">int</span> count<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token class-name">Boolean</span> absent<span class="token punctuation">;</span>
+            <span class="token keyword">do</span><span class="token punctuation">&#123;</span>
+                <span class="token comment">//注意,当一个进程拿到了锁但jvm突然挂掉时, 该锁就永远不会释放,造成死锁</span>
+                absent <span class="token operator">=</span> redisTemplate<span class="token punctuation">.</span><span class="token function">opsForValue</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setIfAbsent</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token constant">FALSE</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>absent<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+                   <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+               <span class="token punctuation">&#125;</span>
+               <span class="token class-name">AssertUtils</span><span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span><span class="token punctuation">(</span>count<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token string">"系统繁忙,请稍后再试"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token class-name">Boolean</span><span class="token punctuation">.</span><span class="token constant">FALSE</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>absent<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> stockCount <span class="token operator">=</span> seckillProductMapper<span class="token punctuation">.</span><span class="token function">getStockCount</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            AssertUtils.isTrue(stockCount&gt;0,&quot;库存不足&quot;);
-            seckillProductMapper.decrStock(id);
-        &#125; catch (InterruptedException e) &#123;
-            e.printStackTrace();
-        &#125; finally &#123;
-            //释放锁
-            redisTemplate.delete(key);
-        &#125;
+            <span class="token class-name">AssertUtils</span><span class="token punctuation">.</span><span class="token function">isTrue</span><span class="token punctuation">(</span>stockCount<span class="token operator">></span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">"库存不足"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            seckillProductMapper<span class="token punctuation">.</span><span class="token function">decrStock</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">finally</span> <span class="token punctuation">&#123;</span>
+            <span class="token comment">//释放锁</span>
+            redisTemplate<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-    &#125;
-&#125;
-</code></pre>
-
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
                 
             </div>
             <hr/>
@@ -1256,7 +1260,7 @@ public UserInfoMethodArgumentResolver userInfoMethodArgumentResolver()&#123;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.5k</span>
+                        class="white-color">257.4k</span>
             
             
             

@@ -407,14 +407,14 @@ Spring 框架托管创建的Bean放在哪里呢？ 这便是IoC Conta">
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    5.3k
+                    5.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    21 分
+                    20 分
                 </div>
                 
 
@@ -507,19 +507,19 @@ Spring 框架托管创建的Bean放在哪里呢？ 这便是IoC Conta">
 <li>配置xx.xml文件</li>
 <li>声明命名空间和配置bean</li>
 </ol>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
- http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
-    &lt;!-- services --&gt;
-    &lt;bean id=&quot;userService&quot; class=&quot;tech.pdai.springframework.service.UserServiceImpl&quot;&gt;
-        &lt;property name=&quot;userDao&quot; ref=&quot;userDao&quot;/&gt;
-        &lt;!-- additional collaborators and configuration for this bean go here --&gt;
-    &lt;/bean&gt;
-    &lt;!-- more bean definitions for services go here --&gt;
-&lt;/beans&gt;
-</code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>beans</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans<span class="token punctuation">"</span></span>
+       <span class="token attr-name"><span class="token namespace">xmlns:</span>xsi</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="token punctuation">"</span></span>
+       <span class="token attr-name"><span class="token namespace">xsi:</span>schemaLocation</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- services --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userService<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tech.pdai.springframework.service.UserServiceImpl<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userDao<span class="token punctuation">"</span></span> <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userDao<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token comment">&lt;!-- additional collaborators and configuration for this bean go here --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- more bean definitions for services go here --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>beans</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <h3 id="Java-配置"><a href="#Java-配置" class="headerlink" title="Java 配置"></a>Java 配置</h3><p>将类的创建交给我们配置的JavcConfig类来完成，Spring只负责维护和管理，采用纯Java创建方式。其本质上就是把在XML上的配置声明转移到Java配置类中</p>
 <ul>
@@ -531,31 +531,31 @@ Spring 框架托管创建的Bean放在哪里呢？ 这便是IoC Conta">
 <li>创建一个配置类， 添加@Configuration注解声明为配置类</li>
 <li>创建方法，方法上加上@bean，该方法用于创建实例并返回，该实例创建后会交给spring管理，方法名建议与实例名相同（首字母小写）。注：实例类不需要加任何注解</li>
 </ol>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
-@Configuration
-public class BeansConfig &#123;
+ */</span>
+<span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BeansConfig</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * @return user dao
-     */
-    @Bean(&quot;userDao&quot;)
-    public UserDaoImpl userDao() &#123;
-        return new UserDaoImpl();
-    &#125;
+     */</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span><span class="token string">"userDao"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">UserDaoImpl</span> <span class="token function">userDao</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">UserDaoImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    /**
+    <span class="token comment">/**
      * @return user service
-     */
-    @Bean(&quot;userService&quot;)
-    public UserServiceImpl userService() &#123;
-        UserServiceImpl userService = new UserServiceImpl();
-        userService.setUserDao(userDao());
-        return userService;
-    &#125;
-&#125;
-</code></pre>
+     */</span>
+    <span class="token annotation punctuation">@Bean</span><span class="token punctuation">(</span><span class="token string">"userService"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">UserServiceImpl</span> <span class="token function">userService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">UserServiceImpl</span> userService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UserServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        userService<span class="token punctuation">.</span><span class="token function">setUserDao</span><span class="token punctuation">(</span><span class="token function">userDao</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> userService<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <h3 id="注解配置"><a href="#注解配置" class="headerlink" title="注解配置"></a>注解配置</h3><p>通过在类上加注解的方式，来声明一个类交给Spring管理，Spring会自动扫描带有**@Component，@Controller，@Service，@Repository**这四个注解的类，然后帮我们创建并管理，前提是需要先配置Spring的注解扫描器。</p>
 <ul>
@@ -567,29 +567,29 @@ public class BeansConfig &#123;
 <li>对类添加@Component相关的注解，比如@Controller，@Service，@Repository</li>
 <li>设置ComponentScan的basePackage, 比如<code>&lt;context:component-scan base-package=&#39;tech.pdai.springframework&#39;&gt;</code>, 或者<code>@ComponentScan(&quot;tech.pdai.springframework&quot;)</code>注解，或者 <code>new AnnotationConfigApplicationContext(&quot;tech.pdai.springframework&quot;)</code>指定扫描的basePackage.</li>
 </ol>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
-@Service
-public class UserServiceImpl &#123;
+ */</span>
+<span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    @Autowired
-    private UserDaoImpl userDao;
+     */</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * find user list.
      *
      * @return user list
-     */
-    public List&lt;User&gt; findUserList() &#123;
-        return userDao.findUserList();
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> <span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> userDao<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <h2 id="依赖注入的三种方式"><a href="#依赖注入的三种方式" class="headerlink" title="依赖注入的三种方式"></a>依赖注入的三种方式</h2><blockquote>
 <p>常用的注入方式主要有三种：构造方法注入（Construct注入），setter注入，基于注解的注入（接口注入）</p>
@@ -597,175 +597,175 @@ public class UserServiceImpl &#123;
 <h3 id="setter方式"><a href="#setter方式" class="headerlink" title="setter方式"></a>setter方式</h3><ul>
 <li><strong>在XML配置方式中</strong>，property都是setter方式注入，比如下面的xml:</li>
 </ul>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
- http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
-    &lt;!-- services --&gt;
-    &lt;bean id=&quot;userService&quot; class=&quot;tech.pdai.springframework.service.UserServiceImpl&quot;&gt;
-        &lt;property name=&quot;userDao&quot; ref=&quot;userDao&quot;/&gt;
-        &lt;!-- additional collaborators and configuration for this bean go here --&gt;
-    &lt;/bean&gt;
-    &lt;!-- more bean definitions for services go here --&gt;
-&lt;/beans&gt;
-</code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>beans</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans<span class="token punctuation">"</span></span>
+       <span class="token attr-name"><span class="token namespace">xmlns:</span>xsi</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="token punctuation">"</span></span>
+       <span class="token attr-name"><span class="token namespace">xsi:</span>schemaLocation</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- services --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userService<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tech.pdai.springframework.service.UserServiceImpl<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userDao<span class="token punctuation">"</span></span> <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userDao<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token comment">&lt;!-- additional collaborators and configuration for this bean go here --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- more bean definitions for services go here --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>beans</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>本质上包含两步：</p>
 <ol>
 <li>第一步，需要new UserServiceImpl()创建对象, 所以需要默认构造函数</li>
 <li>第二步，调用setUserDao()函数注入userDao的值, 所以需要setUserDao()函数</li>
 </ol>
 <p>所以对应的service类是这样的：</p>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
-public class UserServiceImpl &#123;
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    private UserDaoImpl userDao;
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * init.
-     */
-    public UserServiceImpl() &#123;
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">UserServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
 
-    /**
+    <span class="token comment">/**
      * find user list.
      *
      * @return user list
-     */
-    public List&lt;User&gt; findUserList() &#123;
-        return this.userDao.findUserList();
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> <span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>userDao<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    /**
+    <span class="token comment">/**
      * set dao.
      *
      * @param userDao user dao
-     */
-    public void setUserDao(UserDaoImpl userDao) &#123;
-        this.userDao = userDao;
-    &#125;
-&#125;
-</code></pre>
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUserDao</span><span class="token punctuation">(</span><span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userDao <span class="token operator">=</span> userDao<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li><strong>在注解和Java配置方式下</strong></li>
 </ul>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
-public class UserServiceImpl &#123;
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    private UserDaoImpl userDao;
+     */</span>
+    <span class="token keyword">private</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * find user list.
      *
      * @return user list
-     */
-    public List&lt;User&gt; findUserList() &#123;
-        return this.userDao.findUserList();
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> <span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>userDao<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    /**
+    <span class="token comment">/**
      * set dao.
      *
      * @param userDao user dao
-     */
-    @Autowired
-    public void setUserDao(UserDaoImpl userDao) &#123;
-        this.userDao = userDao;
-    &#125;
-&#125;
-</code></pre>
+     */</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setUserDao</span><span class="token punctuation">(</span><span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userDao <span class="token operator">=</span> userDao<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在Spring3.x刚推出的时候，推荐使用注入的就是这种, 但是这种方式比较麻烦，所以在Spring4.x版本中推荐构造函数注入。</p>
 <hr>
 <h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><ul>
 <li><strong>在XML配置方式中</strong>，<code>&lt;constructor-arg&gt;</code>是通过构造函数参数注入，比如下面的xml:</li>
 </ul>
-<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
-       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
- http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
-    &lt;!-- services --&gt;
-    &lt;bean id=&quot;userService&quot; class=&quot;tech.pdai.springframework.service.UserServiceImpl&quot;&gt;
-        &lt;constructor-arg name=&quot;userDao&quot; ref=&quot;userDao&quot;/&gt;
-        &lt;!-- additional collaborators and configuration for this bean go here --&gt;
-    &lt;/bean&gt;
-    &lt;!-- more bean definitions for services go here --&gt;
-&lt;/beans&gt;
-</code></pre>
+<pre class="line-numbers language-markup" data-language="markup"><code class="language-markup"><span class="token prolog">&lt;?xml version="1.0" encoding="UTF-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>beans</span> <span class="token attr-name">xmlns</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans<span class="token punctuation">"</span></span>
+       <span class="token attr-name"><span class="token namespace">xmlns:</span>xsi</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.w3.org/2001/XMLSchema-instance<span class="token punctuation">"</span></span>
+       <span class="token attr-name"><span class="token namespace">xsi:</span>schemaLocation</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- services --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>bean</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userService<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>tech.pdai.springframework.service.UserServiceImpl<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>constructor-arg</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userDao<span class="token punctuation">"</span></span> <span class="token attr-name">ref</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>userDao<span class="token punctuation">"</span></span><span class="token punctuation">/></span></span>
+        <span class="token comment">&lt;!-- additional collaborators and configuration for this bean go here --></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>bean</span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!-- more bean definitions for services go here --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>beans</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>本质上是new UserServiceImpl(userDao)创建对象, 所以对应的service类是这样的：</p>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
-public class UserServiceImpl &#123;
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    private final UserDaoImpl userDao;
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * init.
      * @param userDaoImpl user dao impl
-     */
-    public UserServiceImpl(UserDaoImpl userDaoImpl) &#123;
-        this.userDao = userDaoImpl;
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">UserServiceImpl</span><span class="token punctuation">(</span><span class="token class-name">UserDaoImpl</span> userDaoImpl<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userDao <span class="token operator">=</span> userDaoImpl<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    /**
+    <span class="token comment">/**
      * find user list.
      *
      * @return user list
-     */
-    public List&lt;User&gt; findUserList() &#123;
-        return this.userDao.findUserList();
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> <span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>userDao<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li><strong>在注解和Java配置方式下</strong></li>
 </ul>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
- @Service
-public class UserServiceImpl &#123;
+ */</span>
+ <span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    private final UserDaoImpl userDao;
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * init.
      * @param userDaoImpl user dao impl
-     */
-    @Autowired // 这里@Autowired也可以省略
-    public UserServiceImpl(final UserDaoImpl userDaoImpl) &#123;
-        this.userDao = userDaoImpl;
-    &#125;
+     */</span>
+    <span class="token annotation punctuation">@Autowired</span> <span class="token comment">// 这里@Autowired也可以省略</span>
+    <span class="token keyword">public</span> <span class="token class-name">UserServiceImpl</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">UserDaoImpl</span> userDaoImpl<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userDao <span class="token operator">=</span> userDaoImpl<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    /**
+    <span class="token comment">/**
      * find user list.
      *
      * @return user list
-     */
-    public List&lt;User&gt; findUserList() &#123;
-        return this.userDao.findUserList();
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> <span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>userDao<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在Spring4.x版本中推荐的注入方式就是这种， 具体原因看后续章节。</p>
 <hr>
 <h3 id="注解注入"><a href="#注解注入" class="headerlink" title="注解注入"></a>注解注入</h3><p>以@Autowired（自动注入）注解注入为例，修饰符有三个属性：Constructor，byType，byName。默认按照byType注入。</p>
@@ -775,29 +775,29 @@ public class UserServiceImpl &#123;
 <li><strong>byType</strong>：查找所有的set方法，将符合符合参数类型的bean注入。</li>
 </ul>
 <p>比如：</p>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
-@Service
-public class UserServiceImpl &#123;
+ */</span>
+<span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    @Autowired
-    private UserDaoImpl userDao;
+     */</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * find user list.
      *
      * @return user list
-     */
-    public List&lt;User&gt; findUserList() &#123;
-        return userDao.findUserList();
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">User</span><span class="token punctuation">></span></span> <span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> userDao<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <h2 id="IoC和DI使用问题小结"><a href="#IoC和DI使用问题小结" class="headerlink" title="IoC和DI使用问题小结"></a>IoC和DI使用问题小结</h2><h3 id="为什么推荐构造器注入方式？"><a href="#为什么推荐构造器注入方式？" class="headerlink" title="为什么推荐构造器注入方式？"></a>为什么推荐构造器注入方式？</h3><p>先来看看Spring在文档里怎么说：</p>
 <blockquote>
@@ -811,44 +811,44 @@ public class UserServiceImpl &#123;
 <li><strong>完全初始化的状态</strong>：这个可以跟上面的依赖不为空结合起来，向构造器传参之前，要确保注入的内容不为空，那么肯定要调用依赖组件的构造方法完成实例化。而在Java类加载实例化的过程中，构造方法是最后一步（之前如果有父类先初始化父类，然后自己的成员变量，最后才是构造方法），所以返回来的都是初始化之后的状态。</li>
 </ul>
 <p>所以通常是这样的</p>
-<pre><code class="java">/**
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
  * @author pdai
- */
- @Service
-public class UserServiceImpl &#123;
+ */</span>
+ <span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UserServiceImpl</span> <span class="token punctuation">&#123;</span>
 
-    /**
+    <span class="token comment">/**
      * user dao impl.
-     */
-    private final UserDaoImpl userDao;
+     */</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">UserDaoImpl</span> userDao<span class="token punctuation">;</span>
 
-    /**
+    <span class="token comment">/**
      * init.
      * @param userDaoImpl user dao impl
-     */
-    public UserServiceImpl(final UserDaoImpl userDaoImpl) &#123;
-        this.userDao = userDaoImpl;
-    &#125;
+     */</span>
+    <span class="token keyword">public</span> <span class="token class-name">UserServiceImpl</span><span class="token punctuation">(</span><span class="token keyword">final</span> <span class="token class-name">UserDaoImpl</span> userDaoImpl<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>userDao <span class="token operator">=</span> userDaoImpl<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果使用setter注入，缺点显而易见，对于IOC容器以外的环境，除了使用反射来提供它需要的依赖之外，<strong>无法复用该实现类</strong>。而且将一直是个潜在的隐患，因为你不调用将一直无法发现NPE的存在。</p>
-<pre><code class="java">// 这里只是模拟一下，正常来说我们只会暴露接口给客户端，不会暴露实现。
-UserServiceImpl userService = new UserServiceImpl();
-userService.findUserList(); // -&gt; NullPointerException, 潜在的隐患
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 这里只是模拟一下，正常来说我们只会暴露接口给客户端，不会暴露实现。</span>
+<span class="token class-name">UserServiceImpl</span> userService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UserServiceImpl</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+userService<span class="token punctuation">.</span><span class="token function">findUserList</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// -> NullPointerException, 潜在的隐患</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <p><strong>循环依赖的问题</strong>：使用field注入可能会导致循环依赖，即A里面注入B，B里面又注入A：</p>
-<pre><code class="java">public class A &#123;
-    @Autowired
-    private B b;
-&#125;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">A</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">B</span> b<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
 
-public class B &#123;
-    @Autowired
-    private A a;
-&#125;
-</code></pre>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">B</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">private</span> <span class="token class-name">A</span> a<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果使用构造器注入，在spring项目启动的时候，就会抛出：BeanCurrentlyInCreationException：Requested bean is currently in creation: Is there an unresolvable circular reference？从而提醒你避免循环依赖，如果是field注入的话，启动的时候不会报错，在使用那个bean的时候才会报错。</p>
 <h3 id="我在使用构造器注入方式时注入了太多的类导致Bad-Smell怎么办？"><a href="#我在使用构造器注入方式时注入了太多的类导致Bad-Smell怎么办？" class="headerlink" title="我在使用构造器注入方式时注入了太多的类导致Bad Smell怎么办？"></a>我在使用构造器注入方式时注入了太多的类导致Bad Smell怎么办？</h3><p>比如当你一个Controller中注入了太多的Service类，Sonar会给你提示相关告警</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/spring-framework-ioc-3.png" alt="img"></p>
@@ -860,20 +860,20 @@ public class B &#123;
 <li><strong>Autowired注解源码</strong></li>
 </ul>
 <p>在Spring 2.5 引入了 @Autowired 注解</p>
-<pre><code class="java">@Target(&#123;ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE&#125;)
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Autowired &#123;
-  boolean required() default true;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">CONSTRUCTOR</span><span class="token punctuation">,</span> <span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">METHOD</span><span class="token punctuation">,</span> <span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">PARAMETER</span><span class="token punctuation">,</span> <span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">FIELD</span><span class="token punctuation">,</span> <span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">ANNOTATION_TYPE</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span><span class="token class-name">RetentionPolicy</span><span class="token punctuation">.</span><span class="token constant">RUNTIME</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Documented</span>
+<span class="token keyword">public</span> <span class="token annotation punctuation">@interface</span> <span class="token class-name">Autowired</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">boolean</span> <span class="token function">required</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>从Autowired注解源码上看，可以使用在下面这些地方：</p>
-<pre><code class="java">@Target(ElementType.CONSTRUCTOR) #构造函数
-@Target(ElementType.METHOD) #方法
-@Target(ElementType.PARAMETER) #方法参数
-@Target(ElementType.FIELD) #字段、枚举的常量
-@Target(ElementType.ANNOTATION_TYPE) #注解
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">CONSTRUCTOR</span><span class="token punctuation">)</span> #构造函数
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">METHOD</span><span class="token punctuation">)</span> #方法
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">PARAMETER</span><span class="token punctuation">)</span> #方法参数
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">FIELD</span><span class="token punctuation">)</span> #字段、枚举的常量
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">ANNOTATION_TYPE</span><span class="token punctuation">)</span> #注解<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>还有一个value属性，默认是true。</p>
 <ul>
 <li><strong>简单总结</strong>：</li>
@@ -887,66 +887,66 @@ public @interface Autowired &#123;
 <li><strong>简单使用代码</strong>：</li>
 </ul>
 <p>在字段属性上。</p>
-<pre><code class="java">@Autowired
-private HelloDao helloDao;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
+<span class="token keyword">private</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>或者</p>
-<pre><code class="java">private HelloDao helloDao;
-public HelloDao getHelloDao() &#123;
- return helloDao;
-&#125;
-@Autowired
-public void setHelloDao(HelloDao helloDao) &#123;
- this.helloDao = helloDao;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">;</span>
+<span class="token keyword">public</span> <span class="token class-name">HelloDao</span> <span class="token function">getHelloDao</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ <span class="token keyword">return</span> helloDao<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token annotation punctuation">@Autowired</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setHelloDao</span><span class="token punctuation">(</span><span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ <span class="token keyword">this</span><span class="token punctuation">.</span>helloDao <span class="token operator">=</span> helloDao<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>或者</p>
-<pre><code class="java">private HelloDao helloDao;
-//@Autowired
-public HelloServiceImpl(@Autowired HelloDao helloDao) &#123;
- this.helloDao = helloDao;
-&#125;
-// 构造器注入也可不写@Autowired，也可以注入成功。
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">;</span>
+<span class="token comment">//@Autowired</span>
+<span class="token keyword">public</span> <span class="token class-name">HelloServiceImpl</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Autowired</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+ <span class="token keyword">this</span><span class="token punctuation">.</span>helloDao <span class="token operator">=</span> helloDao<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// 构造器注入也可不写@Autowired，也可以注入成功。</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>将@Autowired写在被注入的成员变量上，setter或者构造器上，就不用再xml文件中配置了。</p>
 <p>如果有多个类型一样的Bean候选者，则默认根据设定的属性名称进行获取。如 HelloDao 在Spring中有 helloWorldDao 和 helloDao 两个Bean候选者。</p>
-<pre><code class="java">@Autowired
-private HelloDao helloDao;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
+<span class="token keyword">private</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>首先根据类型获取，发现多个HelloDao，然后根据helloDao进行获取，如果要获取限定的其中一个候选者，结合@Qualifier进行注入。</p>
-<pre><code class="java">@Autowired
-@Qualifier(&quot;helloWorldDao&quot;)
-private HelloDao helloDao;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Autowired</span>
+<span class="token annotation punctuation">@Qualifier</span><span class="token punctuation">(</span><span class="token string">"helloWorldDao"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>注入名称为helloWorldDao 的Bean组件。@Qualifier(“XXX”) 中的 XX是 Bean 的名称，所以 @<strong>Autowired 和 @Qualifier 结合使用时，自动注入的策略就从 byType 转变成 byName 了。</strong></p>
 <p>多个类型一样的Bean候选者，也可以@Primary进行使用，设置首选的组件，也就是默认优先使用哪一个。</p>
 <p>注意：使用@Qualifier 时候，如何设置的指定名称的Bean不存在，则会抛出异常，如果防止抛出异常，可以使用：</p>
-<pre><code class="java">@Qualifier(&quot;xxxxyyyy&quot;)
-@Autowired(required = false)
-private HelloDao helloDao;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Qualifier</span><span class="token punctuation">(</span><span class="token string">"xxxxyyyy"</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Autowired</span><span class="token punctuation">(</span>required <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token class-name">HelloDao</span> helloDao<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>在SpringBoot中也可以使用@Bean+@Autowired进行组件注入，将@Autowired加到参数上，其实也可以省略。</p>
-<pre><code class="java">@Bean
-public Person getPerson(@Autowired Car car)&#123;
- return new Person();
-&#125;
-// @Autowired 其实也可以省略
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Bean</span>
+<span class="token keyword">public</span> <span class="token class-name">Person</span> <span class="token function">getPerson</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Autowired</span> <span class="token class-name">Car</span> car<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+ <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Person</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// @Autowired 其实也可以省略</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h4 id="Resource"><a href="#Resource" class="headerlink" title="# @Resource"></a><a href="#resource">#</a> @Resource</h4><ul>
 <li><strong>Resource注解源码</strong></li>
 </ul>
-<pre><code class="java">@Target(&#123;TYPE, FIELD, METHOD&#125;)
-@Retention(RUNTIME)
-public @interface Resource &#123;
-    String name() default &quot;&quot;;
-    // 其他省略
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span><span class="token constant">TYPE</span><span class="token punctuation">,</span> <span class="token constant">FIELD</span><span class="token punctuation">,</span> <span class="token constant">METHOD</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span><span class="token constant">RUNTIME</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token annotation punctuation">@interface</span> <span class="token class-name">Resource</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">String</span> <span class="token function">name</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">default</span> <span class="token string">""</span><span class="token punctuation">;</span>
+    <span class="token comment">// 其他省略</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>从Resource注解源码上看，可以使用在下面这些地方：</p>
-<pre><code class="java">@Target(ElementType.TYPE) #接口、类、枚举、注解
-@Target(ElementType.FIELD) #字段、枚举的常量
-@Target(ElementType.METHOD) #方法
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">TYPE</span><span class="token punctuation">)</span> #接口、类、枚举、注解
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">FIELD</span><span class="token punctuation">)</span> #字段、枚举的常量
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">METHOD</span><span class="token punctuation">)</span> #方法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>name 指定注入指定名称的组件。</p>
 <ul>
 <li><strong>简单总结</strong>：</li>
@@ -957,33 +957,33 @@ public @interface Resource &#123;
 <ul>
 <li><strong>简单使用代码</strong>：</li>
 </ul>
-<pre><code class="java">@Component
-public class SuperMan &#123;
-    @Resource
-    private Car car;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Component</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SuperMan</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> <span class="token class-name">Car</span> car<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>按照属性名称 car 注入容器中的组件。如果容器中BMW还有BYD两种类型组件。指定加入BMW。如下代码：</p>
-<pre><code class="java">@Component
-public class SuperMan &#123;
-    @Resource(name = &quot;BMW&quot;)
-    private Car car;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Component</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SuperMan</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Resource</span><span class="token punctuation">(</span>name <span class="token operator">=</span> <span class="token string">"BMW"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">Car</span> car<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>name 的作用类似 @Qualifier</p>
 <h4 id="Inject"><a href="#Inject" class="headerlink" title="# @Inject"></a><a href="#inject">#</a> @Inject</h4><ul>
 <li><strong>Inject注解源码</strong></li>
 </ul>
-<pre><code class="java">@Target(&#123; METHOD, CONSTRUCTOR, FIELD &#125;)
-@Retention(RUNTIME)
-@Documented
-public @interface Inject &#123;&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token punctuation">&#123;</span> <span class="token constant">METHOD</span><span class="token punctuation">,</span> <span class="token constant">CONSTRUCTOR</span><span class="token punctuation">,</span> <span class="token constant">FIELD</span> <span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Retention</span><span class="token punctuation">(</span><span class="token constant">RUNTIME</span><span class="token punctuation">)</span>
+<span class="token annotation punctuation">@Documented</span>
+<span class="token keyword">public</span> <span class="token annotation punctuation">@interface</span> <span class="token class-name">Inject</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>从Inject注解源码上看，可以使用在下面这些地方：</p>
-<pre><code class="java">@Target(ElementType.CONSTRUCTOR) #构造函数
-@Target(ElementType.METHOD) #方法
-@Target(ElementType.FIELD) #字段、枚举的常量
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">CONSTRUCTOR</span><span class="token punctuation">)</span> #构造函数
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">METHOD</span><span class="token punctuation">)</span> #方法
+<span class="token annotation punctuation">@Target</span><span class="token punctuation">(</span><span class="token class-name">ElementType</span><span class="token punctuation">.</span><span class="token constant">FIELD</span><span class="token punctuation">)</span> #字段、枚举的常量<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li><strong>简单总结</strong>：</li>
 </ul>
@@ -993,14 +993,14 @@ public @interface Inject &#123;&#125;
 <ul>
 <li><strong>简单使用代码</strong>：</li>
 </ul>
-<pre><code class="java">@Inject
-private Car car;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Inject</span>
+<span class="token keyword">private</span> <span class="token class-name">Car</span> car<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>指定加入BMW组件。</p>
-<pre><code class="java">@Inject
-@Named(&quot;BMW&quot;)
-private Car car;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Inject</span>
+<span class="token annotation punctuation">@Named</span><span class="token punctuation">(</span><span class="token string">"BMW"</span><span class="token punctuation">)</span>
+<span class="token keyword">private</span> <span class="token class-name">Car</span> car<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
 <p>@Named 的作用类似 @Qualifier！</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="# 总结"></a><a href="#%E6%80%BB%E7%BB%93">#</a> 总结</h4><p>1、@Autowired是Spring自带的，@Resource是JSR250规范实现的，@Inject是JSR330规范实现的</p>
 <p>2、@Autowired、@Inject用法基本一样，不同的是@Inject没有required属性</p>
@@ -1449,7 +1449,7 @@ private Car car;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.5k</span>
+                        class="white-color">257.4k</span>
             
             
             

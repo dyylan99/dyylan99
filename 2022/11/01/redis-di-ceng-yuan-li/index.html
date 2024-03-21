@@ -402,14 +402,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    16.2k
+                    16.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    58 分
+                    57 分
                 </div>
                 
 
@@ -437,8 +437,8 @@
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221125124851185.png" alt="image-20221125124851185"></p>
 <h2 id="2-SDS的作用"><a href="#2-SDS的作用" class="headerlink" title="2.SDS的作用"></a>2.SDS的作用</h2><h3 id="实现字符串"><a href="#实现字符串" class="headerlink" title="实现字符串"></a>实现字符串</h3><p>在redis数据库中,包含字符串的键值对在底层都是SDS实现的.</p>
 <p>比如, 若客户端执行命令:</p>
-<pre><code class="sh">redis&gt;set msg &quot;hello&quot;
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span>set msg <span class="token string">"hello"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>redis就会存储一条键值对, 底层实现为 键为字符串对象,底层保存的是值为:”msg”的SDS.</p>
 <p>同理, 值也为字符串对象, 底层为”hello”的SDS</p>
 <h3 id="用作缓冲区"><a href="#用作缓冲区" class="headerlink" title="用作缓冲区"></a>用作缓冲区</h3><p>除了用来保存数据库中的字符串值之外，SDS还被用作缓冲区（buffer）：AOF模块中的AOF缓冲区，以及客户端状态中的输入缓冲区，都是由SDS实现的，</p>
@@ -456,12 +456,12 @@
 <h4 id="3-2-3减少修改字符串时带来的内存重分配次数"><a href="#3-2-3减少修改字符串时带来的内存重分配次数" class="headerlink" title="3.2.3减少修改字符串时带来的内存重分配次数"></a>3.2.3减少修改字符串时带来的内存重分配次数</h4><p>C字符串不记录本身长度,C字符串的长度和底层数组的长度之间存在着关联性(包含了N个字符的字符串长度为N+1)，所以每次增长或者缩短一个C字符串，程序都总要对保存这个C字符串的数组进行一次内存重分配操作.</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221125134540651.png" alt="image-20221125134540651"></p>
 <p>举个例子，如果我们持有一个值为”Redis”的C字符串s，那么为了将s的值改为”Redis Cluster”，在执行：</p>
-<pre><code class="c++">strcat(s,&quot;cluster&quot;);
-</code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">strcat(s,&quot;cluster&quot;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>之前，我们需要先使用内存重分配操作，扩展s的空间。</p>
 <p>之后,我们又想在其末尾添加 Redisson,那么在执行</p>
-<pre><code class="c++">strcat(s,&quot;Redisson&quot;);
-</code></pre>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">strcat(s,&quot;Redisson&quot;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>之前，我们需要先使用内存重分配操作，扩展s的空间。</p>
 <p>因为内存重分配涉及复杂的算法，并且可能需要执行系统调用，所以它通常是一个比较耗时的操作.</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221125135203485.png" alt="image-20221125135203485"></p>
@@ -533,27 +533,27 @@
 <li>type属性是一个指向dictType结构的指针，每个dictType结构保存 了一簇用于操作特定类型键值对的函数，Redis会为用途不同的字典设置 不同的类型特定函数。</li>
 <li>而privdata属性则保存了需要传给那些类型特定函数的可选参数。</li>
 </ul>
-<pre><code class="c">typedef struct dictType &#123;
-//
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">dictType</span> <span class="token punctuation">&#123;</span>
+<span class="token comment">//</span>
 计算哈希值的函数
-    unsigned int (*hashFunction)(const void *key);
-//
+	<span class="token keyword">unsigned</span> <span class="token keyword">int</span> <span class="token punctuation">(</span><span class="token operator">*</span>hashFunction<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 复制键的函数
-    void *(*keyDup)(void *privdata, const void *key);
-//
+	<span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span>keyDup<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 复制值的函数
-    void *(*valDup)(void *privdata, const void *obj);
-//
+	<span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span>valDup<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 对比键的函数
-    int (*keyCompare)(void *privdata, const void *key1, const void *key2);
-//
+	<span class="token keyword">int</span> <span class="token punctuation">(</span><span class="token operator">*</span>keyCompare<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key1<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 销毁键的函数
-    void (*keyDestructor)(void *privdata, void *key);
-//
+	<span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>keyDestructor<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 销毁值的函数
-    void (*valDestructor)(void *privdata, void *obj);
-&#125; dictType;
-</code></pre>
+	<span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>valDestructor<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>privdata<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> dictType<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>ht属性是一个包含两个项的数组，数组中的每个项都是一个dictht哈希表，一般情况下，字典只使用ht[0]哈希表，ht[1]哈希表只会在对ht[0] 哈希表进行rehash时使用。</p>
 <p>除了ht[1]之外，另一个和rehash有关的属性就是rehashidx，它记录 了rehash目前的进度，如果目前没有在进行rehash，那么它的值为-1。</p>
 <p>下图展示了一个普通状态下（没有进行rehash）的字典:</p>
@@ -563,11 +563,11 @@
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221128143944340.png" alt="image-20221128143944340"></p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221128144302131.png" alt="image-20221128144302131"></p>
 <p>举个例子，对于上图所示的字典来说，如果我们要将一个键值对 k0和v0添加到字典里面，那么程序会先使用语句：</p>
-<pre><code class="c">hash = dict-&gt;type-&gt;hashFunction(k0);
-</code></pre>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">hash <span class="token operator">=</span> dict<span class="token operator">-></span>type<span class="token operator">-></span><span class="token function">hashFunction</span><span class="token punctuation">(</span>k0<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>计算键k0的哈希值。 假设计算得出的哈希值为8，那么程序会继续使用语句：</p>
-<pre><code class="c">index = hash&amp;dict-&gt;ht[0].sizemask = 8 &amp; 3 = 0;
-</code></pre>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">index <span class="token operator">=</span> hash<span class="token operator">&amp;</span>dict<span class="token operator">-></span>ht<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>sizemask <span class="token operator">=</span> <span class="token number">8</span> <span class="token operator">&amp;</span> <span class="token number">3</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
 <p>计算出键k0的索引值0，这表示包含键值对k0和v0的节点应该被放 置到哈希表数组的索引0位置上，如图所示:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221128144601263.png" alt="image-20221128144601263"></p>
 <h2 id="3-3-解决键冲突"><a href="#3-3-解决键冲突" class="headerlink" title="3.3 解决键冲突"></a>3.3 解决键冲突</h2><p>当有两个或以上数量的键被分配到了哈希表数组的同一个索引上面 时，我们称这些键发生了冲突（collision）。</p>
@@ -660,28 +660,29 @@
 </blockquote>
 <p>注意表头节点和其他节点的构造是一样的：表头节点也有后退指 针、分值和成员对象，不过表头节点的这些属性都不会被用到，所以图 中省略了这些部分，只显示了表头节点的各个层。</p>
 <h3 id="4-1-1-跳跃表节点"><a href="#4-1-1-跳跃表节点" class="headerlink" title="4.1.1 跳跃表节点"></a>4.1.1 跳跃表节点</h3><p>跳跃表节点的实现由redis.h&#x2F;zskiplistNode结构定义：</p>
-<pre><code class="c">typedef struct zskiplistNode &#123;
-    //
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">zskiplistNode</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">//</span>
     层
-    struct zskiplistLevel &#123;
-        //
+    <span class="token keyword">struct</span> <span class="token class-name">zskiplistLevel</span> <span class="token punctuation">&#123;</span>
+        <span class="token comment">//</span>
         前进指针
-        struct zskiplistNode *forward;
-        //
+        <span class="token keyword">struct</span> <span class="token class-name">zskiplistNode</span> <span class="token operator">*</span>forward<span class="token punctuation">;</span>
+        <span class="token comment">//</span>
         跨度
-        unsigned int span;
-    &#125; level[];
-    //
+        <span class="token keyword">unsigned</span> <span class="token keyword">int</span> span<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> level<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     后退指针
-    struct zskiplistNode *backward;
-    //
+    <span class="token keyword">struct</span> <span class="token class-name">zskiplistNode</span> <span class="token operator">*</span>backward<span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     分值
-    double score;
-    //
+    <span class="token keyword">double</span> score<span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     成员对象
-    robj *obj;
-&#125; zskiplistNode;
-</code></pre>
+    robj <span class="token operator">*</span>obj<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> zskiplistNode<span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h4 id="层"><a href="#层" class="headerlink" title="层"></a>层</h4><p>​	跳跃表节点的level数组可以包含多个元素，每个元素都包含一个指 向其他节点的指针，程序可以通过这些层来加快访问其他节点的速度， 一般来说，层的数量越多，访问其他节点的速度就越快。 每次创建一个新跳跃表节点的时候，程序都根据<strong>幂次定律</strong>（power law，越大的数出现的概率越小）随机生成一个介于1和32之间的值作为 level数组的大小，这个大小就是层的“高度”。</p>
 <p>如图,表示1,3,5层的节点:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221202171716184.png" alt="image-20221202171716184"></p>
@@ -708,18 +709,18 @@
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221202173152283.png" alt="image-20221202173152283"></p>
 <h3 id="4-1-2-跳跃表"><a href="#4-1-2-跳跃表" class="headerlink" title="4.1.2 跳跃表"></a>4.1.2 跳跃表</h3><p>​	仅靠多个跳跃表节点就可以组成一个跳跃表，但通过使用一个zskiplist结构来持有这些节点，程序可以更方便地 对整个跳跃表进行处理，比如快速访问跳跃表的表头节点和表尾节点， 或者快速地获取跳跃表节点的数量（也即是跳跃表的长度）等信息.</p>
 <p>zskiplist结构的定义如下：</p>
-<pre><code class="c">typedef struct zskiplist &#123;
-    //
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">zskiplist</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">//</span>
     表头节点和表尾节点
-    structz skiplistNode *header, *tail;
-    //
+    structz skiplistNode <span class="token operator">*</span>header<span class="token punctuation">,</span> <span class="token operator">*</span>tail<span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     表中节点的数量
-    unsigned long length;
-    //
+    <span class="token keyword">unsigned</span> <span class="token keyword">long</span> length<span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     表中层数最大的节点的层数
-    int level;
-&#125; zskiplist;
-</code></pre>
+    <span class="token keyword">int</span> level<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span> zskiplist<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20221202172734155.png" alt="image-20221202172734155"></p>
 <ul>
 <li><p>header和tail指针分别指向跳跃表的表头和表尾节点，通过这两个指针，程序定位表头节点和表尾节点的复杂度为O(1) </p>
@@ -740,18 +741,18 @@
 <h1 id="五-整数集合"><a href="#五-整数集合" class="headerlink" title="五.整数集合"></a>五.整数集合</h1><p>整数集合（intset）是集合键的底层实现之一，当一个集合只包含整 数值元素，并且这个集合的元素数量不多时，Redis就会使用整数集合 作为集合键的底层实现。</p>
 <h2 id="5-1-整数集合的实现"><a href="#5-1-整数集合的实现" class="headerlink" title="5.1 整数集合的实现"></a>5.1 整数集合的实现</h2><p>​	数集合（intset）是Redis用于保存整数值的集合抽象数据结构， 它可以保存类型为int16_t、int32_t或者int64_t的整数值，并且保证集合中不会出现重复元素。</p>
 <p>​	每个intset.h&#x2F;intset结构表示一个整数集合：</p>
-<pre><code class="c">typedef struct intset &#123;
-    //
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">intset</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">//</span>
     编码方式
-    uint32_t encoding;
-    //
+    <span class="token class-name">uint32_t</span> encoding<span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     集合包含的元素数量
-    uint32_t length;
-    //
+    <span class="token class-name">uint32_t</span> length<span class="token punctuation">;</span>
+    <span class="token comment">//</span>
     保存元素的数组
-    int8_t contents[];
-&#125;  intset;
-</code></pre>
+    <span class="token class-name">int8_t</span> contents<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>  intset<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>contents数组是整数集合的底层实现：整数集合的每个元素都是 contents数组的一个数组项（item），各个项在数组中按值的大小从<strong>小到大</strong>有序地排列，并且数组中不包含任何重复项。</p>
 <p>虽然intset结构将contents属性声明为int8_t类型的数组，但实际上contents数组并不保存任何int8_t类型的值，contents数组的真正类型取决 于encoding属性的值：</p>
 <blockquote>
@@ -891,23 +892,23 @@
 <h1 id="七-对象"><a href="#七-对象" class="headerlink" title="七.对象"></a>七.对象</h1><p>redis基于前面的简单动态字符串（SDS）、双端链表、字典、压缩列表、整数集合等创造了一个对象系统. 这个系统包含字符串对象、列表对象、哈希对象、集合对象和有序集合对象这五种类型的对象，每种对 象都用到了至少一种我们前面所介绍的数据结构。</p>
 <h2 id="7-1-对象的类型与编码"><a href="#7-1-对象的类型与编码" class="headerlink" title="7.1 对象的类型与编码"></a>7.1 对象的类型与编码</h2><p>Redis使用对象来表示数据库中的键和值，每次当我们在Redis的数 据库中新创建一个键值对时，我们至少会创建两个对象，一个对象用作 键值对的键（键对象），另一个对象用作键值对的值（值对象）。</p>
 <p>举个例子，以下SET命令在数据库中创建了一个新的键值对，其中 键值对的键是一个包含了字符串值”msg”的对象，而键值对的值则是一 个包含了字符串值”hello world”的对象：</p>
-<pre><code class="shell">redis&gt; SET msg &quot;hello world&quot;
-OK
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SET msg <span class="token string">"hello world"</span>
+OK<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>Redis中的每个对象都由一个redisObject结构表示，该结构中和保存 数据有关的三个属性分别是<strong>type属性、encoding属性和ptr属性：</strong></p>
-<pre><code class="c">typedef struct redisObject &#123;
-//
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">redisObject</span> <span class="token punctuation">&#123;</span>
+<span class="token comment">//</span>
 类型
-unsigned type:4;
-//
+<span class="token keyword">unsigned</span> type<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 编码
-unsigned encoding:4;
-//
+<span class="token keyword">unsigned</span> encoding<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">;</span>
+<span class="token comment">//</span>
 指向底层实现数据结构的指针
-void *ptr;
-// ...
-&#125; robj;
-</code></pre>
+<span class="token keyword">void</span> <span class="token operator">*</span>ptr<span class="token punctuation">;</span>
+<span class="token comment">// ...</span>
+<span class="token punctuation">&#125;</span> robj<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="7-1-1-类型"><a href="#7-1-1-类型" class="headerlink" title="7.1.1 类型"></a>7.1.1 类型</h3><p>对象的type属性记录了对象的类型:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102194622417.png" alt="image-20230102194622417"></p>
 <p>对于Redis数据库保存的键值对来说，键总是一个字符串对象，而 值则可以是字符串对象、列表对象、哈希对象、集合对象或者有序集合 对象的其中一种，因此：</p>
@@ -916,37 +917,37 @@ void *ptr;
 <li>当我们称呼一个键为“列表键”时，我们指的是“这个数据库键 所对应的值为列表对象”。</li>
 </ul>
 <p>TYPE命令的实现方式也与此类似，当我们对一个数据库键执行 TYPE命令时，命令返回的结果<strong>为数据库键对应的值对象的类型，</strong>而不是键对象的类型：</p>
-<pre><code class="shell">#
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment">#</span>
 键为字符串对象，值为字符串对象
-redis&gt; SET msg &quot;hello world&quot;
+redis<span class="token operator">></span> SET msg <span class="token string">"hello world"</span>
 OK
-redis&gt; TYPE msg
+redis<span class="token operator">></span> TYPE msg
 string
-#
+<span class="token comment">#</span>
 键为字符串对象，值为列表对象
-redis&gt; RPUSH numbers 1 3 5
-(integer) 6
-redis&gt; TYPE numbers
+redis<span class="token operator">></span> RPUSH numbers <span class="token number">1</span> <span class="token number">3</span> <span class="token number">5</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">6</span>
+redis<span class="token operator">></span> TYPE numbers
 list
-#
+<span class="token comment">#</span>
 键为字符串对象，值为哈希对象
-redis&gt; HMSET profile name Tom age 25 career Programmer
+redis<span class="token operator">></span> HMSET profile name Tom age <span class="token number">25</span> career Programmer
 OK
-redis&gt; TYPE profile
-hash
-#
+redis<span class="token operator">></span> TYPE profile
+<span class="token builtin class-name">hash</span>
+<span class="token comment">#</span>
 键为字符串对象，值为集合对象
-redis&gt; SADD fruits apple banana cherry
-(integer) 3
-redis&gt; TYPE fruits
-set
-#
+redis<span class="token operator">></span> SADD fruits apple banana cherry
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">3</span>
+redis<span class="token operator">></span> TYPE fruits
+<span class="token builtin class-name">set</span>
+<span class="token comment">#</span>
 键为字符串对象，值为有序集合对象
-redis&gt; ZADD price 8.5 apple 5.0 banana 6.0 cherry
-(integer) 3
-redis&gt; TYPE price
-zset
-</code></pre>
+redis<span class="token operator">></span> ZADD price <span class="token number">8.5</span> apple <span class="token number">5.0</span> banana <span class="token number">6.0</span> cherry
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">3</span>
+redis<span class="token operator">></span> TYPE price
+zset<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>下表列出了TYPE命令在面对不同类型的值对象时所产生的输出</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102194900455.png" alt="image-20230102194900455"></p>
 <h3 id="7-1-2-编码和底层实现"><a href="#7-1-2-编码和底层实现" class="headerlink" title="7.1.2 编码和底层实现"></a>7.1.2 编码和底层实现</h3><p>对象的ptr指针指向对象的底层实现数据结构，而这些数据结构由对 象的encoding属性决定。</p>
@@ -955,23 +956,23 @@ zset
 <p>每种类型的对象都至少使用了两种不同的编码，下表列出了每种类型的对象可以使用的编码。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102195046913.png" alt="image-20230102195046913"></p>
 <p>使用OBJECT ENCODING命令可以查看一个数据库键的值对象的编码：</p>
-<pre><code class="shell">redis&gt; SET msg &quot;hello wrold&quot;
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SET msg <span class="token string">"hello wrold"</span>
 OK
-redis&gt; OBJECT ENCODING msg
-&quot;embstr&quot;
-redis&gt; SET story &quot;long long long long long long ago ...&quot;
+redis<span class="token operator">></span> OBJECT ENCODING msg
+<span class="token string">"embstr"</span>
+redis<span class="token operator">></span> SET story <span class="token string">"long long long long long long ago ..."</span>
 OK
-redis&gt; OBJECT ENCODING story
-&quot;raw&quot;
-redis&gt; SADD numbers 1 3 5
-(integer) 3
-redis&gt; OBJECT ENCODING numbers
-&quot;intset&quot;
-redis&gt; SADD numbers &quot;seven&quot;
-(integer) 1
-redis&gt; OBJECT ENCODING numbers
-&quot;hashtable&quot;
-</code></pre>
+redis<span class="token operator">></span> OBJECT ENCODING story
+<span class="token string">"raw"</span>
+redis<span class="token operator">></span> SADD numbers <span class="token number">1</span> <span class="token number">3</span> <span class="token number">5</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">3</span>
+redis<span class="token operator">></span> OBJECT ENCODING numbers
+<span class="token string">"intset"</span>
+redis<span class="token operator">></span> SADD numbers <span class="token string">"seven"</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">1</span>
+redis<span class="token operator">></span> OBJECT ENCODING numbers
+<span class="token string">"hashtable"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>下表列出了不同编码的对象所对应的OBJECT ENCODING命令输出。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102201746354.png" alt="image-20230102201746354"></p>
 <p>通过encoding属性来设定对象所使用的编码，而不是为特定类型的 对象关联一种固定的编码，极大地提升了Redis的灵活性和效率，因为 Redis可以根据不同的使用场景来为一个对象设置不同的编码，从而优 化对象在某一场景下的效率。</p>
@@ -986,21 +987,21 @@ redis&gt; OBJECT ENCODING numbers
 <p>如果一个字符串对象保存的是整数值，并且这个整数值可以用long 类型来表示，那么字符串对象会将整数值保存在字符串对象结构的ptr属 性里面（将void*转换成long），并将字符串对象的编码设置为int。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102201944782.png" alt="image-20230102201944782"></p>
 <p>举个例子，如果我们执行以下SET命令，那么服务器将创建一个如 图所示的int编码的字符串对象作为number键的值：</p>
-<pre><code class="shell">redis&gt; SET number 10086
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SET number <span class="token number">10086</span>
 OK
-redis&gt; OBJECT ENCODING number
-&quot;int&quot;
-</code></pre>
+redis<span class="token operator">></span> OBJECT ENCODING number
+<span class="token string">"int"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果字符串对象保存的是一个字符串值，并且这个字符串值的长度大于32字节，那么字符串对象将使用一个简单动态字符串（SDS）来保 存这个字符串值，并将对象的编码设置为raw。</p>
 <p>举个例子，如果我们执行以下命令，那么服务器将创建一个如图8- 2所示的raw编码的字符串对象作为story键的值：</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102202052133.png" alt="image-20230102202052133"></p>
-<pre><code class="shell">redis&gt; SET story &quot;Long, long ago there lived a king ...&quot;
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SET story <span class="token string">"Long, long ago there lived a king ..."</span>
 OK
-redis&gt; STRLEN story
-(integer) 37
-redis&gt; OBJECT ENCODING story
-&quot;raw&quot;
-</code></pre>
+redis<span class="token operator">></span> STRLEN story
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">37</span>
+redis<span class="token operator">></span> OBJECT ENCODING story
+<span class="token string">"raw"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果字符串对象保存的是一个字符串值，并且这个字符串值的长度 小于等于32字节，那么字符串对象将使用embstr编码的方式来保存这个字符串值。</p>
 <p><strong>embstr</strong>编码是专门用于保存短字符串的一种优化编码方式，这种编码和raw编码一样，都使用redisObject结构和sdshdr结构来表示字符串对 象，但raw编码会调用两次内存分配函数来分别创建redisObject结构和 sdshdr结构，而embstr编码则通过调用一次内存分配函数来分配一块连 续的空间，空间中依次包含redisObject和sdshdr两个结构，如图所 示。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102202153286.png" alt="image-20230102202153286"></p>
@@ -1015,17 +1016,17 @@ redis&gt; OBJECT ENCODING story
 </ul>
 <p>最后要说的是，可以用long double类型表示的浮点数在Redis中也是 作为字符串值来保存的。如果我们要保存一个浮点数到字符串对象里 面，那么程序会先将这个浮点数转换成字符串值，然后再保存转换所得 的字符串值。</p>
 <p>举个例子，执行以下代码将创建一个包含3.14的字符串表</p>
-<pre><code class="shell">redis&gt; SET pi 3.14
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SET pi <span class="token number">3.14</span>
 OK
-redis&gt; OBJECT ENCODING pi
-&quot;embstr&quot;
-</code></pre>
+redis<span class="token operator">></span> OBJECT ENCODING pi
+<span class="token string">"embstr"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在有需要的时候，程序会将保存在字符串对象里面的字符串值转换 回浮点数值，执行某些操作，然后再将执行操作所得的浮点数值转换回 字符串值，并继续保存在字符串对象里面。</p>
-<pre><code class="shell">redis&gt; INCRBYFLOAT pi 2.0
-&quot;5.14&quot;
-redis&gt; OBJECT ENCODING pi
-&quot;embstr&quot;
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> INCRBYFLOAT pi <span class="token number">2.0</span>
+<span class="token string">"5.14"</span>
+redis<span class="token operator">></span> OBJECT ENCODING pi
+<span class="token string">"embstr"</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>那么程序首先会取出字符串对象里面保存的字符串值”3.14”，将它 转换回浮点数值3.14，然后把3.14和2.0相加得出的值5.14转换成字符 串”5.14”，并将这个”5.14”保存到字符串对象里面。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102202519692.png" alt="image-20230102202519692"></p>
 <h3 id="7-2-1-编码的转换"><a href="#7-2-1-编码的转换" class="headerlink" title="7.2.1 编码的转换"></a>7.2.1 编码的转换</h3><p>int编码的字符串对象和embstr编码的字符串对象在条件满足的情况 下，会被转换为raw编码的字符串对象。</p>
@@ -1037,9 +1038,9 @@ redis&gt; OBJECT ENCODING pi
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102202759063.png" alt="image-20230102202759063"></p>
 <h2 id="7-3-列表对象"><a href="#7-3-列表对象" class="headerlink" title="7.3 列表对象"></a>7.3 列表对象</h2><p>列表对象的编码可以是ziplist或者linkedlist。</p>
 <p>iplist编码的列表对象使用压缩列表作为底层实现，每个压缩列表 节点（entry）保存了一个列表元素。举个例子，如果我们执行以下 RPUSH命令，那么服务器将创建一个列表对象作为numbers键的值：</p>
-<pre><code class="shell">redis&gt; RPUSH numbers 1 &quot;three&quot; 5
-(integer) 3
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> RPUSH numbers <span class="token number">1</span> <span class="token string">"three"</span> <span class="token number">5</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>如果numbers键的值对象使用的是ziplist编码，这个这个值对象将会 是图8-5所展示的样子。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102203123975.png" alt="image-20230102203123975"></p>
 <p>另一方面，linkedlist编码的列表对象使用双端链表作为底层实现， 每个双端链表节点（node）都保存了一个字符串对象，而每个字符串对象都保存了一个列表元素。</p>
@@ -1063,13 +1064,13 @@ redis&gt; OBJECT ENCODING pi
 <li>先添加到哈希对象中的键值对会被放在压缩列表的表头方向，而后来添加到哈希对象中的键值对会被放在压缩列表的表尾方向。</li>
 </ul>
 <p>举个例子，如果我们执行以下HSET命令，那么服务器将创建一个列表对象作为profile键的值：</p>
-<pre><code class="shell">redis&gt; HSET profile name &quot;Tom&quot;
-(integer) 1
-redis&gt; HSET profile age 25
-(integer) 1
-redis&gt; HSET profile career &quot;Programmer&quot;
-(integer) 1
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> HSET profile name <span class="token string">"Tom"</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">1</span>
+redis<span class="token operator">></span> HSET profile age <span class="token number">25</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">1</span>
+redis<span class="token operator">></span> HSET profile career <span class="token string">"Programmer"</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>如果profile键的值对象使用的是ziplist编码，那么这个值对象将会是 图8-9所示的样子，其中对象所使用的压缩列表如图8-10所示。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102203840807.png" alt="image-20230102203840807"></p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102203904604.png" alt="image-20230102203904604"></p>
@@ -1095,14 +1096,14 @@ redis&gt; HSET profile career &quot;Programmer&quot;
 <h2 id="7-5-集合对象"><a href="#7-5-集合对象" class="headerlink" title="7.5 集合对象"></a>7.5 集合对象</h2><p>集合对象的编码可以是intset或者hashtable。</p>
 <p>intset编码的集合对象使用整数集合作为底层实现，集合对象包含的所有元素都被保存在整数集合里面</p>
 <p>举个例子，以下代码将创建一个如图8-12所示的intset编码集合对象：</p>
-<pre><code class="shell">redis&gt; SADD numbers 1 3 5
-(integer) 3
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SADD numbers <span class="token number">1</span> <span class="token number">3</span> <span class="token number">5</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span> <span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p>另一方面，hashtable编码的集合对象使用字典作为底层实现，字典的每个键都是一个字符串对象，每个字符串对象包含了一个集合元素， 而字典的值则全部被设置为NULL。</p>
 <p>举个例子，以下代码将创建一个如图8-13所示的hashtable编码集合对象：</p>
-<pre><code class="shell">redis&gt; SAD Dfruits &quot;apple&quot; &quot;banana&quot; &quot;cherry&quot;
-(integer)3
-</code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">redis<span class="token operator">></span> SAD Dfruits <span class="token string">"apple"</span> <span class="token string">"banana"</span> <span class="token string">"cherry"</span>
+<span class="token punctuation">(</span>integer<span class="token punctuation">)</span><span class="token number">3</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/image-20230102204450815.png" alt="image-20230102204450815"></p>
 <h3 id="7-5-1-编码的转换"><a href="#7-5-1-编码的转换" class="headerlink" title="7.5.1 编码的转换"></a>7.5.1 编码的转换</h3><p>当集合对象可以同时满足以下两个条件时，对象使用intset编码：</p>
 <ul>
@@ -1540,7 +1541,7 @@ redis&gt; HSET profile career &quot;Programmer&quot;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.5k</span>
+                        class="white-color">257.4k</span>
             
             
             

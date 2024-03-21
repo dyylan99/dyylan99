@@ -394,14 +394,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.9k
+                    2.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    13 分
+                    12 分
                 </div>
                 
 
@@ -459,97 +459,97 @@
 <li>入参不同，发放优惠券需要仿重、兑换卡需要卡ID、实物商品需要发货位置(对象中含有)。</li>
 <li>另外可能会随着后续的业务的发展，会新增其他种商品类型。因为你所有的开发需求都是随着业务对市场的拓展而带来的</li>
 </ul>
-<h3 id="普通实现"><a href="#普通实现" class="headerlink" title="普通实现"></a><strong>普通实现</strong></h3><pre><code class="java">public class PrizeController &#123;
+<h3 id="普通实现"><a href="#普通实现" class="headerlink" title="普通实现"></a><strong>普通实现</strong></h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">PrizeController</span> <span class="token punctuation">&#123;</span>
 
-    private Logger logger= LoggerFactory.getLogger(PrizeController.class);
+    <span class="token keyword">private</span> <span class="token class-name">Logger</span> logger<span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">PrizeController</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public AwardRes awardToUser(AwardReq req)&#123;
-        String reqJson = JSON.toJSONString(req);
-        AwardRes awardRes = null;
-        try &#123;
-            logger.info(&quot;奖品发放开始&#123;&#125;。req:&#123;&#125;&quot;, req.getUId(), reqJson);
-            // 按照不同类型方法商品[1优惠券、2实物商品、3第三方兑换卡(爱奇艺)]
-            if (req.getAwardType() == 1) &#123;
-                CouponService couponService = new CouponService();
-                CouponResult couponResult = couponService.sendCoupon(req.getUId(), req.getAwardNumber(), req.getBizId());
-                if (&quot;0000&quot;.equals(couponResult.getCode())) &#123;
-                    awardRes = new AwardRes(&quot;0000&quot;, &quot;发放成功&quot;);
-                &#125; else &#123;
-                    awardRes = new AwardRes(&quot;0001&quot;, couponResult.getInfo());
-                &#125;
-            &#125; else if (req.getAwardType() == 2) &#123;
-                GoodsService goodsService = new GoodsService();
-                DeliverReq deliverReq = new DeliverReq();
-                deliverReq.setUserName(queryUserName(req.getUId()));
-                deliverReq.setUserPhone(queryUserPhoneNumber(req.getUId()));
-                deliverReq.setSku(req.getAwardNumber());
-                deliverReq.setOrderId(req.getBizId());
-                deliverReq.setConsigneeUserName(req.getExtMap().get(&quot;consigneeUserName&quot;));
-                deliverReq.setConsigneeUserPhone(req.getExtMap().get(&quot;consigneeUserPhone&quot;));
-                deliverReq.setConsigneeUserAddress(req.getExtMap().get(&quot;consigneeUserAddress&quot;));
-                Boolean isSuccess = goodsService.deliverGoods(deliverReq);
-                if (isSuccess) &#123;
-                    awardRes = new AwardRes(&quot;0000&quot;, &quot;发放成功&quot;);
-                &#125; else &#123;
-                    awardRes = new AwardRes(&quot;0001&quot;, &quot;发放失败&quot;);
-                &#125;
-            &#125; else if (req.getAwardType() == 3) &#123;
-                String bindMobileNumber = queryUserPhoneNumber(req.getUId());
-                IQiYiCardService iQiYiCardService = new IQiYiCardService();
-                iQiYiCardService.grantToken(bindMobileNumber, req.getAwardNumber());
-                awardRes = new AwardRes(&quot;0000&quot;, &quot;发放成功&quot;);
-            &#125;
-            logger.info(&quot;奖品发放完成&#123;&#125;。&quot;, req.getUId());
-        &#125; catch (Exception e) &#123;
-            logger.error(&quot;奖品发放失败&#123;&#125;。req:&#123;&#125;&quot;, req.getUId(), reqJson, e);
-            awardRes = new AwardRes(&quot;0001&quot;, e.getMessage());
-        &#125;
+    <span class="token keyword">public</span> <span class="token class-name">AwardRes</span> <span class="token function">awardToUser</span><span class="token punctuation">(</span><span class="token class-name">AwardReq</span> req<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token class-name">String</span> reqJson <span class="token operator">=</span> <span class="token constant">JSON</span><span class="token punctuation">.</span><span class="token function">toJSONString</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">AwardRes</span> awardRes <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">&#123;</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"奖品发放开始&#123;&#125;。req:&#123;&#125;"</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> reqJson<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 按照不同类型方法商品[1优惠券、2实物商品、3第三方兑换卡(爱奇艺)]</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getAwardType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">CouponService</span> couponService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CouponService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">CouponResult</span> couponResult <span class="token operator">=</span> couponService<span class="token punctuation">.</span><span class="token function">sendCoupon</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span><span class="token function">getAwardNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span><span class="token function">getBizId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"0000"</span><span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>couponResult<span class="token punctuation">.</span><span class="token function">getCode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    awardRes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AwardRes</span><span class="token punctuation">(</span><span class="token string">"0000"</span><span class="token punctuation">,</span> <span class="token string">"发放成功"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                    awardRes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AwardRes</span><span class="token punctuation">(</span><span class="token string">"0001"</span><span class="token punctuation">,</span> couponResult<span class="token punctuation">.</span><span class="token function">getInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getAwardType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">GoodsService</span> goodsService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">GoodsService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">DeliverReq</span> deliverReq <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DeliverReq</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setUserName</span><span class="token punctuation">(</span><span class="token function">queryUserName</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setUserPhone</span><span class="token punctuation">(</span><span class="token function">queryUserPhoneNumber</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setSku</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getAwardNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setOrderId</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getBizId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setConsigneeUserName</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getExtMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"consigneeUserName"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setConsigneeUserPhone</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getExtMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"consigneeUserPhone"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                deliverReq<span class="token punctuation">.</span><span class="token function">setConsigneeUserAddress</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getExtMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"consigneeUserAddress"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">Boolean</span> isSuccess <span class="token operator">=</span> goodsService<span class="token punctuation">.</span><span class="token function">deliverGoods</span><span class="token punctuation">(</span>deliverReq<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>isSuccess<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                    awardRes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AwardRes</span><span class="token punctuation">(</span><span class="token string">"0000"</span><span class="token punctuation">,</span> <span class="token string">"发放成功"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+                    awardRes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AwardRes</span><span class="token punctuation">(</span><span class="token string">"0001"</span><span class="token punctuation">,</span> <span class="token string">"发放失败"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">&#125;</span>
+            <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getAwardType</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token class-name">String</span> bindMobileNumber <span class="token operator">=</span> <span class="token function">queryUserPhoneNumber</span><span class="token punctuation">(</span>req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">IQiYiCardService</span> iQiYiCardService <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IQiYiCardService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                iQiYiCardService<span class="token punctuation">.</span><span class="token function">grantToken</span><span class="token punctuation">(</span>bindMobileNumber<span class="token punctuation">,</span> req<span class="token punctuation">.</span><span class="token function">getAwardNumber</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                awardRes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AwardRes</span><span class="token punctuation">(</span><span class="token string">"0000"</span><span class="token punctuation">,</span> <span class="token string">"发放成功"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+            logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"奖品发放完成&#123;&#125;。"</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            logger<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">"奖品发放失败&#123;&#125;。req:&#123;&#125;"</span><span class="token punctuation">,</span> req<span class="token punctuation">.</span><span class="token function">getUId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> reqJson<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            awardRes <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AwardRes</span><span class="token punctuation">(</span><span class="token string">"0001"</span><span class="token punctuation">,</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        return awardRes;
-    &#125;
+        <span class="token keyword">return</span> awardRes<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    private String queryUserName(String uId) &#123;
-        return &quot;花花&quot;;
-    &#125;
+    <span class="token keyword">private</span> <span class="token class-name">String</span> <span class="token function">queryUserName</span><span class="token punctuation">(</span><span class="token class-name">String</span> uId<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token string">"花花"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    private String queryUserPhoneNumber(String uId) &#123;
-        return &quot;15200101&quot;;
-    &#125;
-&#125;
-</code></pre>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> <span class="token function">queryUserPhoneNumber</span><span class="token punctuation">(</span><span class="token class-name">String</span> uId<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token string">"15200101"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>核心逻辑: 通过if else 判断返回的奖品是什么类型再根据类型执行相应的逻辑,此种方法虽然简单但不易于维护, 若系统需要拓展则只能通过添加该类中的方法代码实现拓展效果</p>
 <h3 id="工厂模式实现"><a href="#工厂模式实现" class="headerlink" title="工厂模式实现"></a>工厂模式实现</h3><p>发放商品接口</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240317141720563.png" alt="image-20240317141720563"></p>
 <p>商品工厂</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240317141812548.png" alt="image-20240317141812548"></p>
 <p>根据需求从工厂拿到需要的发放类, 传入参数即可完成需求</p>
-<pre><code class="java">@Test
-public void test_commodity() throws Exception &#123;
-    StoreFactory storeFactory = new StoreFactory();
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">test_commodity</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">StoreFactory</span> storeFactory <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StoreFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    // 1. 优惠券
-    ICommodity commodityService_1 = storeFactory.getCommodityService(1);
-    commodityService_1.sendCommodity(&quot;10001&quot;, &quot;EGM1023938910232121323432&quot;, &quot;791098764902132&quot;, null);
+    <span class="token comment">// 1. 优惠券</span>
+    <span class="token class-name">ICommodity</span> commodityService_1 <span class="token operator">=</span> storeFactory<span class="token punctuation">.</span><span class="token function">getCommodityService</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    commodityService_1<span class="token punctuation">.</span><span class="token function">sendCommodity</span><span class="token punctuation">(</span><span class="token string">"10001"</span><span class="token punctuation">,</span> <span class="token string">"EGM1023938910232121323432"</span><span class="token punctuation">,</span> <span class="token string">"791098764902132"</span><span class="token punctuation">,</span> <span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    // 2. 实物商品
-    ICommodity commodityService_2 = storeFactory.getCommodityService(2);
-    Map&lt;String,String&gt; extMap = new HashMap&lt;String,String&gt;();
-    extMap.put(&quot;consigneeUserName&quot;, &quot;谢飞机&quot;);
-    extMap.put(&quot;consigneeUserPhone&quot;, &quot;15200292123&quot;);
-    extMap.put(&quot;consigneeUserAddress&quot;, &quot;吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109&quot;);
+    <span class="token comment">// 2. 实物商品</span>
+    <span class="token class-name">ICommodity</span> commodityService_2 <span class="token operator">=</span> storeFactory<span class="token punctuation">.</span><span class="token function">getCommodityService</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span><span class="token class-name">String</span><span class="token punctuation">></span></span> extMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span><span class="token class-name">String</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    extMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"consigneeUserName"</span><span class="token punctuation">,</span> <span class="token string">"谢飞机"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    extMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"consigneeUserPhone"</span><span class="token punctuation">,</span> <span class="token string">"15200292123"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    extMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"consigneeUserAddress"</span><span class="token punctuation">,</span> <span class="token string">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    commodityService_2.sendCommodity(&quot;10001&quot;,&quot;9820198721311&quot;,&quot;1023000020112221113&quot;,new HashMap&lt;String, String&gt;() &#123;&#123;
-        put("consigneeUserName", "谢飞机");
-        put("consigneeUserPhone", "15200292123");
-        put("consigneeUserAddress", "吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109");
-    &#125;&#125;);
+    commodityService_2<span class="token punctuation">.</span><span class="token function">sendCommodity</span><span class="token punctuation">(</span><span class="token string">"10001"</span><span class="token punctuation">,</span><span class="token string">"9820198721311"</span><span class="token punctuation">,</span><span class="token string">"1023000020112221113"</span><span class="token punctuation">,</span><span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#123;</span>
+        <span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"consigneeUserName"</span><span class="token punctuation">,</span> <span class="token string">"谢飞机"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"consigneeUserPhone"</span><span class="token punctuation">,</span> <span class="token string">"15200292123"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">put</span><span class="token punctuation">(</span><span class="token string">"consigneeUserAddress"</span><span class="token punctuation">,</span> <span class="token string">"吉林省.长春市.双阳区.XX街道.檀溪苑小区.#18-2109"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    // 3. 第三方兑换卡(爱奇艺)
-    ICommodity commodityService_3 = storeFactory.getCommodityService(3);
-    commodityService_3.sendCommodity(&quot;10001&quot;,&quot;AQY1xjkUodl8LO975GdfrYUio&quot;,null,null);
+    <span class="token comment">// 3. 第三方兑换卡(爱奇艺)</span>
+    <span class="token class-name">ICommodity</span> commodityService_3 <span class="token operator">=</span> storeFactory<span class="token punctuation">.</span><span class="token function">getCommodityService</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    commodityService_3<span class="token punctuation">.</span><span class="token function">sendCommodity</span><span class="token punctuation">(</span><span class="token string">"10001"</span><span class="token punctuation">,</span><span class="token string">"AQY1xjkUodl8LO975GdfrYUio"</span><span class="token punctuation">,</span><span class="token keyword">null</span><span class="token punctuation">,</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h2 id="1-2-抽象工厂模式"><a href="#1-2-抽象工厂模式" class="headerlink" title="1.2 抽象工厂模式"></a>1.2 抽象工厂模式</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318125434700.png" alt="image-20240318125434700"></p>
 <p>抽象工厂模式与工厂方法模式虽然主要意图都是为了解决，<strong>接口选择</strong>问题。但在实现上，抽象工厂是一个中心工厂，创建其他工厂的模式。</p>
 <h3 id="1-2-1-场景模拟"><a href="#1-2-1-场景模拟" class="headerlink" title="1.2.1 场景模拟"></a>1.2.1 场景模拟</h3><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318125546836.png" alt="image-20240318125546836"></p>
@@ -565,278 +565,279 @@ public void test_commodity() throws Exception &#123;
 <ul>
 <li>模拟单机redisUtils:</li>
 </ul>
-<pre><code class="java">public class RedisUtils &#123;
-    private Logger logger= LoggerFactory.getLogger(RedisUtils.class);
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">RedisUtils</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Logger</span> logger<span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token class-name">RedisUtils</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    private Map&lt;String, String&gt; dataMap = new ConcurrentHashMap&lt;String, String&gt;();
+    <span class="token keyword">private</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span> dataMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public String get(String key) &#123;
-        logger.info(&quot;redis获取数据 key: &#123;&#125;&quot;,key);
-        return dataMap.get(key);
-    &#125;
-    public void set(String key, String value) &#123;
-        logger.info(&quot;Redis写入数据 key：&#123;&#125; val：&#123;&#125;&quot;, key, value);
-        dataMap.put(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"redis获取数据 key: &#123;&#125;"</span><span class="token punctuation">,</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> dataMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Redis写入数据 key：&#123;&#125; val：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value, long timeout, TimeUnit timeUnit) &#123;
-        logger.info(&quot;Redis写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;&quot;, key, value, timeout, timeUnit.toString());
-        dataMap.put(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Redis写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void del(String key) &#123;
-        logger.info(&quot;Redis删除数据 key：&#123;&#125;&quot;, key);
-        dataMap.remove(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">del</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"Redis删除数据 key：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li>模拟集群EGM</li>
 </ul>
-<pre><code class="java">public class EGM &#123;
-    private Logger logger = LoggerFactory.getLogger(EGM.class);
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">EGM</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token constant">EGM</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    private Map&lt;String, String&gt; dataMap = new ConcurrentHashMap&lt;String, String&gt;();
+    <span class="token keyword">private</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span> dataMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public String gain(String key) &#123;
-        logger.info(&quot;EGM获取数据 key：&#123;&#125;&quot;, key);
-        return dataMap.get(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">gain</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"EGM获取数据 key：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> dataMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value) &#123;
-        logger.info(&quot;EGM写入数据 key：&#123;&#125; val：&#123;&#125;&quot;, key, value);
-        dataMap.put(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"EGM写入数据 key：&#123;&#125; val：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void setEx(String key, String value, long timeout, TimeUnit timeUnit) &#123;
-        logger.info(&quot;EGM写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;&quot;, key, value, timeout, timeUnit.toString());
-        dataMap.put(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setEx</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"EGM写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void delete(String key) &#123;
-        logger.info(&quot;EGM删除数据 key：&#123;&#125;&quot;, key);
-        dataMap.remove(key);
-    &#125;
-&#125;
-</code></pre>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">delete</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"EGM删除数据 key：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li>模拟集群IIR</li>
 </ul>
-<pre><code class="java">public class IIR &#123;
-    private Logger logger = LoggerFactory.getLogger(IIR.class);
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">IIR</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Logger</span> logger <span class="token operator">=</span> <span class="token class-name">LoggerFactory</span><span class="token punctuation">.</span><span class="token function">getLogger</span><span class="token punctuation">(</span><span class="token constant">IIR</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    private Map&lt;String, String&gt; dataMap = new ConcurrentHashMap&lt;String, String&gt;();
+    <span class="token keyword">private</span> <span class="token class-name">Map</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span> dataMap <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ConcurrentHashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">String</span><span class="token punctuation">,</span> <span class="token class-name">String</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public String get(String key) &#123;
-        logger.info(&quot;IIR获取数据 key：&#123;&#125;&quot;, key);
-        return dataMap.get(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"IIR获取数据 key：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> dataMap<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value) &#123;
-        logger.info(&quot;IIR写入数据 key：&#123;&#125; val：&#123;&#125;&quot;, key, value);
-        dataMap.put(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"IIR写入数据 key：&#123;&#125; val：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void setExpire(String key, String value, long timeout, TimeUnit timeUnit) &#123;
-        logger.info(&quot;IIR写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;&quot;, key, value, timeout, timeUnit.toString());
-        dataMap.put(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">setExpire</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"IIR写入数据 key：&#123;&#125; val：&#123;&#125; timeout：&#123;&#125; timeUnit：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void del(String key) &#123;
-        logger.info(&quot;IIR删除数据 key：&#123;&#125;&quot;, key);
-        dataMap.remove(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">del</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        logger<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"IIR删除数据 key：&#123;&#125;"</span><span class="token punctuation">,</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        dataMap<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>两套集群,实现了同样的功能</p>
 <h3 id="1-2-2-单集群代码使用"><a href="#1-2-2-单集群代码使用" class="headerlink" title="1.2.2  单集群代码使用"></a>1.2.2  单集群代码使用</h3><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318130700401.png" alt="image-20240318130700401"></p>
-<h3 id="1-2-3-普通方式实现单机升级为集群-if-else"><a href="#1-2-3-普通方式实现单机升级为集群-if-else" class="headerlink" title="1.2.3 普通方式实现单机升级为集群(if else)"></a>1.2.3 普通方式实现单机升级为集群(if else)</h3><pre><code class="java">public class normalServiceImpl implements normalService &#123;
+<h3 id="1-2-3-普通方式实现单机升级为集群-if-else"><a href="#1-2-3-普通方式实现单机升级为集群-if-else" class="headerlink" title="1.2.3 普通方式实现单机升级为集群(if else)"></a>1.2.3 普通方式实现单机升级为集群(if else)</h3><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> normalServiceImpl <span class="token keyword">implements</span> normalService <span class="token punctuation">&#123;</span>
 
-    private RedisUtils redisUtils = new RedisUtils();
+    <span class="token keyword">private</span> <span class="token class-name">RedisUtils</span> redisUtils <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RedisUtils</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    private EGM egm = new EGM();
+    <span class="token keyword">private</span> <span class="token class-name">EGM</span> egm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">EGM</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    private IIR iir = new IIR();
+    <span class="token keyword">private</span> <span class="token class-name">IIR</span> iir <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IIR</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 
-    @Override
-    public String get(String key, int redisType) &#123;
-        if (1 == redisType) &#123;
-            return egm.gain(key);
-        &#125;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token keyword">int</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> egm<span class="token punctuation">.</span><span class="token function">gain</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        if (2 == redisType) &#123;
-            return iir.get(key);
-        &#125;
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            <span class="token keyword">return</span> iir<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        return redisUtils.get(key);
-    &#125;
+        <span class="token keyword">return</span> redisUtils<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    @Override
-    public void set(String key, String value, int redisType) &#123;
-        if (1 == redisType) &#123;
-            egm.set(key, value);
-            return;
-        &#125;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">int</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            egm<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        if (2 == redisType) &#123;
-            iir.set(key, value);
-            return;
-        &#125;
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            iir<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        redisUtils.set(key, value);
-    &#125;
+        redisUtils<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    @Override
-    public void set(String key, String value, long timeout, TimeUnit timeUnit, int redisType) &#123;
-        if (1 == redisType) &#123;
-            egm.setEx(key, value, timeout, timeUnit);
-            return;
-        &#125;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">,</span> <span class="token keyword">int</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            egm<span class="token punctuation">.</span><span class="token function">setEx</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        if (2 == redisType) &#123;
-            iir.setExpire(key, value, timeout, timeUnit);
-            return;
-        &#125;
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            iir<span class="token punctuation">.</span><span class="token function">setExpire</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        redisUtils.set(key, value, timeout, timeUnit);
-    &#125;
+        redisUtils<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    @Override
-    public void del(String key, int redisType) &#123;
-        if (1 == redisType) &#123;
-            egm.delete(key);
-            return;
-        &#125;
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">del</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token keyword">int</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            egm<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        if (2 == redisType) &#123;
-            iir.del(key);
-            return;
-        &#125;
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">2</span> <span class="token operator">==</span> redisType<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            iir<span class="token punctuation">.</span><span class="token function">del</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
 
-        redisUtils.del(key);
-    &#125;
-&#125;
-</code></pre>
+        redisUtils<span class="token punctuation">.</span><span class="token function">del</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>显然,核心就是在每个方法中都使用if和else判断传入的集群类型</p>
 <h3 id="1-2-4-抽象工厂模式实现重构"><a href="#1-2-4-抽象工厂模式实现重构" class="headerlink" title="1.2.4 抽象工厂模式实现重构"></a>1.2.4 抽象工厂模式实现重构</h3><p>这里的抽象工厂的创建和获取方式，会采用代理类的方式进行实现。所被代理的类就是目前的Redis操作方法类，让这个类在不需要任何修改下，就可以实现调用集群A和集群B的数据服务。</p>
 <p>并且这里还有一点非常重要，由于集群A和集群B在部分方法提供上是不同的，因此需要做一个接口适配，而这个适配类就相当于工厂中的工厂，用于创建把不同的服务抽象为统一的接口做相同的业务</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240318131513407.png" alt="image-20240318131513407"></p>
 <p>适配接口:</p>
-<pre><code class="java">public interface ICacheAdapter &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">ICacheAdapter</span> <span class="token punctuation">&#123;</span>
 
-    String get(String key);
+    <span class="token class-name">String</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    void set(String key, String value);
+    <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    void set(String key, String value, long timeout, TimeUnit timeUnit);
+    <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    void del(String key);
+    <span class="token keyword">void</span> <span class="token function">del</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <hr>
 <ul>
 <li>这个类的主要作用是让所有集群的提供方，能在统一的方法名称下进行操作。也方面后续的拓展。</li>
 </ul>
 <p><strong>EGMCacheAdapter</strong></p>
-<pre><code class="java">public class EGMCacheAdapter implements ICacheAdapter &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">EGMCacheAdapter</span> <span class="token keyword">implements</span> <span class="token class-name">ICacheAdapter</span> <span class="token punctuation">&#123;</span>
 
-    private EGM egm = new EGM();
+    <span class="token keyword">private</span> <span class="token class-name">EGM</span> egm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">EGM</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public String get(String key) &#123;
-        return egm.gain(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> egm<span class="token punctuation">.</span><span class="token function">gain</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value) &#123;
-        egm.set(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        egm<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value, long timeout, TimeUnit timeUnit) &#123;
-        egm.setEx(key, value, timeout, timeUnit);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        egm<span class="token punctuation">.</span><span class="token function">setEx</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void del(String key) &#123;
-        egm.delete(key);
-    &#125;
-&#125;
-    
-</code></pre>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">del</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        egm<span class="token punctuation">.</span><span class="token function">delete</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+
 <p><strong>IIRCacheAdapter</strong></p>
-<pre><code class="java">public class IIRCacheAdapter implements ICacheAdapter &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">IIRCacheAdapter</span> <span class="token keyword">implements</span> <span class="token class-name">ICacheAdapter</span> <span class="token punctuation">&#123;</span>
 
-    private IIR iir = new IIR();
+    <span class="token keyword">private</span> <span class="token class-name">IIR</span> iir <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IIR</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public String get(String key) &#123;
-        return iir.get(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">String</span> <span class="token function">get</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> iir<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value) &#123;
-        iir.set(key, value);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        iir<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void set(String key, String value, long timeout, TimeUnit timeUnit) &#123;
-        iir.setExpire(key, value, timeout, timeUnit);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">set</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">,</span> <span class="token class-name">String</span> value<span class="token punctuation">,</span> <span class="token keyword">long</span> timeout<span class="token punctuation">,</span> <span class="token class-name">TimeUnit</span> timeUnit<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        iir<span class="token punctuation">.</span><span class="token function">setExpire</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> timeout<span class="token punctuation">,</span> timeUnit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void del(String key) &#123;
-        iir.del(key);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">del</span><span class="token punctuation">(</span><span class="token class-name">String</span> key<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        iir<span class="token punctuation">.</span><span class="token function">del</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-</code></pre>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>抽象工程代理类实现:</p>
 <p><strong>JDKProxy</strong></p>
-<pre><code class="java">public static &lt;T&gt; T getProxy(Class&lt;T&gt; interfaceClass, ICacheAdapter cacheAdapter) throws Exception &#123;
-    InvocationHandler handler = new JDKInvocationHandler(cacheAdapter);
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    Class&lt;?&gt;[] classes = interfaceClass.getInterfaces();
-    return (T) Proxy.newProxyInstance(classLoader, new Class[]&#123;classes[0]&#125;, handler);
-&#125;
-    
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">></span></span> <span class="token class-name">T</span> <span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">T</span><span class="token punctuation">></span></span> interfaceClass<span class="token punctuation">,</span> <span class="token class-name">ICacheAdapter</span> cacheAdapter<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">InvocationHandler</span> handler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">JDKInvocationHandler</span><span class="token punctuation">(</span>cacheAdapter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">ClassLoader</span> classLoader <span class="token operator">=</span> <span class="token class-name">Thread</span><span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getContextClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">Class</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token operator">?</span><span class="token punctuation">></span></span><span class="token punctuation">[</span><span class="token punctuation">]</span> classes <span class="token operator">=</span> interfaceClass<span class="token punctuation">.</span><span class="token function">getInterfaces</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token class-name">T</span><span class="token punctuation">)</span> <span class="token class-name">Proxy</span><span class="token punctuation">.</span><span class="token function">newProxyInstance</span><span class="token punctuation">(</span>classLoader<span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">Class</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">&#123;</span>classes<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">&#125;</span><span class="token punctuation">,</span> handler<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li>这里主要的作用就是完成代理类，同时对于使用哪个集群有外部通过入参进行传递。</li>
 </ul>
 <p><strong>JDKInvocationHandler</strong></p>
-<pre><code class="java">public class JDKInvocationHandler implements InvocationHandler &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">JDKInvocationHandler</span> <span class="token keyword">implements</span> <span class="token class-name">InvocationHandler</span> <span class="token punctuation">&#123;</span>
 
-    private ICacheAdapter cacheAdapter;
+    <span class="token keyword">private</span> <span class="token class-name">ICacheAdapter</span> cacheAdapter<span class="token punctuation">;</span>
 
-    public JDKInvocationHandler(ICacheAdapter cacheAdapter) &#123;
-        this.cacheAdapter = cacheAdapter;
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">JDKInvocationHandler</span><span class="token punctuation">(</span><span class="token class-name">ICacheAdapter</span> cacheAdapter<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>cacheAdapter <span class="token operator">=</span> cacheAdapter<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
-        return ICacheAdapter.class.getMethod(method.getName(), 	ClassLoaderUtils.getClazzByArgs(args)).invoke(cacheAdapter, args);
-    &#125;
+    <span class="token keyword">public</span> <span class="token class-name">Object</span> <span class="token function">invoke</span><span class="token punctuation">(</span><span class="token class-name">Object</span> proxy<span class="token punctuation">,</span> <span class="token class-name">Method</span> method<span class="token punctuation">,</span> <span class="token class-name">Object</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Throwable</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token class-name">ICacheAdapter</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getMethod</span><span class="token punctuation">(</span>method<span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 	<span class="token class-name">ClassLoaderUtils</span><span class="token punctuation">.</span><span class="token function">getClazzByArgs</span><span class="token punctuation">(</span>args<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">invoke</span><span class="token punctuation">(</span>cacheAdapter<span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-&#125;
-    
-</code></pre>
+<span class="token punctuation">&#125;</span>
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <ul>
 <li>在代理类的实现中其实也非常简单，通过穿透进来的集群服务进行方法操作。</li>
 <li>另外在<code>invoke</code>中通过使用获取方法名称反射方式，调用对应的方法功能，也就简化了整体的使用。</li>
 <li>到这我们就已经将整体的功能实现完成了，关于抽象工厂这部分也可以使用非代理的方式进行实现</li>
 </ul>
 <p>测试:</p>
-<pre><code class="java">@Test
-public void test_CacheService() throws Exception &#123;
-    CacheService proxy_EGM = JDKProxy.getProxy(CacheServiceImpl.class, new EGMCacheAdapter());
-    proxy_EGM.set(&quot;user_name_01&quot;,&quot;Dylan&quot;);
-    String val01 = proxy_EGM.get(&quot;user_name_01&quot;);
-    System.out.println(val01);
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Test</span>
+<span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">test_CacheService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">CacheService</span> proxy_EGM <span class="token operator">=</span> <span class="token class-name">JDKProxy</span><span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token class-name">CacheServiceImpl</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">EGMCacheAdapter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    proxy_EGM<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">"user_name_01"</span><span class="token punctuation">,</span><span class="token string">"Dylan"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">String</span> val01 <span class="token operator">=</span> proxy_EGM<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"user_name_01"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>val01<span class="token punctuation">)</span><span class="token punctuation">;</span>
     
-    CacheService proxy_IIR = JDKProxy.getProxy(CacheServiceImpl.class, new IIRCacheAdapter());
-    proxy_IIR.set(&quot;user_name_01&quot;,&quot;Dylan&quot;);
-    String val02 = proxy_IIR.get(&quot;user_name_01&quot;);
-    System.out.println(val02);
-&#125;
-    
-</code></pre>
-
+    <span class="token class-name">CacheService</span> proxy_IIR <span class="token operator">=</span> <span class="token class-name">JDKProxy</span><span class="token punctuation">.</span><span class="token function">getProxy</span><span class="token punctuation">(</span><span class="token class-name">CacheServiceImpl</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">IIRCacheAdapter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    proxy_IIR<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span><span class="token string">"user_name_01"</span><span class="token punctuation">,</span><span class="token string">"Dylan"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">String</span> val02 <span class="token operator">=</span> proxy_IIR<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string">"user_name_01"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>val02<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
                 
             </div>
             <hr/>
@@ -1249,7 +1250,7 @@ public void test_CacheService() throws Exception &#123;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.5k</span>
+                        class="white-color">257.4k</span>
             
             
             

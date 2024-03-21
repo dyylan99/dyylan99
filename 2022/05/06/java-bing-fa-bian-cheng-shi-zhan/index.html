@@ -446,48 +446,48 @@
 <p>java的同步机制包括: synchronized关键字, volatile类型的变量, 显示锁(Explicit Lock)和原子变量.</p>
 <h3 id="1-1什么是线程安全性"><a href="#1-1什么是线程安全性" class="headerlink" title="1.1什么是线程安全性:"></a>1.1什么是线程安全性:</h3><p>​	当多个线程访问某个类时, 这个类始终都能表现出正确的行为, 那么就称这个类是线程安全的.</p>
 <p>看一个简单实例, 一个无状态的servlet:</p>
-<pre><code class="java">public class StatelessFactorizer extends GenericServlet implements Servlet &#123;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">StatelessFactorizer</span> <span class="token keyword">extends</span> <span class="token class-name">GenericServlet</span> <span class="token keyword">implements</span> <span class="token class-name">Servlet</span> <span class="token punctuation">&#123;</span>
 
-    public void service(ServletRequest request, ServletResponse response)&#123;
-        BigInteger i=extractFromRequest(request);
-        BigInteger[]factors=factor(i);
-        encodeIntoResponse(response, factors);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">service</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> request<span class="token punctuation">,</span> <span class="token class-name">ServletResponse</span> response<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token class-name">BigInteger</span> i<span class="token operator">=</span><span class="token function">extractFromRequest</span><span class="token punctuation">(</span>request<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span>factors<span class="token operator">=</span><span class="token function">factor</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>response<span class="token punctuation">,</span> factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    private void encodeIntoResponse(ServletResponse response, BigInteger[] factors) &#123;
-    &#125;
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span><span class="token class-name">ServletResponse</span> response<span class="token punctuation">,</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
 
-    private BigInteger[] factor(BigInteger i) &#123;
-        return new BigInteger[]&#123;i&#125;;
-    &#125;
+    <span class="token keyword">private</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">factor</span><span class="token punctuation">(</span><span class="token class-name">BigInteger</span> i<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    private BigInteger extractFromRequest(ServletRequest request) &#123;
-        return new BigInteger(&quot;7&quot;);
-    &#125;
-   ......&#125;
-</code></pre>
+    <span class="token keyword">private</span> <span class="token class-name">BigInteger</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> request<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">(</span><span class="token string">"7"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+   <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>与多数Servlet相同，StatelessFactorizer是无状态的。访问StatelessFactorizer的线程不会影响另一个访问同一个StatelessFactorizer的线程的计算结果，因为这两个线程并没有共享状态，就好像它们在访问不同的实例。</p>
 <p><strong>有状态就是有数据存储功能。有状态对象(Stateful Bean)，就是有实例变量的对象 ，可以保存数据，是非线程安全的。在不同方法调用间不保留任何状态。</strong></p>
 <p><strong>无状态就是一次操作，不能保存数据。无状态对象(Stateless Bean)，就是没有实例变量的对象 .不能保存数据，是不变类，是线程安全的。</strong></p>
 <hr>
 <h3 id="1-2原子性-Atomicity"><a href="#1-2原子性-Atomicity" class="headerlink" title="1.2原子性(Atomicity)"></a>1.2原子性(Atomicity)</h3><p>原子性的意思代表着——<em><strong>不可分割</strong></em>；</p>
 <p>看下一个例子UnsafeCountingFactorizer:</p>
-<pre><code class="java">//       2-2    在没有同步的情况下统计已处理请求数量的Servlet（不要这么做）
-@NotThreadSafe //注解
-public class UnsafeCountingFactorizer implements Servlet &#123;
-    private long count = 0;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//       2-2    在没有同步的情况下统计已处理请求数量的Servlet（不要这么做）</span>
+<span class="token annotation punctuation">@NotThreadSafe</span> <span class="token comment">//注解</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UnsafeCountingFactorizer</span> <span class="token keyword">implements</span> <span class="token class-name">Servlet</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">long</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
 
-    public long getCount() &#123;
-        return count;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">getCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> count<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void service(ServletRequest req, ServletResponse resp) &#123;
-        BigInteger i = extractFromRequest(req);
-        BigInteger[] factors = factor(i);
-        ++count;
-        encodeIntoResponse(resp, factors);
-    &#125;
-</code></pre>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">service</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">,</span> <span class="token class-name">ServletResponse</span> resp<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BigInteger</span> i <span class="token operator">=</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors <span class="token operator">=</span> <span class="token function">factor</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">++</span>count<span class="token punctuation">;</span>
+        <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>UnsafeCountingFactorizer并非是线程安全的，尽管它在单线程环境中能正确运行。++count看起来是一个操作，但这个操作并非原子性的，因为它可以被分成三个独立的步骤:<br>①读取count的值<br>②值加一<br>③将计算结果写入count<br>这是一个”读取-修改-写入”的操作序列，并且结果状态依赖于之前的状态。下图给出了两个线程在没有同步的情况下对同一个计数器执行递增操作发生的情况。</p>
 <p>下图给出了两个线程在没有同步的情况下对同一个计数器执行递增操作发生的情况。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/20170801174753900" alt="这里写图片描述"></p>
@@ -497,43 +497,44 @@ public class UnsafeCountingFactorizer implements Servlet &#123;
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/20170801175517750" alt="这里写图片描述"></p>
 <p>例如:首先观测到某个条件为真(假如文件X不存在)，然后根据这个结果采用相应的动作(创建文件X)，但事实上，在你观察到这个结果以及开始创建文件之间，观测结果可能变得无效(另一个线程在这期间创建了文件X)，从而导致各种问题(未预期的异常，数据被覆盖，文件被破坏等)。</p>
 <p>“先检查后执行”的一种常见情况就是延迟初始化，其目的是将对象的初始化操作推迟到实际被使用时才进行，同时要确保只被初始化一次。下面是LazyInitRace示例：</p>
-<pre><code class="java">//             2-3          延迟初始化中的竞态条件（不要这么做）
-@NotThreadSafe
-public class LazyInitRace &#123;
-    private ExpensiveObject instance = null;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//             2-3          延迟初始化中的竞态条件（不要这么做）</span>
+<span class="token annotation punctuation">@NotThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LazyInitRace</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token class-name">ExpensiveObject</span> instance <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
 
-    public ExpensiveObject getInstance() &#123;
-        if (instance == null)
-            instance = new ExpensiveObject();
-        return instance;
-    &#125;
-&#125;
+    <span class="token keyword">public</span> <span class="token class-name">ExpensiveObject</span> <span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>instance <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span>
+            instance <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ExpensiveObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> instance<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
 
-class ExpensiveObject &#123; &#125;
-</code></pre>
+<span class="token keyword">class</span> <span class="token class-name">ExpensiveObject</span> <span class="token punctuation">&#123;</span> <span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="1-4-复合操作-Compound-Actions"><a href="#1-4-复合操作-Compound-Actions" class="headerlink" title="1.4 复合操作(Compound Actions)"></a>1.4 复合操作(Compound Actions)</h3><p>要避免竞态条件问题，就必须在某个线程修改该变量时，通过某中方式防止其他线程使用这个变量，从而确保其他线程只能在修改完成之前或之后读取和修改状态，而不是在修改状态的过程中。</p>
 <p>假定有操作A和B，如果对于执行A的线程来说，当另一个线程执行B时，要么全部执行完，要不完全不执行，那么A和B对彼此来说就是原子性的。</p>
 <p>我们将”先检查后执行”以及”读取-修改-写入”等操作称为复合操作:包含了一组必须以原子方式执行的操作以确保线程安全性。</p>
 <p>我们现在使用一个现有的线程安全类来修复这个问题，如下面的CountingFactorizer:</p>
-<pre><code class="java">//      2-4     使用AtomicLong类型的变量来统计已处理请求的数量
-@ThreadSafe
-public class CountingFactorizer extends GenericServlet implements Servlet &#123;
-    private final AtomicLong count = new AtomicLong(0);   //final修饰的类不能被继承
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//      2-4     使用AtomicLong类型的变量来统计已处理请求的数量</span>
+<span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CountingFactorizer</span> <span class="token keyword">extends</span> <span class="token class-name">GenericServlet</span> <span class="token keyword">implements</span> <span class="token class-name">Servlet</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicLong</span> count <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicLong</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">//final修饰的类不能被继承</span>
 
-    public long getCount() &#123; return count.get(); &#125;
+    <span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">getCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> count<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
 
-    public void service(ServletRequest req, ServletResponse resp) &#123;
-        BigInteger i = extractFromRequest(req);
-        BigInteger[] factors = factor(i);
-        count.incrementAndGet();   //使用atomic中的方法
-        encodeIntoResponse(resp, factors);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">service</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">,</span> <span class="token class-name">ServletResponse</span> resp<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BigInteger</span> i <span class="token operator">=</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors <span class="token operator">=</span> <span class="token function">factor</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        count<span class="token punctuation">.</span><span class="token function">incrementAndGet</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">//使用atomic中的方法</span>
+        <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    void encodeIntoResponse(ServletResponse res, BigInteger[] factors) &#123;&#125;
-    BigInteger extractFromRequest(ServletRequest req) &#123;return null; &#125;
-    BigInteger[] factor(BigInteger i) &#123; return null; &#125;
-&#125;
-</code></pre>
+    <span class="token keyword">void</span> <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span><span class="token class-name">ServletResponse</span> res<span class="token punctuation">,</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token punctuation">&#125;</span>
+    <span class="token class-name">BigInteger</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+    <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">factor</span><span class="token punctuation">(</span><span class="token class-name">BigInteger</span> i<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span> <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>在java.util.concurrent.atomic包中包含了一些原子变量类，用于实现在数值和对象引用上的原子状态转换。通过用AtomicLong来代替long类型的计时器，能够确保所有对计数器状态的访问操作都是原子的。因为计数器是线程安全的，所以这里的Servlet也是线程安全的。<br><em><strong>原子操作( atomic operations)</strong></em><br>原子操作指的是在一步之内就完成而且不能被中断。</p>
 <p>为什么long型赋值不是原子操作呢？<br>例如：<br>long foo &#x3D; 65465498L;<br>实时上java会分两步写入这个long变量，先写前32位，再写后32位。这样就线程不安全了。</p>
 <p>当在无状态的类中添加一个状态时，如果该状态完全由线程安全的对象来管理，那这个类仍是线程安全的。</p>
@@ -541,39 +542,39 @@ public class CountingFactorizer extends GenericServlet implements Servlet &#123;
 <h3 id="1-5-加锁机制"><a href="#1-5-加锁机制" class="headerlink" title="1.5 加锁机制"></a>1.5 加锁机制</h3><p>当在无状态的类中添加一个状态时，可以用线程安全你的对象来管理类的状态以维护类的安全性，但是如果假如更多状态时，就不能一味得添加更多线程安全状态变量。</p>
 <p>假如我们希望提升性能，将最近的计算结果缓存起来，当两个连续的请求对相同的数值进行因数分解时，可以直接使用上一次的计算结果。要实现该缓存策略，需要保存两个状态：最近执行过因数分解的数值，以及结果。</p>
 <p>我们尝试用添加线程安全状态变量来完成这件事，UnsafeCachingFactorizer的代码为:</p>
-<pre><code class="java">//    2-5  该Servlet在没有足够原子性保证的情况下对最近计算结果进行缓存（不要这么做）
-@NotThreadSafe
-public class UnsafeCachingFactorizer extends GenericServlet implements Servlet &#123;
-    //AtomicReference是作用是对&quot;对象&quot;进行原子操作
-    private final AtomicReference&lt;BigInteger&gt; lastNumber
-            = new AtomicReference&lt;BigInteger&gt;();
-    private final AtomicReference&lt;BigInteger[]&gt; lastFactors
-            = new AtomicReference&lt;BigInteger[]&gt;();
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//    2-5  该Servlet在没有足够原子性保证的情况下对最近计算结果进行缓存（不要这么做）</span>
+<span class="token annotation punctuation">@NotThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">UnsafeCachingFactorizer</span> <span class="token keyword">extends</span> <span class="token class-name">GenericServlet</span> <span class="token keyword">implements</span> <span class="token class-name">Servlet</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">//AtomicReference是作用是对"对象"进行原子操作</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicReference</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BigInteger</span><span class="token punctuation">></span></span> lastNumber
+            <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicReference</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">BigInteger</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token class-name">AtomicReference</span><span class="token operator">&lt;</span><span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span> lastFactors
+            <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicReference</span><span class="token operator">&lt;</span><span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    public void service(ServletRequest req, ServletResponse resp) &#123;
-        BigInteger i = extractFromRequest(req);
-        if (i.equals(lastNumber.get()))
-            encodeIntoResponse(resp, lastFactors.get());
-        else &#123;
-            BigInteger[] factors = factor(i);
-            lastNumber.set(i);
-            lastFactors.set(factors);
-            encodeIntoResponse(resp, factors);
-        &#125;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">service</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">,</span> <span class="token class-name">ServletResponse</span> resp<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BigInteger</span> i <span class="token operator">=</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>lastNumber<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> lastFactors<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors <span class="token operator">=</span> <span class="token function">factor</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            lastNumber<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            lastFactors<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
 
-    void encodeIntoResponse(ServletResponse resp, BigInteger[] factors) &#123;//保存执行过因数分解的数值及其结果
-    &#125;
+    <span class="token keyword">void</span> <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span><span class="token class-name">ServletResponse</span> resp<span class="token punctuation">,</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token comment">//保存执行过因数分解的数值及其结果</span>
+    <span class="token punctuation">&#125;</span>
 
-    BigInteger extractFromRequest(ServletRequest req) &#123;  
-        return new BigInteger(&quot;7&quot;);
-    &#125;
+    <span class="token class-name">BigInteger</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>  
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">(</span><span class="token string">"7"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    BigInteger[] factor(BigInteger i) &#123;
-        return new BigInteger[]&#123;i&#125;;
-    &#125;
-&#125;
-</code></pre>
+    <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">factor</span><span class="token punctuation">(</span><span class="token class-name">BigInteger</span> i<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>然而，尽管这些原子引用本身各自都是线程安全的，但在UnsafeCachingFactorizer中存在着竞态条件，这可能导致错误。</p>
 <p>在线程安全性的定义中要求，多个线程之间的操作无论采用何种执行顺序或交替方式，都要保证不变性条件不被破坏。UnsafeCachingFactorizer的不变性条件之一是:在lastFactors中缓存的因数之积应该等于在lastNumber中缓存的数值。只有确保了这个不变性条件不被破坏，上面的Servlet才是正确的。当在不变性条件中涉及多个变量时，各个变量之间并不是彼此独立的，而是某个变量的值会对其他变量的值产生约束。因此，在更新某一个变量时，需要在同一个原子操作中队其他变量同时进行更新。</p>
 <p>在使用AtomicReference的情况下，尽管对set方法的每次调用都是原子de，但仍然无法同时更新lastNumber和lastFactors。如果只修改了其中一个变量，那么在这两次修改操作之间，其他线程将发现不变性条件被破环了。同样，我们也不能确保会同时获取两个值:线程A获取这两个值得过程中，线程B可能修改了它们，这样线程A也会发现不变性条件被破坏了。<br><em><strong>要保持状态的一致性，就需要在单个原子操作中更新所有相关的状态变量</strong></em></p>
@@ -583,43 +584,43 @@ public class UnsafeCachingFactorizer extends GenericServlet implements Servlet &
 <p>由于每次只能有一个线程执行内置锁保护的代码块，因此，由这个锁保护的同步代码块会以原子方式执行，多个线程在执行该代码块也不会相互干扰。</p>
 <p>并发环境中的原子性与事务应用程序中的原子性有着相同的含义——<strong>一组语句作为不可分割的单元被执行。</strong></p>
 <p>下面我们使用synchronized关键字来改进：</p>
-<pre><code class="java">//   2-6    这个Servlet能正确缓存最新的计算结果，但并发性却非常糟糕(不要这么做)
-@ThreadSafe
-public class SynchronizedFactorizer extends GenericServlet implements Servlet &#123;
-    @GuardedBy(&quot;this&quot;) private BigInteger lastNumber;
-    @GuardedBy(&quot;this&quot;) private BigInteger[] lastFactors;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//   2-6    这个Servlet能正确缓存最新的计算结果，但并发性却非常糟糕(不要这么做)</span>
+<span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SynchronizedFactorizer</span> <span class="token keyword">extends</span> <span class="token class-name">GenericServlet</span> <span class="token keyword">implements</span> <span class="token class-name">Servlet</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"this"</span><span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token class-name">BigInteger</span> lastNumber<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"this"</span><span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> lastFactors<span class="token punctuation">;</span>
 
-    public synchronized void service(ServletRequest req,
-                                     ServletResponse resp) &#123;
-        BigInteger i = extractFromRequest(req);
-        if (i.equals(lastNumber))
-            encodeIntoResponse(resp, lastFactors);
-        else &#123;
-            BigInteger[] factors = factor(i);
-            lastNumber = i;
-            lastFactors = factors;
-            encodeIntoResponse(resp, factors);
-        &#125;
-    &#125;
-&#125;
-</code></pre>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">service</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">,</span>
+                                     <span class="token class-name">ServletResponse</span> resp<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BigInteger</span> i <span class="token operator">=</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>lastNumber<span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> lastFactors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+            <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors <span class="token operator">=</span> <span class="token function">factor</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            lastNumber <span class="token operator">=</span> i<span class="token punctuation">;</span>
+            lastFactors <span class="token operator">=</span> factors<span class="token punctuation">;</span>
+            <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">&#125;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>尽管SynchronizedFactorizer是线程安全，然而这种方法却过于极端，因为多个客户端无法同时使用因数分解Servlet，服务的响应性非常低。</p>
 <h3 id="1-7-重入"><a href="#1-7-重入" class="headerlink" title="1.7 重入"></a>1.7 重入</h3><p>内置锁是可重入的，如果某个线程试图获得一个已经由它持有的锁，那么这个请求就会成功。”重入“获取锁操作的<strong>基本单位是“线程”而不是”调用“。</strong>重入的一种实现方法是，为每个锁关联一个获取计数值和一个所有者线程。当计数值为0时，这个锁就被认为是没有被任何线程持有。当线程请求一个未被持有的锁时，JVM将记下锁的持有者，并将获取值设置为1，如果同一线程再次获取这个锁，计数值递增，而当线程退出同步代码块时，计数器会相应地递减，当计数值为0时，这个锁将被释放。</p>
 <p>”重入“进一步替身了加锁行为的封装性(encapsulation),因此简化了面向对象(Object-Oriented)并发代码的开发。</p>
 <p>在以下代码中，子类改写了synchronized修饰的方法，然后调用父类中方法，如果没有可重入的时，这段代码将产生死锁。由于子类和父类的doSomething方法都是synchronized方法，因此每个doSomething方法在执行前都会获取Widget上的锁。如果内置锁是不可重入，那么在调用super.doSomething时将无法获得Widget上的锁，因为这个锁已经被持有，从而线程将永远停顿下去。重入避免了这种死锁情况的发生。</p>
-<pre><code class="java">//        2-7    如果内置锁不是可重入的，这段代码将发生死锁
-public class Widget &#123;
-    public synchronized void doSomething() &#123;
-...
-    &#125;
-&#125;
-public class LoggingWidget extends Widget &#123;
-    public synchronized void doSomething() &#123;
-         System.out.println(toString() + &quot;: calling doSomething&quot;);
-         super.doSomething();
-    &#125;
-&#125;
-</code></pre>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//        2-7    如果内置锁不是可重入的，这段代码将发生死锁</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Widget</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LoggingWidget</span> <span class="token keyword">extends</span> <span class="token class-name">Widget</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+         <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">": calling doSomething"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">doSomething</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <h3 id="1-8-用锁来保护状态"><a href="#1-8-用锁来保护状态" class="headerlink" title="1.8 用锁来保护状态"></a>1.8 用锁来保护状态</h3><p>锁能以<strong>串行</strong>形式访问其保护的代码路径，因此可以通过锁来构造一些协议以实现对共享状态的独占访问。只要始终遵守这些协议，就能确保状态的一致性。</p>
 <p>对于可能被多个线程同时访问的可变状态变量，在访问它时都需要持有同一个锁，在这种情况下，我们成状态变量是由这个锁保护的。</p>
 <p>上面的SynchronizedFactorizer(实现了Servlet接口)中，lastNumber和lastFactors这两个变量都是由Servlet对象的内置锁来保护的。</p>
@@ -635,54 +636,54 @@ public class LoggingWidget extends Widget &#123;
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/20170801235552344" alt="这里写图片描述"></p>
 <p>通过**缩小同步代码块的作用范围,**我们很容易做到既确保Servlet的并发性，同时又维护线程安全性。</p>
 <p>CachedFactorizer将Servlet的代码修改为使用两个独立的同步代码块，一个同步代码块负责保护判断是否只需返回缓存结构的”先检查后执行”操作序列，另一个同步代码块负责确保对缓存的数值和因数分解结果进行同步更新。此外我们还引入了“命中计数器”，添加了“缓存命中”计数器，并在第一个同步代码块中更新这两个变量。由于这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步。位于同步代码块之外的代码将以独占方式来访问局部（位于栈上的）变量，这些变量不会在多个线程贡献，因此不需要同步。</p>
-<pre><code class="java">//   2-8     缓存最近执行因数分解的数值以及其计算结果的Servlet
-@ThreadSafe
-public class CachedFactorizer extends GenericServlet implements Servlet &#123;
-    @GuardedBy(&quot;this&quot;) private BigInteger lastNumber;
-    @GuardedBy(&quot;this&quot;) private BigInteger[] lastFactors;
-    @GuardedBy(&quot;this&quot;) private long hits;
-    @GuardedBy(&quot;this&quot;) private long cacheHits;
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">//   2-8     缓存最近执行因数分解的数值以及其计算结果的Servlet</span>
+<span class="token annotation punctuation">@ThreadSafe</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">CachedFactorizer</span> <span class="token keyword">extends</span> <span class="token class-name">GenericServlet</span> <span class="token keyword">implements</span> <span class="token class-name">Servlet</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"this"</span><span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token class-name">BigInteger</span> lastNumber<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"this"</span><span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> lastFactors<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"this"</span><span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token keyword">long</span> hits<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@GuardedBy</span><span class="token punctuation">(</span><span class="token string">"this"</span><span class="token punctuation">)</span> <span class="token keyword">private</span> <span class="token keyword">long</span> cacheHits<span class="token punctuation">;</span>
 
-    public synchronized long getHits() &#123; //这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步
-        return hits;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">long</span> <span class="token function">getHits</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span> <span class="token comment">//这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步</span>
+        <span class="token keyword">return</span> hits<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public synchronized double getCacheHitRatio() &#123;//这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步
-        return (double) cacheHits / (double) hits;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">double</span> <span class="token function">getCacheHitRatio</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span><span class="token comment">//这两个计数器也是共享可变状态的一部分，因此必须在所有访问它们的位置都使用同步</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">double</span><span class="token punctuation">)</span> cacheHits <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token keyword">double</span><span class="token punctuation">)</span> hits<span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    public void service(ServletRequest req, ServletResponse resp) &#123;
-        BigInteger i = extractFromRequest(req);
-        BigInteger[] factors = null;
-        synchronized (this) &#123;     //负责保护判断是否只需返回缓存结构的&quot;先检查后执行&quot;操作序列
-            ++hits;
-            if (i.equals(lastNumber)) &#123;
-                ++cacheHits;
-                factors = lastFactors.clone();//clone()会复制对象。所谓的复制对象，首先要分配一个和源对象同样大小的空间，在这个空间中创建一个新的对象。
-            &#125;
-        &#125;
-        if (factors == null) &#123;
-            factors = factor(i);
-            synchronized (this) &#123;       //负责确保对缓存的数值和因数分解结果进行同步更新。
-                lastNumber = i;
-                lastFactors = factors.clone();
-            &#125;
-        &#125;
-        encodeIntoResponse(resp, factors);
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">service</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">,</span> <span class="token class-name">ServletResponse</span> resp<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">BigInteger</span> i <span class="token operator">=</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span>req<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>     <span class="token comment">//负责保护判断是否只需返回缓存结构的"先检查后执行"操作序列</span>
+            <span class="token operator">++</span>hits<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>i<span class="token punctuation">.</span><span class="token function">equals</span><span class="token punctuation">(</span>lastNumber<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+                <span class="token operator">++</span>cacheHits<span class="token punctuation">;</span>
+                factors <span class="token operator">=</span> lastFactors<span class="token punctuation">.</span><span class="token function">clone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//clone()会复制对象。所谓的复制对象，首先要分配一个和源对象同样大小的空间，在这个空间中创建一个新的对象。</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>factors <span class="token operator">==</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+            factors <span class="token operator">=</span> <span class="token function">factor</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>       <span class="token comment">//负责确保对缓存的数值和因数分解结果进行同步更新。</span>
+                lastNumber <span class="token operator">=</span> i<span class="token punctuation">;</span>
+                lastFactors <span class="token operator">=</span> factors<span class="token punctuation">.</span><span class="token function">clone</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">&#125;</span>
+        <span class="token punctuation">&#125;</span>
+        <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span>resp<span class="token punctuation">,</span> factors<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    void encodeIntoResponse(ServletResponse resp, BigInteger[] factors) &#123;
-    &#125;
+    <span class="token keyword">void</span> <span class="token function">encodeIntoResponse</span><span class="token punctuation">(</span><span class="token class-name">ServletResponse</span> resp<span class="token punctuation">,</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> factors<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token punctuation">&#125;</span>
 
-    BigInteger extractFromRequest(ServletRequest req) &#123;
-        return new BigInteger(&quot;7&quot;);
-    &#125;
+    <span class="token class-name">BigInteger</span> <span class="token function">extractFromRequest</span><span class="token punctuation">(</span><span class="token class-name">ServletRequest</span> req<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">(</span><span class="token string">"7"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
 
-    BigInteger[] factor(BigInteger i) &#123;
-        return new BigInteger[]&#123;i&#125;;
-    &#125;
-&#125;
-</code></pre>
+    <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token function">factor</span><span class="token punctuation">(</span><span class="token class-name">BigInteger</span> i<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">BigInteger</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">&#123;</span>i<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
 <p>这里没有使用AtomicLong类型的命中计数器，而是使用long类型。对单个变量上实现原子操作来说，原子变量是很有用，但我们已经使用了同步代码块来构造原子操作，而使用两种不同的同步机制不仅会带来混乱，也不会在性能或安全性上带来任何好处，所以这里不使用原子变量。</p>
 <p>CachedFactorizer与SynchronizedFactorizer相比，实现了简单性（对整个方法进行同步）与并发性（对尽可能短的代码路径进行同步）之间的平衡。在获取与释放锁等操作上都需要一定开销，如果同步代码块分得太细(例如将++this分解为一个同步代码块)，那样通常不好。</p>
 <p>通常，在简单性与性能之间存在着互相制约因素。当实现某个同步策略时，一定不要盲目为了性能牺牲简单性，这可能破坏安全性。</p>
@@ -1120,7 +1121,7 @@ public class CachedFactorizer extends GenericServlet implements Servlet &#123;
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.5k</span>
+                        class="white-color">257.4k</span>
             
             
             
