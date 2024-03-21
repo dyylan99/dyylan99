@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <meta name="keywords" content="秒杀实战, 认言知">
     <meta name="description" content="一. 项目前导1.1 前后端分离,如何解决跨域问题在微服务项目中 ,请求到达服务前一般会经过网关服务, 所以跨域问题可以交由网关解决. 本项目的网关采用了springcloud-gateway, 编辑配置类:
-@Configurationp">
+@Configuration
+">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -53,7 +54,7 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -433,14 +434,65 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="一-项目前导"><a href="#一-项目前导" class="headerlink" title="一. 项目前导"></a>一. 项目前导</h1><h2 id="1-1-前后端分离-如何解决跨域问题"><a href="#1-1-前后端分离-如何解决跨域问题" class="headerlink" title="1.1 前后端分离,如何解决跨域问题"></a>1.1 前后端分离,如何解决跨域问题</h2><p>在微服务项目中 ,请求到达服务前一般会经过网关服务, 所以跨域问题可以交由网关解决. 本项目的网关采用了springcloud-gateway, 编辑配置类:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CorsConfig</span> &#123;</span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="keyword">public</span> CorsWebFilter <span class="title function_">corsFilter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">UrlBasedCorsConfigurationSource</span> <span class="variable">source</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UrlBasedCorsConfigurationSource</span>(<span class="keyword">new</span> <span class="title class_">PathPatternParser</span>());</span><br><span class="line">        <span class="type">CorsConfiguration</span> <span class="variable">config</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CorsConfiguration</span>();</span><br><span class="line">        <span class="comment">// 允许cookies跨域</span></span><br><span class="line">        config.setAllowCredentials(<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">// #允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin</span></span><br><span class="line">        config.addAllowedOrigin(<span class="string">&quot;*&quot;</span>);</span><br><span class="line">        <span class="comment">// #允许访问的头信息,*表示全部</span></span><br><span class="line">        config.addAllowedHeader(<span class="string">&quot;*&quot;</span>);</span><br><span class="line">        <span class="comment">// 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了</span></span><br><span class="line">        config.setMaxAge(<span class="number">18000L</span>);</span><br><span class="line">        <span class="comment">// 允许提交请求的方法，*表示全部允许</span></span><br><span class="line">        config.addAllowedMethod(<span class="string">&quot;*&quot;</span>);</span><br><span class="line">        source.registerCorsConfiguration(<span class="string">&quot;/**&quot;</span>, config);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">CorsWebFilter</span>(source);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Configuration
+public class CorsConfig &#123;
+    @Bean
+    public CorsWebFilter corsFilter() &#123;
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource(new PathPatternParser());
+        CorsConfiguration config = new CorsConfiguration();
+        // 允许cookies跨域
+        config.setAllowCredentials(true);
+        // #允许向该服务器提交请求的URI，*表示全部允许，在SpringMVC中，如果设成*，会自动转成当前请求头中的Origin
+        config.addAllowedOrigin(&quot;*&quot;);
+        // #允许访问的头信息,*表示全部
+        config.addAllowedHeader(&quot;*&quot;);
+        // 预检请求的缓存时间（秒），即在这个时间段里，对于相同的跨域请求不会再预检了
+        config.setMaxAge(18000L);
+        // 允许提交请求的方法，*表示全部允许
+        config.addAllowedMethod(&quot;*&quot;);
+        source.registerCorsConfiguration(&quot;/**&quot;, config);
+        return new CorsWebFilter(source);
+    &#125;
+&#125;
+</code></pre>
 <h2 id="1-2-在微服务中如何获取用户真实登录的ip"><a href="#1-2-在微服务中如何获取用户真实登录的ip" class="headerlink" title="1.2 在微服务中如何获取用户真实登录的ip"></a>1.2 在微服务中如何获取用户真实登录的ip</h2><p>请求线路:</p>
 <p><strong>用户ip—&gt;  网关(网关ip)—&gt; 微服务</strong></p>
 <p>要想服务能够获取用户ip, 则在网关层面需要将用户ip加入到请求明文中, 也就是请求头中</p>
 <p>通过过滤器实现:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CommonFilter</span> <span class="keyword">implements</span> <span class="title class_">GlobalFilter</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Mono&lt;Void&gt; <span class="title function_">filter</span><span class="params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> &#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * pre拦截逻辑</span></span><br><span class="line"><span class="comment">         * 在请求去到微服务之前，做了两个处理</span></span><br><span class="line"><span class="comment">         * 1.把客户端真实IP通过请求头的方式传递给微服务</span></span><br><span class="line"><span class="comment">         * 2.在请求头中添加FEIGN_REQUEST的请求头，值为0，标记请求不是Feign调用，而是客户端调用</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="type">ServerHttpRequest</span> <span class="variable">request</span> <span class="operator">=</span> exchange.getRequest().mutate().</span><br><span class="line">                <span class="comment">//拿到ip地址,将其添加到请求头中发到为服务里</span></span><br><span class="line">                header(CommonConstants.REAL_IP,exchange.getRequest().getRemoteAddress().getHostString()).</span><br><span class="line">                header(CommonConstants.FEIGN_REQUEST_KEY,CommonConstants.FEIGN_REQUEST_FALSE).</span><br><span class="line">                build();</span><br><span class="line">        <span class="keyword">return</span> chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(()-&gt;&#123;</span><br><span class="line">            <span class="comment">/**</span></span><br><span class="line"><span class="comment">             * post拦截逻辑</span></span><br><span class="line"><span class="comment">             * 在请求执行完微服务之后,需要刷新token在redis的时间</span></span><br><span class="line"><span class="comment">             * 判断token不为空 &amp;&amp; Redis还存在这个token对于的key,这时候需要延长Redis中对应key的有效时间.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            String token,redisKey;</span><br><span class="line">            <span class="keyword">if</span>(!StringUtils.isEmpty(token =exchange.getRequest().getHeaders().getFirst(CommonConstants.TOKEN_NAME))</span><br><span class="line">                    &amp;&amp; redisTemplate.hasKey(redisKey = CommonRedisKey.USER_TOKEN.getRealKey(token)))&#123;</span><br><span class="line">                redisTemplate.expire(redisKey, CommonRedisKey.USER_TOKEN.getExpireTime(), CommonRedisKey.USER_TOKEN.getUnit());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Component
+public class CommonFilter implements GlobalFilter &#123;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Override
+    public Mono&lt;Void&gt; filter(ServerWebExchange exchange, GatewayFilterChain chain) &#123;
+        /**
+         * pre拦截逻辑
+         * 在请求去到微服务之前，做了两个处理
+         * 1.把客户端真实IP通过请求头的方式传递给微服务
+         * 2.在请求头中添加FEIGN_REQUEST的请求头，值为0，标记请求不是Feign调用，而是客户端调用
+         */
+        ServerHttpRequest request = exchange.getRequest().mutate().
+                //拿到ip地址,将其添加到请求头中发到为服务里
+                header(CommonConstants.REAL_IP,exchange.getRequest().getRemoteAddress().getHostString()).
+                header(CommonConstants.FEIGN_REQUEST_KEY,CommonConstants.FEIGN_REQUEST_FALSE).
+                build();
+        return chain.filter(exchange.mutate().request(request).build()).then(Mono.fromRunnable(()-&gt;&#123;
+            /**
+             * post拦截逻辑
+             * 在请求执行完微服务之后,需要刷新token在redis的时间
+             * 判断token不为空 &amp;&amp; Redis还存在这个token对于的key,这时候需要延长Redis中对应key的有效时间.
+             */
+            String token,redisKey;
+            if(!StringUtils.isEmpty(token =exchange.getRequest().getHeaders().getFirst(CommonConstants.TOKEN_NAME))
+                    &amp;&amp; redisTemplate.hasKey(redisKey = CommonRedisKey.USER_TOKEN.getRealKey(token)))&#123;
+                redisTemplate.expire(redisKey, CommonRedisKey.USER_TOKEN.getExpireTime(), CommonRedisKey.USER_TOKEN.getUnit());
+            &#125;
+        &#125;));
+    &#125;
+&#125;
+</code></pre>
 <p>此filter做了两件事:</p>
 <ol>
 <li>将来自客户端的请求(CommonConstants.FEIGN_REQUEST_KEY,CommonConstants.FEIGN_REQUEST_FALSE)而不是微服务之间的远程调用, 其请求ip添加到请求头中</li>
@@ -449,16 +501,112 @@
 <h2 id="1-3-登录流程"><a href="#1-3-登录流程" class="headerlink" title="1.3 登录流程"></a>1.3 登录流程</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240320115329599.png" alt="image-20240320115329599"></p>
 <h2 id="1-4-清理七天未登录的用户"><a href="#1-4-清理七天未登录的用户" class="headerlink" title="1.4 清理七天未登录的用户"></a>1.4 清理七天未登录的用户</h2><p>上图中伴随token一起存入redis的userInfo设置有过期时间, redis会自动清除. 但是写入redis中的hash和zset的userlogin没有设置过期时间, 若用户长期未登录就会浪费内存空间:</p>
 <p>我们使用xxl-job来清理超过七天未登录的用户:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用于处理用户缓存的定时任务</span></span><br><span class="line"><span class="comment"> * 为了保证Redis中的内存的有效使用。</span></span><br><span class="line"><span class="comment"> * 我们默认保留7天内的用户缓存数据，每天凌晨的时候会把7天前的用户登录缓存数据删除掉</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@RefreshScope</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserCacheJob</span> <span class="keyword">implements</span> <span class="title class_">SimpleJob</span> &#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;job.userCache.cron&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String cron;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(ShardingContext shardingContext)</span> &#123;</span><br><span class="line">        doWork();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">doWork</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 获取日历对象</span></span><br><span class="line">        <span class="type">Calendar</span> <span class="variable">calendar</span> <span class="operator">=</span> Calendar.getInstance();</span><br><span class="line">        <span class="comment">// 在当前时间天数的基础上做加法操作</span></span><br><span class="line">        <span class="comment">// 7天前 = 当前天 - 7</span></span><br><span class="line">        calendar.add(Calendar.DATE, -<span class="number">7</span>);</span><br><span class="line">        <span class="comment">//获取7天前的日期</span></span><br><span class="line">        <span class="type">Long</span> <span class="variable">max</span> <span class="operator">=</span> calendar.getTime().getTime();</span><br><span class="line">        <span class="type">String</span> <span class="variable">userZSetKey</span> <span class="operator">=</span> JobRedisKey.USER_ZSET.join(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">userHashKey</span> <span class="operator">=</span> JobRedisKey.USER_HASH.join(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="comment">//根据排序找到在七天前登录的用户</span></span><br><span class="line">        Set&lt;String&gt; ids = redisTemplate.opsForZSet().rangeByScore(userZSetKey, <span class="number">0</span>, max);</span><br><span class="line">        <span class="comment">//删除7天前的用户缓存数据</span></span><br><span class="line">        <span class="keyword">if</span> (ids.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            redisTemplate.opsForHash().delete(userHashKey, ids.toArray());</span><br><span class="line">            redisTemplate.opsForZSet().removeRangeByScore(userZSetKey, <span class="number">0</span>, max);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">/**
+ * 用于处理用户缓存的定时任务
+ * 为了保证Redis中的内存的有效使用。
+ * 我们默认保留7天内的用户缓存数据，每天凌晨的时候会把7天前的用户登录缓存数据删除掉
+ */
+@Component
+@Setter
+@Getter
+@RefreshScope
+@Slf4j
+public class UserCacheJob implements SimpleJob &#123;
+    @Value(&quot;$&#123;job.userCache.cron&#125;&quot;)
+    private String cron;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Override
+    public void execute(ShardingContext shardingContext) &#123;
+        doWork();
+    &#125;
+
+    private void doWork() &#123;
+        // 获取日历对象
+        Calendar calendar = Calendar.getInstance();
+        // 在当前时间天数的基础上做加法操作
+        // 7天前 = 当前天 - 7
+        calendar.add(Calendar.DATE, -7);
+        //获取7天前的日期
+        Long max = calendar.getTime().getTime();
+        String userZSetKey = JobRedisKey.USER_ZSET.join(&quot;&quot;);
+        String userHashKey = JobRedisKey.USER_HASH.join(&quot;&quot;);
+        //根据排序找到在七天前登录的用户
+        Set&lt;String&gt; ids = redisTemplate.opsForZSet().rangeByScore(userZSetKey, 0, max);
+        //删除7天前的用户缓存数据
+        if (ids.size() &gt; 0) &#123;
+            redisTemplate.opsForHash().delete(userHashKey, ids.toArray());
+            redisTemplate.opsForZSet().removeRangeByScore(userZSetKey, 0, max);
+        &#125;
+    &#125;
 
 
-
+&#125;
+</code></pre>
 <h2 id="1-5-未认证用户拦截-feign请求放行"><a href="#1-5-未认证用户拦截-feign请求放行" class="headerlink" title="1.5 未认证用户拦截&amp;feign请求放行"></a>1.5 未认证用户拦截&amp;feign请求放行</h2><p>首先在共用模块服务封装了一个feign方法拦截器,在每个feign请求前为其添加新的请求头, 标记这是一个feign请求</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FeignRequestInterceptor</span> <span class="keyword">implements</span> <span class="title class_">RequestInterceptor</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">apply</span><span class="params">(RequestTemplate template)</span> &#123;</span><br><span class="line">        <span class="comment">// 发起 Feign 请求之前执行</span></span><br><span class="line">        <span class="comment">// 往 Feign 请求中携带新的请求头，标识这一次请求是 Feign 请求</span></span><br><span class="line">        template.header(CommonConstants.FEIGN_REQUEST_KEY, CommonConstants.FEIGN_REQUEST_TRUE);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public class FeignRequestInterceptor implements RequestInterceptor &#123;
+    @Override
+    public void apply(RequestTemplate template) &#123;
+        // 发起 Feign 请求之前执行
+        // 往 Feign 请求中携带新的请求头，标识这一次请求是 Feign 请求
+        template.header(CommonConstants.FEIGN_REQUEST_KEY, CommonConstants.FEIGN_REQUEST_TRUE);
+    &#125;
+&#125;
+</code></pre>
 <p>再新增一个拦截器:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RequireLoginInterceptor</span> <span class="keyword">implements</span> <span class="title class_">HandlerInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">RequireLoginInterceptor</span><span class="params">(StringRedisTemplate redisTemplate)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.redisTemplate = redisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 判断当前请求是否是一个 api 请求</span></span><br><span class="line">        <span class="keyword">if</span> (handler <span class="keyword">instanceof</span> HandlerMethod) &#123;</span><br><span class="line">            <span class="type">HandlerMethod</span> <span class="variable">handlerMethod</span> <span class="operator">=</span> (HandlerMethod) handler;</span><br><span class="line">            <span class="comment">// 从请求头中获取 Feign 请求标识，以此来判断该请求是否是 Feign</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">feignRequest</span> <span class="operator">=</span> request.getHeader(CommonConstants.FEIGN_REQUEST_KEY);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Feign请求标识不为空 &amp;&amp; 不是 Feign 请求 &amp;&amp; 访问的接口方法贴了 @RequireLogin</span></span><br><span class="line">            <span class="keyword">if</span> (!StringUtils.isEmpty(feignRequest)</span><br><span class="line">                    &amp;&amp; CommonConstants.FEIGN_REQUEST_FALSE.equals(feignRequest)</span><br><span class="line">                    &amp;&amp; handlerMethod.getMethodAnnotation(RequireLogin.class) != <span class="literal">null</span>) &#123;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 设置响应类型为 json</span></span><br><span class="line">                response.setContentType(<span class="string">&quot;application/json;charset=utf-8&quot;</span>);</span><br><span class="line">                <span class="comment">// 从请求头中获取 token</span></span><br><span class="line">                <span class="type">String</span> <span class="variable">token</span> <span class="operator">=</span> request.getHeader(CommonConstants.TOKEN_NAME);</span><br><span class="line">                <span class="keyword">if</span> (StringUtils.isEmpty(token)) &#123;</span><br><span class="line">                    <span class="comment">// 如果 token 为空，返回 token 无效信息</span></span><br><span class="line">                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.TOKEN_INVALID)));</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="type">UserInfo</span> <span class="variable">userInfo</span> <span class="operator">=</span> JSON.parseObject(redisTemplate.opsForValue().get(CommonRedisKey.USER_TOKEN.getRealKey(token)), UserInfo.class);</span><br><span class="line">                <span class="comment">// 基于 token 从 redis 中获取当前用户，如果获取不到，说明 token 无效</span></span><br><span class="line">                <span class="keyword">if</span> (userInfo == <span class="literal">null</span>) &#123;</span><br><span class="line">                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.TOKEN_INVALID)));</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 从请求头中获取 ip 地址</span></span><br><span class="line">                <span class="comment">/*String ip = request.getHeader(CommonConstants.REAL_IP);</span></span><br><span class="line"><span class="comment">                if (!userInfo.getLoginIp().equals(ip)) &#123;</span></span><br><span class="line"><span class="comment">                    // 判断如果用户时的 ip 与当前访问接口的 ip 地址不一致，就拦截并提示 ip 已经改变，请重新登录</span></span><br><span class="line"><span class="comment">                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.LOGIN_IP_CHANGE)));</span></span><br><span class="line"><span class="comment">                    return false;</span></span><br><span class="line"><span class="comment">                &#125;*/</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果不是接口请求，就直接放行</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class RequireLoginInterceptor implements HandlerInterceptor &#123;
 
+    private StringRedisTemplate redisTemplate;
+
+    public RequireLoginInterceptor(StringRedisTemplate redisTemplate) &#123;
+        this.redisTemplate = redisTemplate;
+    &#125;
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception &#123;
+
+        // 判断当前请求是否是一个 api 请求
+        if (handler instanceof HandlerMethod) &#123;
+            HandlerMethod handlerMethod = (HandlerMethod) handler;
+            // 从请求头中获取 Feign 请求标识，以此来判断该请求是否是 Feign
+            String feignRequest = request.getHeader(CommonConstants.FEIGN_REQUEST_KEY);
+
+            // Feign请求标识不为空 &amp;&amp; 不是 Feign 请求 &amp;&amp; 访问的接口方法贴了 @RequireLogin
+            if (!StringUtils.isEmpty(feignRequest)
+                    &amp;&amp; CommonConstants.FEIGN_REQUEST_FALSE.equals(feignRequest)
+                    &amp;&amp; handlerMethod.getMethodAnnotation(RequireLogin.class) != null) &#123;
+
+                // 设置响应类型为 json
+                response.setContentType(&quot;application/json;charset=utf-8&quot;);
+                // 从请求头中获取 token
+                String token = request.getHeader(CommonConstants.TOKEN_NAME);
+                if (StringUtils.isEmpty(token)) &#123;
+                    // 如果 token 为空，返回 token 无效信息
+                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.TOKEN_INVALID)));
+                    return false;
+                &#125;
+                UserInfo userInfo = JSON.parseObject(redisTemplate.opsForValue().get(CommonRedisKey.USER_TOKEN.getRealKey(token)), UserInfo.class);
+                // 基于 token 从 redis 中获取当前用户，如果获取不到，说明 token 无效
+                if (userInfo == null) &#123;
+                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.TOKEN_INVALID)));
+                    return false;
+                &#125;
+                // 从请求头中获取 ip 地址
+                /*String ip = request.getHeader(CommonConstants.REAL_IP);
+                if (!userInfo.getLoginIp().equals(ip)) &#123;
+                    // 判断如果用户时的 ip 与当前访问接口的 ip 地址不一致，就拦截并提示 ip 已经改变，请重新登录
+                    response.getWriter().write(JSON.toJSONString(Result.error(CommonCodeMsg.LOGIN_IP_CHANGE)));
+                    return false;
+                &#125;*/
+            &#125;
+        &#125;
+
+        // 如果不是接口请求，就直接放行
+        return true;
+    &#125;
+&#125;
+</code></pre>
 <p>逻辑:</p>
 <ol>
 <li><p>如果feign请求标识不为空 &amp;&amp; 不是feign请求 &amp;&amp; 方法接口标有@RequireLogin注解, 说明这是由外部访问服务的需要登录后的接口:</p>
@@ -470,39 +618,189 @@
 </li>
 </ol>
 <h2 id="1-6-聚合秒杀商品列表和定时缓存"><a href="#1-6-聚合秒杀商品列表和定时缓存" class="headerlink" title="1.6 聚合秒杀商品列表和定时缓存"></a>1.6 聚合秒杀商品列表和定时缓存</h2><p>数据库中有两张表, 分别是秒杀库中的seckill-product和商品库中的product,我们要将这两张表中的部分信息聚合在一起展示到前端的秒杀页面中:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> List&lt;SeckillProductVo&gt; <span class="title function_">selectTodayListByTime</span><span class="params">(Integer time)</span> &#123;</span><br><span class="line">    <span class="comment">// 1. 调用秒杀服务接口, 基于今天的时间, 查询今天的所有秒杀商品数据</span></span><br><span class="line">    List&lt;SeckillProduct&gt; todayList = seckillProductMapper.queryCurrentlySeckillProduct(time);</span><br><span class="line">    <span class="keyword">if</span> (todayList.size() == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.emptyList();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. 遍历秒杀商品列表, 得到商品 id 列表</span></span><br><span class="line">    List&lt;Long&gt; productIdList = todayList.stream() <span class="comment">// Stream&lt;SeckillProduct&gt;</span></span><br><span class="line">            .map(SeckillProduct::getProductId) <span class="comment">// SeckillProduct =&gt; Long</span></span><br><span class="line">            .distinct()</span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line">    <span class="comment">// 3. 根据商品 id 列表, 调用商品服务查询接口, 得到商品列表</span></span><br><span class="line">    Result&lt;List&lt;Product&gt;&gt; result = productFeignApi.selectByIdList(productIdList);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * result 可能存在的几种情况:</span></span><br><span class="line"><span class="comment">     *  1. 远程接口正常返回, code == 200, data == 想要的数据</span></span><br><span class="line"><span class="comment">     *  2. 远程接口出现异常, code != 200</span></span><br><span class="line"><span class="comment">     *  3. 接口被熔断降级, data == null</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (result.hasError() || result.getData() == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BusinessException</span>(<span class="keyword">new</span> <span class="title class_">CodeMsg</span>(result.getCode(), result.getMsg()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    List&lt;Product&gt; products = result.getData();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 遍历秒杀商品列表, 将商品对象与秒杀商品对象聚合到一起</span></span><br><span class="line">    <span class="comment">// List&lt;SeckillProduct&gt; =&gt; List&lt;SeckillProductVo&gt;</span></span><br><span class="line">    List&lt;SeckillProductVo&gt; productVoList = todayList.stream()</span><br><span class="line">            .map(sp -&gt; &#123;</span><br><span class="line">                <span class="type">SeckillProductVo</span> <span class="variable">vo</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SeckillProductVo</span>();</span><br><span class="line">                BeanUtils.copyProperties(sp, vo);</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 遍历远程查询的商品列表，判断是否与当前的秒杀商品关联的商品对象一致</span></span><br><span class="line">                <span class="comment">// 如果是一致的，将该对象返回并将属性拷贝到 vo 对象中</span></span><br><span class="line">                List&lt;Product&gt; list = products.stream().filter(p -&gt; sp.getProductId().equals(p.getId())).collect(Collectors.toList());</span><br><span class="line">                <span class="keyword">if</span> (!list.isEmpty()) &#123;</span><br><span class="line">                    <span class="type">Product</span> <span class="variable">product</span> <span class="operator">=</span> list.get(<span class="number">0</span>);</span><br><span class="line">                    BeanUtils.copyProperties(product, vo);</span><br><span class="line">                &#125;</span><br><span class="line">                vo.setId(sp.getId());</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> vo;</span><br><span class="line">            &#125;) <span class="comment">// Stream&lt;SeckillProductVo&gt;</span></span><br><span class="line">            .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> productVoList;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Override
+public List&lt;SeckillProductVo&gt; selectTodayListByTime(Integer time) &#123;
+    // 1. 调用秒杀服务接口, 基于今天的时间, 查询今天的所有秒杀商品数据
+    List&lt;SeckillProduct&gt; todayList = seckillProductMapper.queryCurrentlySeckillProduct(time);
+    if (todayList.size() == 0) &#123;
+        return Collections.emptyList();
+    &#125;
+    // 2. 遍历秒杀商品列表, 得到商品 id 列表
+    List&lt;Long&gt; productIdList = todayList.stream() // Stream&lt;SeckillProduct&gt;
+            .map(SeckillProduct::getProductId) // SeckillProduct =&gt; Long
+            .distinct()
+            .collect(Collectors.toList());
+    // 3. 根据商品 id 列表, 调用商品服务查询接口, 得到商品列表
+    Result&lt;List&lt;Product&gt;&gt; result = productFeignApi.selectByIdList(productIdList);
+    /**
+     * result 可能存在的几种情况:
+     *  1. 远程接口正常返回, code == 200, data == 想要的数据
+     *  2. 远程接口出现异常, code != 200
+     *  3. 接口被熔断降级, data == null
+     */
+    if (result.hasError() || result.getData() == null) &#123;
+        throw new BusinessException(new CodeMsg(result.getCode(), result.getMsg()));
+    &#125;
 
+    List&lt;Product&gt; products = result.getData();
 
+    // 4. 遍历秒杀商品列表, 将商品对象与秒杀商品对象聚合到一起
+    // List&lt;SeckillProduct&gt; =&gt; List&lt;SeckillProductVo&gt;
+    List&lt;SeckillProductVo&gt; productVoList = todayList.stream()
+            .map(sp -&gt; &#123;
+                SeckillProductVo vo = new SeckillProductVo();
+                BeanUtils.copyProperties(sp, vo);
 
+                // 遍历远程查询的商品列表，判断是否与当前的秒杀商品关联的商品对象一致
+                // 如果是一致的，将该对象返回并将属性拷贝到 vo 对象中
+                List&lt;Product&gt; list = products.stream().filter(p -&gt; sp.getProductId().equals(p.getId())).collect(Collectors.toList());
+                if (!list.isEmpty()) &#123;
+                    Product product = list.get(0);
+                    BeanUtils.copyProperties(product, vo);
+                &#125;
+                vo.setId(sp.getId());
+
+                return vo;
+            &#125;) // Stream&lt;SeckillProductVo&gt;
+            .collect(Collectors.toList());
+
+    return productVoList;
+&#125;
+</code></pre>
 <p>一般场景下,秒杀会有预热, 每天将需要秒杀的商品提前存入到redis中, 后续的查询也从redis中查询</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> List&lt;SeckillProductVo&gt; <span class="title function_">selectTodayListByTimeFromRedis</span><span class="params">(Integer time)</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> SeckillRedisKey.SECKILL_PRODUCT_LIST.join(time + <span class="string">&quot;&quot;</span>);</span><br><span class="line">    <span class="comment">//拿到所有数据</span></span><br><span class="line">    List&lt;String&gt; stringList = redisTemplate.opsForList().range(key, <span class="number">0</span>, -<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (stringList == <span class="literal">null</span> || stringList.size() == <span class="number">0</span>) &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;[秒杀商品] 查询秒杀商品列表异常, Redis 中没有数据, 从 DB 中查询...&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.selectTodayListByTime(time);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> stringList.stream().map(json -&gt; JSON.parseObject(json, SeckillProductVo.class)).collect(Collectors.toList());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Override
+public List&lt;SeckillProductVo&gt; selectTodayListByTimeFromRedis(Integer time) &#123;
+    String key = SeckillRedisKey.SECKILL_PRODUCT_LIST.join(time + &quot;&quot;);
+    //拿到所有数据
+    List&lt;String&gt; stringList = redisTemplate.opsForList().range(key, 0, -1);
 
+    if (stringList == null || stringList.size() == 0) &#123;
+        log.warn(&quot;[秒杀商品] 查询秒杀商品列表异常, Redis 中没有数据, 从 DB 中查询...&quot;);
+        return this.selectTodayListByTime(time);
+    &#125;
+
+    return stringList.stream().map(json -&gt; JSON.parseObject(json, SeckillProductVo.class)).collect(Collectors.toList());
+&#125;
+</code></pre>
 <p>每天的预热任务:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Setter</span></span><br><span class="line"><span class="meta">@Getter</span></span><br><span class="line"><span class="meta">@RefreshScope</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SeckillProductInitJob</span> <span class="keyword">implements</span> <span class="title class_">SimpleJob</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;job.seckillProduct.cron&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String cron;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;job.seckillProduct.shardingCount&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer shardingCount;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;job.seckillProduct.shardingParameters&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String shardingParameters;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;job.seckillProduct.dataFlow&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> dataFlow;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> SeckillProductFeignApi seckillProductFeignApi;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> StringRedisTemplate stringRedisTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(ShardingContext shardingContext)</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 分片参数利用场次进行分片</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">time</span> <span class="operator">=</span> shardingContext.getShardingParameter();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 先清空之前的数据</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> SeckillRedisKey.SECKILL_PRODUCT_LIST.join(time);</span><br><span class="line">        stringRedisTemplate.delete(key);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 调用秒杀服务的接口, 查询秒杀商品 数据</span></span><br><span class="line">        Result&lt;List&lt;SeckillProductVo&gt;&gt; result = seckillProductFeignApi.selectTodayListByTime(Integer.valueOf(time));</span><br><span class="line">        <span class="keyword">if</span> (result.hasError() || result.getData() == <span class="literal">null</span>) &#123;</span><br><span class="line">            log.warn(<span class="string">&quot;[秒杀商品数据预热] 查询秒杀商品数据失败, 远程服务异常. res=&#123;&#125;&quot;</span>, JSON.toJSONString(result));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        List&lt;SeckillProductVo&gt; productVoList = result.getData();</span><br><span class="line">        log.info(<span class="string">&quot;[秒杀商品数据预热] 准备开始预热秒杀商品数据, 当前场次:&#123;&#125;, 本次缓存的数据:&#123;&#125;&quot;</span>, time, productVoList.size());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将数据存入 Redis : List</span></span><br><span class="line">        <span class="comment">// key=TODAY:&#123;time&#125;:SECKILL:PRODUCTS</span></span><br><span class="line">        <span class="comment">// value=SeckillProductVo =&gt; &#123;json&#125;</span></span><br><span class="line">        <span class="keyword">for</span> (SeckillProductVo vo : productVoList) &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> JSON.toJSONString(vo);</span><br><span class="line">            stringRedisTemplate.opsForList().rightPush(key, json);</span><br><span class="line">        &#125;</span><br><span class="line">        log.info(<span class="string">&quot;[秒杀商品数据预热] 数据预热完成...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Component
+@Setter
+@Getter
+@RefreshScope
+@Slf4j
+public class SeckillProductInitJob implements SimpleJob &#123;
 
+    @Value(&quot;$&#123;job.seckillProduct.cron&#125;&quot;)
+    private String cron;
+    @Value(&quot;$&#123;job.seckillProduct.shardingCount&#125;&quot;)
+    private Integer shardingCount;
+    @Value(&quot;$&#123;job.seckillProduct.shardingParameters&#125;&quot;)
+    private String shardingParameters;
+    @Value(&quot;$&#123;job.seckillProduct.dataFlow&#125;&quot;)
+    private boolean dataFlow;
+
+    @Autowired
+    private SeckillProductFeignApi seckillProductFeignApi;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Override
+    public void execute(ShardingContext shardingContext) &#123;
+
+        // 分片参数利用场次进行分片
+        String time = shardingContext.getShardingParameter();
+
+        // 先清空之前的数据
+        String key = SeckillRedisKey.SECKILL_PRODUCT_LIST.join(time);
+        stringRedisTemplate.delete(key);
+
+        // 调用秒杀服务的接口, 查询秒杀商品 数据
+        Result&lt;List&lt;SeckillProductVo&gt;&gt; result = seckillProductFeignApi.selectTodayListByTime(Integer.valueOf(time));
+        if (result.hasError() || result.getData() == null) &#123;
+            log.warn(&quot;[秒杀商品数据预热] 查询秒杀商品数据失败, 远程服务异常. res=&#123;&#125;&quot;, JSON.toJSONString(result));
+            return;
+        &#125;
+
+        List&lt;SeckillProductVo&gt; productVoList = result.getData();
+        log.info(&quot;[秒杀商品数据预热] 准备开始预热秒杀商品数据, 当前场次:&#123;&#125;, 本次缓存的数据:&#123;&#125;&quot;, time, productVoList.size());
+
+        // 将数据存入 Redis : List
+        // key=TODAY:&#123;time&#125;:SECKILL:PRODUCTS
+        // value=SeckillProductVo =&gt; &#123;json&#125;
+        for (SeckillProductVo vo : productVoList) &#123;
+            String json = JSON.toJSONString(vo);
+            stringRedisTemplate.opsForList().rightPush(key, json);
+        &#125;
+        log.info(&quot;[秒杀商品数据预热] 数据预热完成...&quot;);
+    &#125;
+&#125;
+</code></pre>
 <h1 id="二-秒杀功能"><a href="#二-秒杀功能" class="headerlink" title="二.秒杀功能"></a>二.秒杀功能</h1><h2 id="2-1-用户参数解析器"><a href="#2-1-用户参数解析器" class="headerlink" title="2.1 用户参数解析器"></a>2.1 用户参数解析器</h2><p>进行秒杀功能的前提是用户必须登录, 同时从前端传入的token中拿到用户的信息, 每次都需要用token在接口中去取.</p>
 <p>很不方便.springboot提供了参数解析器的功能,其可以在从controller前将参数解析完毕,并传入到接口方法中. 比如</p>
 <p>@RequestHeader(“token”)String token, 该注解就可以将请求头中的token解析到token参数中.</p>
 <p>实现原理:</p>
 <p>类RequestHeaderMethodArgumentResolver专门用来解析@RequestHeader,</p>
 <p>其继承了HandlerMethodArgumentResolver接口:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HandlerMethodArgumentResolver</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//支持的类型</span></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">supportsParameter</span><span class="params">(MethodParameter parameter)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//解析的逻辑</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    Object <span class="title function_">resolveArgument</span><span class="params">(MethodParameter parameter, <span class="meta">@Nullable</span> ModelAndViewContainer mavContainer,</span></span><br><span class="line"><span class="params">          NativeWebRequest webRequest, <span class="meta">@Nullable</span> WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public interface HandlerMethodArgumentResolver &#123;
 
+    //支持的类型
+    boolean supportsParameter(MethodParameter parameter);
+
+
+    //解析的逻辑
+    @Nullable
+    Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
+          NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception;
+
+&#125;
+</code></pre>
 <p>实现的方法:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">supportsParameter</span><span class="params">(MethodParameter parameter)</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> (parameter.hasParameterAnnotation(RequestHeader.class) &amp;&amp;</span><br><span class="line">			!Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">    @Override
+    public boolean supportsParameter(MethodParameter parameter) &#123;
+        return (parameter.hasParameterAnnotation(RequestHeader.class) &amp;&amp;
+                !Map.class.isAssignableFrom(parameter.nestedIfOptional().getNestedParameterType()));
+    &#125;
+</code></pre>
 <p>我们只需要仿照该方式即可完成自己的参数解析器</p>
 <p>自定义注解:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Target(ElementType.PARAMETER)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RequestUser &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RequestUser &#123;
+&#125;
+</code></pre>
 <p>参数解析器:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserInfoMethodArgumentResolver</span> <span class="keyword">implements</span> <span class="title class_">HandlerMethodArgumentResolver</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span>  StringRedisTemplate redisTemplate;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//该解析器是否支持这个参数</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">supportsParameter</span><span class="params">(MethodParameter parameter)</span> &#123;</span><br><span class="line">        <span class="comment">//判断参数类型是否是要处理的类型,并且注解了@RequestUser</span></span><br><span class="line">        <span class="keyword">return</span> parameter.hasParameterAnnotation(RequestUser.class)&amp;&amp;parameter.getParameterType()== UserInfo.class;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">resolveArgument</span><span class="params">(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">//从请求头中获取token</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">token</span> <span class="operator">=</span> webRequest.getHeader(<span class="string">&quot;token&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> JSON.parseObject(redisTemplate.opsForValue().get(CommonRedisKey.USER_TOKEN.getRealKey(token)), UserInfo.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class UserInfoMethodArgumentResolver implements HandlerMethodArgumentResolver &#123;
 
+    @Resource
+    private  StringRedisTemplate redisTemplate;
+
+
+    //该解析器是否支持这个参数
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) &#123;
+        //判断参数类型是否是要处理的类型,并且注解了@RequestUser
+        return parameter.hasParameterAnnotation(RequestUser.class)&amp;&amp;parameter.getParameterType()== UserInfo.class;
+    &#125;
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception &#123;
+        //从请求头中获取token
+        String token = webRequest.getHeader(&quot;token&quot;);
+        return JSON.parseObject(redisTemplate.opsForValue().get(CommonRedisKey.USER_TOKEN.getRealKey(token)), UserInfo.class);
+    &#125;
+&#125;
+</code></pre>
 <p>在秒杀模块中引入该解析器</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="keyword">public</span> UserInfoMethodArgumentResolver <span class="title function_">userInfoMethodArgumentResolver</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">UserInfoMethodArgumentResolver</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addArgumentResolvers</span><span class="params">(List&lt;HandlerMethodArgumentResolver&gt; resolvers)</span> &#123;</span><br><span class="line">        resolvers.add(userInfoMethodArgumentResolver());</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Bean
+public UserInfoMethodArgumentResolver userInfoMethodArgumentResolver()&#123;
+    return new UserInfoMethodArgumentResolver();
+&#125;
 
-
-
+    @Override
+    public void addArgumentResolvers(List&lt;HandlerMethodArgumentResolver&gt; resolvers) &#123;
+        resolvers.add(userInfoMethodArgumentResolver());
+    &#125;
+</code></pre>
 <p>之后, 在任何服务再想拿到登录的用户信息就很方便了</p>
 <h2 id="2-2-分布式锁解决超卖问题"><a href="#2-2-分布式锁解决超卖问题" class="headerlink" title="2.2 分布式锁解决超卖问题"></a>2.2 分布式锁解决超卖问题</h2><h3 id="2-2-1超卖"><a href="#2-2-1超卖" class="headerlink" title="2.2.1超卖"></a>2.2.1超卖</h3><p>用户下单流程:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240320155647902.png" alt="image-20240320155647902"></p>
@@ -519,7 +817,37 @@
 <li>当线程获取不到锁时,执行什么策略: 阻塞&#x2F;自旋(限制次数)&#x2F;抛出异常</li>
 </ul>
 <p><strong>redis锁</strong></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@CacheEvict(key=&quot;&#x27;selectByIdAndTime:&#x27; + #id&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">decrStockCount</span><span class="params">(Long id, Integer time)</span>  &#123;</span><br><span class="line">        String key=<span class="string">&quot;seckill:product:stockcount:&quot;</span> + time + <span class="string">&quot;:&quot;</span> + id;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//如果自旋次数超过5,则抛出异常</span></span><br><span class="line">            <span class="type">int</span> count=<span class="number">0</span>;</span><br><span class="line">            Boolean absent;</span><br><span class="line">            <span class="keyword">do</span>&#123;</span><br><span class="line">                <span class="comment">//注意,当一个进程拿到了锁但jvm突然挂掉时, 该锁就永远不会释放,造成死锁</span></span><br><span class="line">                absent = redisTemplate.opsForValue().setIfAbsent(key, Thread.currentThread().getName());</span><br><span class="line">               <span class="keyword">if</span> (Boolean.FALSE.equals(absent))&#123;</span><br><span class="line">                   Thread.sleep(<span class="number">10</span>);</span><br><span class="line">               &#125;</span><br><span class="line">               AssertUtils.isTrue((count++) &lt; <span class="number">5</span>, <span class="string">&quot;系统繁忙,请稍后再试&quot;</span>);</span><br><span class="line">            &#125; <span class="keyword">while</span> (Boolean.FALSE.equals(absent));</span><br><span class="line">            <span class="type">int</span> <span class="variable">stockCount</span> <span class="operator">=</span> seckillProductMapper.getStockCount(id);</span><br><span class="line"></span><br><span class="line">            AssertUtils.isTrue(stockCount&gt;<span class="number">0</span>,<span class="string">&quot;库存不足&quot;</span>);</span><br><span class="line">            seckillProductMapper.decrStock(id);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//释放锁</span></span><br><span class="line">            redisTemplate.delete(key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java"> @Override
+    @CacheEvict(key=&quot;&#39;selectByIdAndTime:&#39; + #id&quot;)
+    public void decrStockCount(Long id, Integer time)  &#123;
+        String key=&quot;seckill:product:stockcount:&quot; + time + &quot;:&quot; + id;
+        try &#123;
+            //如果自旋次数超过5,则抛出异常
+            int count=0;
+            Boolean absent;
+            do&#123;
+                //注意,当一个进程拿到了锁但jvm突然挂掉时, 该锁就永远不会释放,造成死锁
+                absent = redisTemplate.opsForValue().setIfAbsent(key, Thread.currentThread().getName());
+               if (Boolean.FALSE.equals(absent))&#123;
+                   Thread.sleep(10);
+               &#125;
+               AssertUtils.isTrue((count++) &lt; 5, &quot;系统繁忙,请稍后再试&quot;);
+            &#125; while (Boolean.FALSE.equals(absent));
+            int stockCount = seckillProductMapper.getStockCount(id);
+
+            AssertUtils.isTrue(stockCount&gt;0,&quot;库存不足&quot;);
+            seckillProductMapper.decrStock(id);
+        &#125; catch (InterruptedException e) &#123;
+            e.printStackTrace();
+        &#125; finally &#123;
+            //释放锁
+            redisTemplate.delete(key);
+        &#125;
+
+    &#125;
+&#125;
+</code></pre>
+
                 
             </div>
             <hr/>
@@ -928,7 +1256,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             

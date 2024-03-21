@@ -56,7 +56,7 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -405,7 +405,7 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    9.5k
+                    9.6k
                 </div>
                 
 
@@ -444,15 +444,39 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 <li><p>BeanDefinitionRegistry: 注册BeanDefinition的接口,由DefaultListableBeanFactory实现方法</p>
 </li>
 <li><p>DefaultSingletonBeanRegistry: 实现了SingletonBeanRegistry,并维护了一个单例对象的一级缓存singletonObjects</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//单例变量的一级缓存</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String,Object&gt;singletonObjects=<span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">   </span><br><span class="line">   </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">getSingleTon</span><span class="params">(String beanName)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> singletonObjects.get(beanName);</span><br><span class="line">&#125;</span><br><span class="line">   </span><br><span class="line"><span class="comment">//添加单例变量到一级缓存中</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">addSingleton</span><span class="params">(String beanName, Object singletonObject)</span> &#123;</span><br><span class="line">    singletonObjects.put(beanName, singletonObject);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    //单例变量的一级缓存
+    private final Map&lt;String,Object&gt;singletonObjects=new HashMap&lt;&gt;();
 
 
+    @Override
+    public Object getSingleTon(String beanName) &#123;
+        return singletonObjects.get(beanName);
+    &#125;
+
+    //添加单例变量到一级缓存中
+    protected void addSingleton(String beanName, Object singletonObject) &#123;
+        singletonObjects.put(beanName, singletonObject);
+    &#125;
+</code></pre>
 </li>
 <li><p>AbstractBeanFactory: 抽象bean工厂, 继承了DefaultSingletonBeanRegistry,实现了BeanFactory接口,利用模板方法目视定义了getBean方法: 该类为集成单例bean缓存和getBean的桥接类</p>
 </li>
 </ol>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">getBean</span><span class="params">(String name)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">    <span class="type">Object</span> <span class="variable">singleTon</span> <span class="operator">=</span> getSingleTon(name);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(singleTon!=<span class="literal">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> singleTon;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//一级缓存中找不到就从beanDefinitionMap中取</span></span><br><span class="line">    <span class="type">BeanDefinition</span> <span class="variable">beanDefinition</span> <span class="operator">=</span> getBeanDefinition(name);</span><br><span class="line">    <span class="keyword">return</span> createBean(name,beanDefinition);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> BeanDefinition <span class="title function_">getBeanDefinition</span><span class="params">(String beanName)</span><span class="keyword">throws</span> BeansException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> Object <span class="title function_">createBean</span><span class="params">(String beanName,BeanDefinition beanDefinition)</span><span class="keyword">throws</span> BeansException;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Override
+public Object getBean(String name) throws BeansException &#123;
+    Object singleTon = getSingleTon(name);
 
+    if(singleTon!=null)&#123;
+        return singleTon;
+    &#125;
+    //一级缓存中找不到就从beanDefinitionMap中取
+    BeanDefinition beanDefinition = getBeanDefinition(name);
+    return createBean(name,beanDefinition);
+&#125;
+protected abstract BeanDefinition getBeanDefinition(String beanName)throws BeansException;
+
+protected abstract Object createBean(String beanName,BeanDefinition beanDefinition)throws BeansException;
+</code></pre>
 <ol start="6">
 <li><p>AbstractAutowireCapableBeanFactory继承了AbstractBeanFactory,并且实现了抽象方法createBean(String beanName, BeanDefinition beanDefinition)</p>
 </li>
@@ -461,60 +485,493 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 </ol>
 <h1 id="二-基于Cglib实现含构造函数的类实例化策略"><a href="#二-基于Cglib实现含构造函数的类实例化策略" class="headerlink" title="二.基于Cglib实现含构造函数的类实例化策略"></a>二.基于Cglib实现含构造函数的类实例化策略</h1><p>由于之前我们的BeanFactory只能接受无参的构造器创造bean,这显然是不够的</p>
 <p>现在我们引入CGLib来帮助实现自动创建带参数的构造器的bean的创建</p>
-<h2 id="基于CGlib的自动创建bean的方式"><a href="#基于CGlib的自动创建bean的方式" class="headerlink" title="基于CGlib的自动创建bean的方式:"></a>基于CGlib的自动创建bean的方式:</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CglibSubclassingInstantiationStrategy</span> <span class="keyword">implements</span> <span class="title class_">InstantiationStrategy</span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用cglib实例化bean</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">instantiate</span><span class="params">(String beanName, BeanDefinition beanDefinition, Constructor ctor, Object[] args)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="comment">//获取增强类</span></span><br><span class="line">        Enhancer enhancer=<span class="keyword">new</span> <span class="title class_">Enhancer</span>();</span><br><span class="line">        <span class="comment">//设置类信息</span></span><br><span class="line">        enhancer.setSuperclass(beanDefinition.getBeanClass());</span><br><span class="line">        <span class="comment">//回调方法</span></span><br><span class="line">        enhancer.setCallback(<span class="keyword">new</span> <span class="title class_">NoOp</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="built_in">super</span>.hashCode();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">if</span>(ctor==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="comment">//如果构造器为空,那么就直接无参构造</span></span><br><span class="line">            <span class="keyword">return</span> enhancer.create();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//使用有参构造器进行构造</span></span><br><span class="line">        <span class="keyword">return</span> enhancer.create(ctor.getParameterTypes(),args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基于CGlib的自动创建bean的方式"><a href="#基于CGlib的自动创建bean的方式" class="headerlink" title="基于CGlib的自动创建bean的方式:"></a>基于CGlib的自动创建bean的方式:</h2><pre><code class="java">public class CglibSubclassingInstantiationStrategy implements InstantiationStrategy&#123;
 
-<h2 id="基于JDK的方式"><a href="#基于JDK的方式" class="headerlink" title="基于JDK的方式"></a>基于JDK的方式</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleInstantiationStrategy</span> <span class="keyword">implements</span> <span class="title class_">InstantiationStrategy</span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> beanName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> beanDefinition</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ctor</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> BeansException</span></span><br><span class="line"><span class="comment">     * 首先通过 beanDefinition 获取 Class 信息，这个 Class 信息是在 Bean 定义的时候传递进去的。</span></span><br><span class="line"><span class="comment">     * 接下来判断 ctor 是否为空，如果为空则是无构造函数实例化，否则就是需要有构造函数的实例化。</span></span><br><span class="line"><span class="comment">     * 这里我们重点关注有构造函数的实例化，</span></span><br><span class="line"><span class="comment">     * 实例化方式为 clazz.getDeclaredConstructor(ctor.getParameterTypes()).newInstance(args);，把入参信息传递给 newInstance 进行实例化。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">instantiate</span><span class="params">(String beanName, BeanDefinition beanDefinition, Constructor ctor, Object[] args)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">beanClass</span> <span class="operator">=</span> beanDefinition.getBeanClass();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(ctor!=<span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> beanClass.getDeclaredConstructor(ctor.getParameterTypes()).newInstance(args);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> beanClass.getDeclaredConstructor().newInstance();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span> (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Failed to instantiate [&quot;</span> + beanClass.getName() + <span class="string">&quot;]&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+    //使用cglib实例化bean
+    @Override
+    public Object instantiate(String beanName, BeanDefinition beanDefinition, Constructor ctor, Object[] args) throws BeansException &#123;
+        //获取增强类
+        Enhancer enhancer=new Enhancer();
+        //设置类信息
+        enhancer.setSuperclass(beanDefinition.getBeanClass());
+        //回调方法
+        enhancer.setCallback(new NoOp() &#123;
+            @Override
+            public int hashCode() &#123;
+                return super.hashCode();
+            &#125;
+        &#125;);
+        if(ctor==null)&#123;
+            //如果构造器为空,那么就直接无参构造
+            return enhancer.create();
+        &#125;
+        //使用有参构造器进行构造
+        return enhancer.create(ctor.getParameterTypes(),args);
+    &#125;
+&#125;
+</code></pre>
+<h2 id="基于JDK的方式"><a href="#基于JDK的方式" class="headerlink" title="基于JDK的方式"></a>基于JDK的方式</h2><pre><code class="java">public class SimpleInstantiationStrategy implements InstantiationStrategy&#123;
+    /**
+     *
+     * @param beanName
+     * @param beanDefinition
+     * @param ctor
+     * @param args
+     * @return
+     * @throws BeansException
+     * 首先通过 beanDefinition 获取 Class 信息，这个 Class 信息是在 Bean 定义的时候传递进去的。
+     * 接下来判断 ctor 是否为空，如果为空则是无构造函数实例化，否则就是需要有构造函数的实例化。
+     * 这里我们重点关注有构造函数的实例化，
+     * 实例化方式为 clazz.getDeclaredConstructor(ctor.getParameterTypes()).newInstance(args);，把入参信息传递给 newInstance 进行实例化。
+     */
+    @Override
+    public Object instantiate(String beanName, BeanDefinition beanDefinition, Constructor ctor, Object[] args) throws BeansException &#123;
+        Class beanClass = beanDefinition.getBeanClass();
+
+        try &#123;
+            if(ctor!=null)&#123;
+                return beanClass.getDeclaredConstructor(ctor.getParameterTypes()).newInstance(args);
+            &#125;else &#123;
+                return beanClass.getDeclaredConstructor().newInstance();
+            &#125;
+        &#125;catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e)&#123;
+            throw new BeansException(&quot;Failed to instantiate [&quot; + beanClass.getName() + &quot;]&quot;, e);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <h1 id="三-为Bean对象注入属性和依赖Bean的功能实现"><a href="#三-为Bean对象注入属性和依赖Bean的功能实现" class="headerlink" title="三.为Bean对象注入属性和依赖Bean的功能实现"></a>三.为Bean对象注入属性和依赖Bean的功能实现</h1><p>添加了BeanReference表示bean之间的引用,PropertyValue表示bean的属性值,PropertyValues表示属性值的包装</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-5-01.png" alt="img5515020"></p>
-<h2 id="BeanReference"><a href="#BeanReference" class="headerlink" title="BeanReference"></a>BeanReference</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dylan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2023/4/11 15:45</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> bean之间的引用</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BeanReference</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BeanReference</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="BeanReference"><a href="#BeanReference" class="headerlink" title="BeanReference"></a>BeanReference</h2><pre><code class="java">/**
+ * @author Dylan
+ * @version 1.0
+ * @date 2023/4/11 15:45
+ * @description bean之间的引用
+ **/
+public class BeanReference &#123;
 
-<h2 id="PropertyValue"><a href="#PropertyValue" class="headerlink" title="PropertyValue"></a>PropertyValue</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dylan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2023/4/11 15:46</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> TODO</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PropertyValue</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object value;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">PropertyValue</span><span class="params">(String name, Object value)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.value = value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getValue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    private final String name;
 
-<h2 id="PropertyValues"><a href="#PropertyValues" class="headerlink" title="PropertyValues"></a>PropertyValues</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dylan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2023/4/11 15:47</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> 属性值的包装类</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PropertyValues</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;PropertyValue&gt;list=<span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addPropertyValue</span><span class="params">(PropertyValue pv)</span>&#123;</span><br><span class="line">        list.add(pv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> PropertyValue[] getPropertyValues() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.list.toArray(<span class="keyword">new</span> <span class="title class_">PropertyValue</span>[<span class="number">0</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> PropertyValue <span class="title function_">getPropertyValue</span><span class="params">(String propertyName)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (PropertyValue pv : <span class="built_in">this</span>.list) &#123;</span><br><span class="line">            <span class="keyword">if</span> (pv.getName().equals(propertyName)) &#123;</span><br><span class="line">                <span class="keyword">return</span> pv;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    public BeanReference(String name) &#123;
+        this.name = name;
+    &#125;
 
-<h2 id="修改AbstractAutowireCapableBeanFactory的createBean方法-将属性注入的功能添加上"><a href="#修改AbstractAutowireCapableBeanFactory的createBean方法-将属性注入的功能添加上" class="headerlink" title="修改AbstractAutowireCapableBeanFactory的createBean方法,将属性注入的功能添加上"></a>修改AbstractAutowireCapableBeanFactory的createBean方法,将属性注入的功能添加上</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> Object <span class="title function_">createBean</span><span class="params">(String beanName, BeanDefinition beanDefinition,Object[]args)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">    Object bean;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//反射创建bean对象</span></span><br><span class="line">       bean =createBeanInstance(beanDefinition,beanName,args);</span><br><span class="line">       <span class="comment">//为bean填充属性</span></span><br><span class="line">        applyPropertyValues(beanName,bean,beanDefinition);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Instantiation of bean failed&quot;</span>,e);</span><br><span class="line">    &#125;</span><br><span class="line">    addSingleton(beanName,bean);</span><br><span class="line">    <span class="keyword">return</span> bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    public String getName() &#123;
+        return name;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="PropertyValue"><a href="#PropertyValue" class="headerlink" title="PropertyValue"></a>PropertyValue</h2><pre><code class="java">/**
+ * @author Dylan
+ * @version 1.0
+ * @date 2023/4/11 15:46
+ * @description TODO
+ **/
+public class PropertyValue &#123;
+    private final String name;
 
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * bean的属性填充</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> beanName</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> bean</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> beanDefinition</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">applyPropertyValues</span><span class="params">(String beanName,Object bean,BeanDefinition beanDefinition)</span>&#123;</span><br><span class="line">    String name=<span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">PropertyValues</span> <span class="variable">propertyValues</span> <span class="operator">=</span> beanDefinition.getPropertyValues();</span><br><span class="line">        <span class="comment">//如果bean没有参数的话,直接跳过</span></span><br><span class="line">        <span class="keyword">if</span>(propertyValues==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//填充参数</span></span><br><span class="line">        <span class="keyword">for</span> (PropertyValue propertyValue : propertyValues.getPropertyValues()) &#123;</span><br><span class="line">            name = propertyValue.getName();</span><br><span class="line">            <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> propertyValue.getValue();</span><br><span class="line">            <span class="keyword">if</span>(value <span class="keyword">instanceof</span> BeanReference)&#123;</span><br><span class="line">                <span class="comment">//A依赖B,获取B的实例化</span></span><br><span class="line">                BeanReference beanReference=(BeanReference) value;</span><br><span class="line">                value=getBean(beanReference.getName());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//属性填充</span></span><br><span class="line">            BeanUtil.setFieldValue(bean,name,value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Error setting property values：&quot;</span> + beanName+<span class="string">&quot;,setting &quot;</span>+name+<span class="string">&quot; error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    private final Object value;
 
+    public PropertyValue(String name, Object value) &#123;
+        this.name = name;
+        this.value = value;
+    &#125;
+
+
+    public String getName() &#123;
+        return name;
+    &#125;
+
+    public Object getValue() &#123;
+        return value;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="PropertyValues"><a href="#PropertyValues" class="headerlink" title="PropertyValues"></a>PropertyValues</h2><pre><code class="java">/**
+ * @author Dylan
+ * @version 1.0
+ * @date 2023/4/11 15:47
+ * @description 属性值的包装类
+ **/
+public class PropertyValues &#123;
+    private final List&lt;PropertyValue&gt;list=new ArrayList&lt;&gt;();
+
+    public void addPropertyValue(PropertyValue pv)&#123;
+        list.add(pv);
+    &#125;
+
+    public PropertyValue[] getPropertyValues() &#123;
+        return this.list.toArray(new PropertyValue[0]);
+    &#125;
+
+    public PropertyValue getPropertyValue(String propertyName) &#123;
+        for (PropertyValue pv : this.list) &#123;
+            if (pv.getName().equals(propertyName)) &#123;
+                return pv;
+            &#125;
+        &#125;
+        return null;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="修改AbstractAutowireCapableBeanFactory的createBean方法-将属性注入的功能添加上"><a href="#修改AbstractAutowireCapableBeanFactory的createBean方法-将属性注入的功能添加上" class="headerlink" title="修改AbstractAutowireCapableBeanFactory的createBean方法,将属性注入的功能添加上"></a>修改AbstractAutowireCapableBeanFactory的createBean方法,将属性注入的功能添加上</h2><pre><code class="java">@Override
+protected Object createBean(String beanName, BeanDefinition beanDefinition,Object[]args) throws BeansException &#123;
+    Object bean;
+    try &#123;
+        //反射创建bean对象
+       bean =createBeanInstance(beanDefinition,beanName,args);
+       //为bean填充属性
+        applyPropertyValues(beanName,bean,beanDefinition);
+    &#125; catch (Exception e)&#123;
+        throw new BeansException(&quot;Instantiation of bean failed&quot;,e);
+    &#125;
+    addSingleton(beanName,bean);
+    return bean;
+&#125;
+</code></pre>
+<pre><code class="java">/**
+ * bean的属性填充
+ * @param beanName
+ * @param bean
+ * @param beanDefinition
+ */
+protected void applyPropertyValues(String beanName,Object bean,BeanDefinition beanDefinition)&#123;
+    String name=&quot;&quot;;
+    try &#123;
+        PropertyValues propertyValues = beanDefinition.getPropertyValues();
+        //如果bean没有参数的话,直接跳过
+        if(propertyValues==null)&#123;
+            return;
+        &#125;
+        //填充参数
+        for (PropertyValue propertyValue : propertyValues.getPropertyValues()) &#123;
+            name = propertyValue.getName();
+            Object value = propertyValue.getValue();
+            if(value instanceof BeanReference)&#123;
+                //A依赖B,获取B的实例化
+                BeanReference beanReference=(BeanReference) value;
+                value=getBean(beanReference.getName());
+            &#125;
+            //属性填充
+            BeanUtil.setFieldValue(bean,name,value);
+        &#125;
+    &#125;catch (Exception e)&#123;
+        throw new BeansException(&quot;Error setting property values：&quot; + beanName+&quot;,setting &quot;+name+&quot; error&quot;);
+    &#125;
+&#125;
+</code></pre>
 <h1 id="四-资源加载器的实现"><a href="#四-资源加载器的实现" class="headerlink" title="四.资源加载器的实现"></a>四.资源加载器的实现</h1><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-6-02.png" alt="imgwe1q515ewq"></p>
 <h2 id="定义顶级接口Resource"><a href="#定义顶级接口Resource" class="headerlink" title="定义顶级接口Resource"></a>定义顶级接口Resource</h2><p>resource是获取输入流的统一入口:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Resource</span> &#123;</span><br><span class="line">    InputStream <span class="title function_">getInputStream</span><span class="params">()</span><span class="keyword">throws</span> IOException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface Resource &#123;
+    InputStream getInputStream()throws IOException;
+&#125;
+</code></pre>
 <p>之后可以根据用途,分别定义三种实现类:</p>
-<h3 id="类路径文件读取输入流"><a href="#类路径文件读取输入流" class="headerlink" title="类路径文件读取输入流:"></a>类路径文件读取输入流:</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassPathResource</span> <span class="keyword">implements</span> <span class="title class_">Resource</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String path;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ClassLoader classLoader;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ClassPathResource</span><span class="params">(String path)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(path, (ClassLoader) <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ClassPathResource</span><span class="params">(String path, ClassLoader classLoader)</span> &#123;</span><br><span class="line">        Assert.notNull(path, <span class="string">&quot;Path must not be null&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.path = path;</span><br><span class="line">        <span class="built_in">this</span>.classLoader = (classLoader != <span class="literal">null</span> ? classLoader : ClassUtils.getDefaultClassLoader());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> InputStream <span class="title function_">getInputStream</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> classLoader.getResourceAsStream(path);</span><br><span class="line">        <span class="keyword">if</span> (inputStream==<span class="literal">null</span>)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FileNotFoundException</span>(</span><br><span class="line">                    <span class="built_in">this</span>.path + <span class="string">&quot; cannot be opened because it does not exist&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> inputStream;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="类路径文件读取输入流"><a href="#类路径文件读取输入流" class="headerlink" title="类路径文件读取输入流:"></a>类路径文件读取输入流:</h3><pre><code class="java">public class ClassPathResource implements Resource&#123;
+    private final String path;
 
-<h3 id="文件读取输入流"><a href="#文件读取输入流" class="headerlink" title="文件读取输入流"></a>文件读取输入流</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FileSystemResource</span> <span class="keyword">implements</span> <span class="title class_">Resource</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> File file;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String path;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">FileSystemResource</span><span class="params">(File file)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.file = file;</span><br><span class="line">        <span class="built_in">this</span>.path = file.getPath();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">FileSystemResource</span><span class="params">(String path)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.file = <span class="keyword">new</span> <span class="title class_">File</span>(path);</span><br><span class="line">        <span class="built_in">this</span>.path = path;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> InputStream <span class="title function_">getInputStream</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="comment">//拿到当前类的输入流</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="built_in">this</span>.file);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> String <span class="title function_">getPath</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.path;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    private ClassLoader classLoader;
 
-<h3 id="网络url读取输入流"><a href="#网络url读取输入流" class="headerlink" title="网络url读取输入流"></a>网络url读取输入流</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">URLResource</span> <span class="keyword">implements</span> <span class="title class_">Resource</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> URL url;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">URLResource</span><span class="params">(URL url)</span> &#123;</span><br><span class="line">        Assert.notNull(url,<span class="string">&quot;URL must not be null&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.url = url;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> InputStream <span class="title function_">getInputStream</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        <span class="type">URLConnection</span> <span class="variable">con</span> <span class="operator">=</span> <span class="built_in">this</span>.url.openConnection();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> con.getInputStream();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (IOException ex)&#123;</span><br><span class="line">            <span class="keyword">if</span> (con <span class="keyword">instanceof</span> HttpURLConnection)&#123;</span><br><span class="line">                ((HttpURLConnection) con).disconnect();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    public ClassPathResource(String path) &#123;
+        this(path, (ClassLoader) null);
+    &#125;
+    public ClassPathResource(String path, ClassLoader classLoader) &#123;
+        Assert.notNull(path, &quot;Path must not be null&quot;);
+        this.path = path;
+        this.classLoader = (classLoader != null ? classLoader : ClassUtils.getDefaultClassLoader());
+    &#125;
 
+    @Override
+    public InputStream getInputStream() throws IOException &#123;
+        InputStream inputStream = classLoader.getResourceAsStream(path);
+        if (inputStream==null)&#123;
+            throw new FileNotFoundException(
+                    this.path + &quot; cannot be opened because it does not exist&quot;);
+        &#125;
+        return inputStream;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="文件读取输入流"><a href="#文件读取输入流" class="headerlink" title="文件读取输入流"></a>文件读取输入流</h3><pre><code class="java">public class FileSystemResource implements Resource&#123;
+
+    private final File file;
+
+    private final String path;
+
+    public FileSystemResource(File file) &#123;
+        this.file = file;
+        this.path = file.getPath();
+    &#125;
+
+    public FileSystemResource(String path) &#123;
+        this.file = new File(path);
+        this.path = path;
+    &#125;
+
+    @Override
+    public InputStream getInputStream() throws IOException &#123;
+        //拿到当前类的输入流
+        return new FileInputStream(this.file);
+    &#125;
+
+    public final String getPath() &#123;
+        return this.path;
+    &#125;
+    
+&#125;
+</code></pre>
+<h3 id="网络url读取输入流"><a href="#网络url读取输入流" class="headerlink" title="网络url读取输入流"></a>网络url读取输入流</h3><pre><code class="java">public class URLResource implements Resource&#123;
+
+    private final URL url;
+
+    public URLResource(URL url) &#123;
+        Assert.notNull(url,&quot;URL must not be null&quot;);
+        this.url = url;
+    &#125;
+
+    @Override
+    public InputStream getInputStream() throws IOException &#123;
+        URLConnection con = this.url.openConnection();
+        try &#123;
+            return con.getInputStream();
+        &#125;
+        catch (IOException ex)&#123;
+            if (con instanceof HttpURLConnection)&#123;
+                ((HttpURLConnection) con).disconnect();
+            &#125;
+            throw ex;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <h2 id="定义ResourceLoader顶级接口"><a href="#定义ResourceLoader顶级接口" class="headerlink" title="定义ResourceLoader顶级接口:"></a>定义ResourceLoader顶级接口:</h2><p>从给定的路径下获取resource:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ResourceLoader</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Pseudo URL prefix for loading from the class path: &quot;classpath:&quot;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">CLASSPATH_URL_PREFIX</span> <span class="operator">=</span> <span class="string">&quot;classpath:&quot;</span>;</span><br><span class="line"></span><br><span class="line">    Resource <span class="title function_">getResource</span><span class="params">(String location)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public interface ResourceLoader &#123;
+    /**
+     * Pseudo URL prefix for loading from the class path: &quot;classpath:&quot;
+     */
+    String CLASSPATH_URL_PREFIX = &quot;classpath:&quot;;
 
+    Resource getResource(String location);
+&#125;
+</code></pre>
 <p>默认的实现类:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DefaultResourceLoader</span> <span class="keyword">implements</span> <span class="title class_">ResourceLoader</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Resource <span class="title function_">getResource</span><span class="params">(String location)</span> &#123;</span><br><span class="line">        Assert.notNull(location);</span><br><span class="line">        <span class="keyword">if</span> (location.startsWith(CLASSPATH_URL_PREFIX))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ClassPathResource</span>(location.substring(CLASSPATH_URL_PREFIX.length()));</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(location);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">URLResource</span>(url);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (MalformedURLException e) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">FileSystemResource</span>(location);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class DefaultResourceLoader implements ResourceLoader&#123;
 
-<h2 id="定义BeanDefinitionReader顶级接口"><a href="#定义BeanDefinitionReader顶级接口" class="headerlink" title="定义BeanDefinitionReader顶级接口"></a>定义BeanDefinitionReader顶级接口</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Dylan</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@version</span> 1.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2023/4/12 11:06</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@description</span> TODO</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BeanDefinitionReader</span> &#123;</span><br><span class="line">    BeanDefinitionRegistry <span class="title function_">getRegistry</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    ResourceLoader <span class="title function_">getResourceLoader</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(Resource resource)</span> <span class="keyword">throws</span> BeansException;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(Resource... resources)</span> <span class="keyword">throws</span> BeansException;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(String location)</span> <span class="keyword">throws</span> BeansException;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    @Override
+    public Resource getResource(String location) &#123;
+        Assert.notNull(location);
+        if (location.startsWith(CLASSPATH_URL_PREFIX))&#123;
+            return new ClassPathResource(location.substring(CLASSPATH_URL_PREFIX.length()));
+        &#125;else&#123;
+            try &#123;
+                URL url = new URL(location);
+                return new URLResource(url);
+            &#125; catch (MalformedURLException e) &#123;
+                return new FileSystemResource(location);
+            &#125;
+        &#125;
 
+    &#125;
+&#125;
+</code></pre>
+<h2 id="定义BeanDefinitionReader顶级接口"><a href="#定义BeanDefinitionReader顶级接口" class="headerlink" title="定义BeanDefinitionReader顶级接口"></a>定义BeanDefinitionReader顶级接口</h2><pre><code class="java">/**
+ * @author Dylan
+ * @version 1.0
+ * @date 2023/4/12 11:06
+ * @description TODO
+ **/
+public interface BeanDefinitionReader &#123;
+    BeanDefinitionRegistry getRegistry();
+
+    ResourceLoader getResourceLoader();
+
+    void loadBeanDefinitions(Resource resource) throws BeansException;
+
+    void loadBeanDefinitions(Resource... resources) throws BeansException;
+
+    void loadBeanDefinitions(String location) throws BeansException;
+&#125;
+</code></pre>
 <p>前面两个方法是为后面三个方法服务的(获取beanDefinitionRegistry接口,当拿到beanDefinition时用来注册)</p>
 <p>ResourceLoader则是用来加载文件内容</p>
-<h3 id="定义抽象类AbstractBeanDefinitionReader实现该顶级接口"><a href="#定义抽象类AbstractBeanDefinitionReader实现该顶级接口" class="headerlink" title="定义抽象类AbstractBeanDefinitionReader实现该顶级接口"></a>定义抽象类AbstractBeanDefinitionReader实现该顶级接口</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractBeanDefinitionReader</span> <span class="keyword">implements</span> <span class="title class_">BeanDefinitionReader</span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BeanDefinitionRegistry beanDefinitionRegistry;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> ResourceLoader resourceLoader;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">AbstractBeanDefinitionReader</span><span class="params">(BeanDefinitionRegistry beanDefinitionRegistry)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>(beanDefinitionRegistry,<span class="keyword">new</span> <span class="title class_">DefaultResourceLoader</span>());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">AbstractBeanDefinitionReader</span><span class="params">(BeanDefinitionRegistry registry, ResourceLoader resourceLoader)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.beanDefinitionRegistry = registry;</span><br><span class="line">        <span class="built_in">this</span>.resourceLoader = resourceLoader;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> BeanDefinitionRegistry <span class="title function_">getRegistry</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> beanDefinitionRegistry;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> ResourceLoader <span class="title function_">getResourceLoader</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> resourceLoader;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="定义抽象类AbstractBeanDefinitionReader实现该顶级接口"><a href="#定义抽象类AbstractBeanDefinitionReader实现该顶级接口" class="headerlink" title="定义抽象类AbstractBeanDefinitionReader实现该顶级接口"></a>定义抽象类AbstractBeanDefinitionReader实现该顶级接口</h3><pre><code class="java">public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader&#123;
+    private final BeanDefinitionRegistry beanDefinitionRegistry;
 
+    private ResourceLoader resourceLoader;
+
+
+    protected AbstractBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry)&#123;
+        this(beanDefinitionRegistry,new DefaultResourceLoader());
+    &#125;
+
+    public AbstractBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) &#123;
+        this.beanDefinitionRegistry = registry;
+        this.resourceLoader = resourceLoader;
+    &#125;
+
+    @Override
+    public BeanDefinitionRegistry getRegistry() &#123;
+        return beanDefinitionRegistry;
+    &#125;
+
+    @Override
+    public ResourceLoader getResourceLoader() &#123;
+        return resourceLoader;
+    &#125;
+&#125;
+</code></pre>
 <p>该抽象类实现了前两个方法</p>
-<h3 id="定义XmlBeanDefinitionReader实现类"><a href="#定义XmlBeanDefinitionReader实现类" class="headerlink" title="定义XmlBeanDefinitionReader实现类"></a>定义XmlBeanDefinitionReader实现类</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">XmlBeanDefinitionReader</span> <span class="keyword">extends</span> <span class="title class_">AbstractBeanDefinitionReader</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">XmlBeanDefinitionReader</span><span class="params">(BeanDefinitionRegistry beanDefinitionRegistry)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(beanDefinitionRegistry);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">XmlBeanDefinitionReader</span><span class="params">(BeanDefinitionRegistry registry, ResourceLoader resourceLoader)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(registry, resourceLoader);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(Resource resource)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="keyword">try</span>( <span class="type">InputStream</span> <span class="variable">inputStream</span> <span class="operator">=</span> resource.getInputStream();) &#123;</span><br><span class="line">           doLoadBeanDefinitions(inputStream);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (IOException | ClassNotFoundException e)&#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;IOException parsing XML document from &quot;</span> + resource, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(Resource... resources)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="keyword">for</span> (Resource resource : resources) &#123;</span><br><span class="line">            loadBeanDefinitions(resource);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(String location)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="type">ResourceLoader</span> <span class="variable">resourceLoader</span> <span class="operator">=</span> getResourceLoader();</span><br><span class="line">        <span class="type">Resource</span> <span class="variable">resource</span> <span class="operator">=</span> resourceLoader.getResource(location);</span><br><span class="line">        loadBeanDefinitions(resource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doLoadBeanDefinitions</span><span class="params">(InputStream inputStream)</span><span class="keyword">throws</span> ClassNotFoundException&#123;</span><br><span class="line">        <span class="type">Document</span> <span class="variable">document</span> <span class="operator">=</span> XmlUtil.readXML(inputStream);</span><br><span class="line">        <span class="type">Element</span> <span class="variable">root</span> <span class="operator">=</span> document.getDocumentElement();</span><br><span class="line">        <span class="type">NodeList</span> <span class="variable">childNodes</span> <span class="operator">=</span> root.getChildNodes();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; childNodes.getLength(); i++) &#123;</span><br><span class="line">            <span class="comment">//判断元素</span></span><br><span class="line">            <span class="keyword">if</span>(!(childNodes.item(i) <span class="keyword">instanceof</span> Element))<span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//判断对象</span></span><br><span class="line">            <span class="keyword">if</span>(!<span class="string">&quot;bean&quot;</span>.equals(childNodes.item(i).getNodeName()))<span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//解析标签</span></span><br><span class="line">            <span class="type">Element</span> <span class="variable">bean</span> <span class="operator">=</span> (Element) childNodes.item(i);</span><br><span class="line">            <span class="type">String</span> <span class="variable">id</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;id&quot;</span>);</span><br><span class="line">            <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">            <span class="type">String</span> <span class="variable">className</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;class&quot;</span>);</span><br><span class="line"></span><br><span class="line">            Class&lt;?&gt; aClass = Class.forName(className);</span><br><span class="line">            <span class="comment">//优先级: id&gt;name</span></span><br><span class="line">            String beanName=StrUtil.isNotEmpty(id)?id:name;</span><br><span class="line">            <span class="keyword">if</span>(StrUtil.isEmpty(beanName))&#123;</span><br><span class="line">                <span class="comment">//bean的名字为首位小写</span></span><br><span class="line">                beanName=StrUtil.lowerFirst(aClass.getSimpleName());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//定义bean</span></span><br><span class="line">            <span class="type">BeanDefinition</span> <span class="variable">beanDefinition</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanDefinition</span>(aClass);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; bean.getChildNodes().getLength(); j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!(bean.getChildNodes().item(j) <span class="keyword">instanceof</span> Element)) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">if</span> (!<span class="string">&quot;property&quot;</span>.equals(bean.getChildNodes().item(j).getNodeName())) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="comment">// 解析标签：property</span></span><br><span class="line">                Element element=(Element) bean.getChildNodes().item(j);</span><br><span class="line">                <span class="type">String</span> <span class="variable">attrName</span> <span class="operator">=</span> element.getAttribute(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">                <span class="type">String</span> <span class="variable">attrValue</span> <span class="operator">=</span> element.getAttribute(<span class="string">&quot;value&quot;</span>);</span><br><span class="line">                <span class="type">String</span> <span class="variable">attrRef</span> <span class="operator">=</span> element.getAttribute(<span class="string">&quot;ref&quot;</span>);</span><br><span class="line">                <span class="comment">//获取属性值</span></span><br><span class="line">                <span class="type">Object</span> <span class="variable">value</span> <span class="operator">=</span> StrUtil.isNotEmpty(attrRef) ? <span class="keyword">new</span> <span class="title class_">BeanReference</span>(attrRef) : attrValue;</span><br><span class="line">                <span class="comment">//创建属性信息</span></span><br><span class="line">                PropertyValue propertyValue=<span class="keyword">new</span> <span class="title class_">PropertyValue</span>(attrName,value);</span><br><span class="line">                beanDefinition.getPropertyValues().addPropertyValue(propertyValue);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (getRegistry().containsBeanDefinition(beanName))&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;重复创建&quot;</span>+beanName);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//注册</span></span><br><span class="line">            getRegistry().registerBeanDefinition(beanName,beanDefinition);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="定义XmlBeanDefinitionReader实现类"><a href="#定义XmlBeanDefinitionReader实现类" class="headerlink" title="定义XmlBeanDefinitionReader实现类"></a>定义XmlBeanDefinitionReader实现类</h3><pre><code class="java">public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader &#123;
 
+    public XmlBeanDefinitionReader(BeanDefinitionRegistry beanDefinitionRegistry) &#123;
+        super(beanDefinitionRegistry);
+    &#125;
+
+    public XmlBeanDefinitionReader(BeanDefinitionRegistry registry, ResourceLoader resourceLoader) &#123;
+        super(registry, resourceLoader);
+    &#125;
+
+    @Override
+    public void loadBeanDefinitions(Resource resource) throws BeansException &#123;
+        try( InputStream inputStream = resource.getInputStream();) &#123;
+           doLoadBeanDefinitions(inputStream);
+        &#125;catch (IOException | ClassNotFoundException e)&#123;
+            throw new BeansException(&quot;IOException parsing XML document from &quot; + resource, e);
+        &#125;
+    &#125;
+
+    @Override
+    public void loadBeanDefinitions(Resource... resources) throws BeansException &#123;
+        for (Resource resource : resources) &#123;
+            loadBeanDefinitions(resource);
+        &#125;
+    &#125;
+
+    @Override
+    public void loadBeanDefinitions(String location) throws BeansException &#123;
+        ResourceLoader resourceLoader = getResourceLoader();
+        Resource resource = resourceLoader.getResource(location);
+        loadBeanDefinitions(resource);
+    &#125;
+
+
+    protected void doLoadBeanDefinitions(InputStream inputStream)throws ClassNotFoundException&#123;
+        Document document = XmlUtil.readXML(inputStream);
+        Element root = document.getDocumentElement();
+        NodeList childNodes = root.getChildNodes();
+
+        for (int i = 0; i &lt; childNodes.getLength(); i++) &#123;
+            //判断元素
+            if(!(childNodes.item(i) instanceof Element))continue;
+
+            //判断对象
+            if(!&quot;bean&quot;.equals(childNodes.item(i).getNodeName()))continue;
+
+            //解析标签
+            Element bean = (Element) childNodes.item(i);
+            String id = bean.getAttribute(&quot;id&quot;);
+            String name = bean.getAttribute(&quot;name&quot;);
+            String className = bean.getAttribute(&quot;class&quot;);
+
+            Class&lt;?&gt; aClass = Class.forName(className);
+            //优先级: id&gt;name
+            String beanName=StrUtil.isNotEmpty(id)?id:name;
+            if(StrUtil.isEmpty(beanName))&#123;
+                //bean的名字为首位小写
+                beanName=StrUtil.lowerFirst(aClass.getSimpleName());
+            &#125;
+            //定义bean
+            BeanDefinition beanDefinition = new BeanDefinition(aClass);
+
+            for (int j = 0; j &lt; bean.getChildNodes().getLength(); j++) &#123;
+                if (!(bean.getChildNodes().item(j) instanceof Element)) continue;
+                if (!&quot;property&quot;.equals(bean.getChildNodes().item(j).getNodeName())) continue;
+                // 解析标签：property
+                Element element=(Element) bean.getChildNodes().item(j);
+                String attrName = element.getAttribute(&quot;name&quot;);
+                String attrValue = element.getAttribute(&quot;value&quot;);
+                String attrRef = element.getAttribute(&quot;ref&quot;);
+                //获取属性值
+                Object value = StrUtil.isNotEmpty(attrRef) ? new BeanReference(attrRef) : attrValue;
+                //创建属性信息
+                PropertyValue propertyValue=new PropertyValue(attrName,value);
+                beanDefinition.getPropertyValues().addPropertyValue(propertyValue);
+            &#125;
+            if (getRegistry().containsBeanDefinition(beanName))&#123;
+                throw new BeansException(&quot;重复创建&quot;+beanName);
+            &#125;
+            //注册
+            getRegistry().registerBeanDefinition(beanName,beanDefinition);
+        &#125;
+
+    &#125;
+
+&#125;
+</code></pre>
 <h1 id="五-实现应用上下文"><a href="#五-实现应用上下文" class="headerlink" title="五.实现应用上下文"></a>五.实现应用上下文</h1><p>在对容器中 Bean 的实例化过程添加扩展机制的同时，还需要把目前关于 Spring.xml 初始化和加载策略进行优化，因为我们不太可能让面向 Spring 本身开发的 <code>DefaultListableBeanFactory</code> 服务，直接给予用户使用。修改点如下：</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-7-01.png" alt="imgweq1e4w6qe1"></p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/ClassPathXmlApplicationContext.png" alt="imagewe1q451we1q"></p>
 <p>可以看出applicationContext只是实现了BeanFactory接口,并没有实现加载配置文件的功能.而真正做出串联起加载[配置文件和注册bean的功能是抽象类AbstractApplicationContext,它使用了模板方法模式,规定了几个方法的执行顺序. 并将具体的实现交给子类</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">       <span class="comment">//创建beanFactory并加载BeanDefinition---&gt;由子类完成</span></span><br><span class="line">       refreshBeanFactory();</span><br><span class="line"></span><br><span class="line">       <span class="comment">//获取beanFactory    ---&gt;由子类完成</span></span><br><span class="line">       <span class="type">ConfigurableListableBeanFactory</span> <span class="variable">beanFactory</span> <span class="operator">=</span> getBeanFactory();</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 3. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)</span></span><br><span class="line">       invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">       <span class="comment">// 4. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作</span></span><br><span class="line">       registerBeanPostProcessors(beanFactory);</span><br><span class="line">       <span class="comment">//提前创建单例bean</span></span><br><span class="line">       beanFactory.preInstantiateSingletons();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java"> @Override
+    public void refresh() throws BeansException &#123;
+        //创建beanFactory并加载BeanDefinition---&gt;由子类完成
+        refreshBeanFactory();
 
+        //获取beanFactory    ---&gt;由子类完成
+        ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+
+        // 3. 在 Bean 实例化之前，执行 BeanFactoryPostProcessor (Invoke factory processors registered as beans in the context.)
+        invokeBeanFactoryPostProcessors(beanFactory);
+
+        // 4. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
+        registerBeanPostProcessors(beanFactory);
+        //提前创建单例bean
+        beanFactory.preInstantiateSingletons();
+    &#125;
+</code></pre>
 <p>抽象类AbstractRefreshableApplicationContext继承了AbstractApplicationContext并实现了refreshBeanFactory:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> DefaultListableBeanFactory beanFactory;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//加载BeanFactory</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">refreshBeanFactory</span><span class="params">()</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">    <span class="comment">//创建beanFactory的方法</span></span><br><span class="line">    <span class="type">DefaultListableBeanFactory</span> <span class="variable">beanFactory</span> <span class="operator">=</span> createBeanFactory();</span><br><span class="line">    <span class="comment">//从资源中加载配置文件---&lt;交由子类完成</span></span><br><span class="line">    loadBeanDefinitions(beanFactory);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.beanFactory=beanFactory;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> DefaultListableBeanFactory <span class="title function_">createBeanFactory</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DefaultListableBeanFactory</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(DefaultListableBeanFactory beanFactory)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> DefaultListableBeanFactory <span class="title function_">getBeanFactory</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> beanFactory;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    private DefaultListableBeanFactory beanFactory;
 
+
+    //加载BeanFactory
+    @Override
+    protected void refreshBeanFactory() throws BeansException &#123;
+        //创建beanFactory的方法
+        DefaultListableBeanFactory beanFactory = createBeanFactory();
+        //从资源中加载配置文件---&lt;交由子类完成
+        loadBeanDefinitions(beanFactory);
+
+        this.beanFactory=beanFactory;
+    &#125;
+
+
+    private DefaultListableBeanFactory createBeanFactory()&#123;
+        return new DefaultListableBeanFactory();
+    &#125;
+
+    protected abstract void loadBeanDefinitions(DefaultListableBeanFactory beanFactory);
+
+    @Override
+    public DefaultListableBeanFactory getBeanFactory() &#123;
+        return beanFactory;
+    &#125;
+</code></pre>
 <p>抽象类AbstractXmlApplicationContext继续继承AbstractRefreshableApplicationContext,实现其交代下来的loadBeanDefinitions.并定义了一个抽象方法getConfigLocations交由子类完成,其作用是拿到配置文件的路径信息</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">loadBeanDefinitions</span><span class="params">(DefaultListableBeanFactory beanFactory)</span> &#123;</span><br><span class="line">    XmlBeanDefinitionReader beanDefinitionReader=<span class="keyword">new</span> <span class="title class_">XmlBeanDefinitionReader</span>(beanFactory,<span class="built_in">this</span>);</span><br><span class="line">    String[] configLocations = getConfigLocations();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(configLocations!=<span class="literal">null</span>)&#123;</span><br><span class="line">        beanDefinitionReader.loadBeanDefinitions(configLocations);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">abstract</span> String[]getConfigLocations();</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Override
+protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) &#123;
+    XmlBeanDefinitionReader beanDefinitionReader=new XmlBeanDefinitionReader(beanFactory,this);
+    String[] configLocations = getConfigLocations();
 
+    if(configLocations!=null)&#123;
+        beanDefinitionReader.loadBeanDefinitions(configLocations);
+    &#125;
+
+&#125;
+
+
+protected abstract String[]getConfigLocations();
+</code></pre>
 <p>ClassPathXmlApplicationContext是最后的实现类,继承了AbstractXmlApplicationContext,其实现了最后一个抽象方法getConfigLocations(),将</p>
 <p>加载文件资源和注册bean的功能集成到了一起.</p>
 <h1 id="六-初始化和销毁方法"><a href="#六-初始化和销毁方法" class="headerlink" title="六.初始化和销毁方法"></a>六.初始化和销毁方法</h1><p>当我们的类创建的 Bean 对象，交给 Spring 容器管理以后，这个类对象就可以被赋予更多的使用能力。就像我们在上一章节已经给类对象添加了修改注册Bean定义未实例化前的属性信息修改和初始化过程中的前置和后置处理，这些额外能力的实现，都可以让我们对现有工程中的类对象做相应的扩展处理。</p>
@@ -524,20 +981,80 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 <p>销毁方法和初始化方法都在xml文件中定义,因此加载xml文件资源时需要加载这些内容到beanDefinition中.</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20230412160500276-16818892666807.png" alt="image-20230412160500276"></p>
 <p>将方法信息注册到BeanDefinition中之后,注册BeanDefinition;</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//注册</span></span><br><span class="line">getRegistry().registerBeanDefinition(beanName,beanDefinition);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//注册
+getRegistry().registerBeanDefinition(beanName,beanDefinition);
+</code></pre>
 <p>之后在创建单例bean的时候,会在合适的时机执行相应的方法.</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">protected</span> Object <span class="title function_">createBean</span><span class="params">(String beanName, BeanDefinition beanDefinition,Object[]args)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">       Object bean;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           <span class="comment">//反射创建bean对象</span></span><br><span class="line">          bean =createBeanInstance(beanDefinition,beanName,args);</span><br><span class="line">          <span class="comment">//为bean填充属性</span></span><br><span class="line">           applyPropertyValues(beanName,bean,beanDefinition);</span><br><span class="line">           <span class="comment">//执行bean的初始化方法</span></span><br><span class="line">           <span class="comment">//这个方法也会判断bean是否实现了BeanPostProcessor和DisposableBean,若实现了就会在相应的步骤上执行实现的方法</span></span><br><span class="line">           initializeBean(beanName,bean,beanDefinition);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Instantiation of bean failed&quot;</span>,e);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="comment">// 注册实现了 DisposableBean 接口的 Bean 对象</span></span><br><span class="line">       registerDisposableBeanIfNecessary(beanName,bean,beanDefinition);</span><br><span class="line">	</span><br><span class="line">       addSingleton(beanName,bean);</span><br><span class="line">       <span class="keyword">return</span> bean;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java"> @Override
+    protected Object createBean(String beanName, BeanDefinition beanDefinition,Object[]args) throws BeansException &#123;
+        Object bean;
+        try &#123;
+            //反射创建bean对象
+           bean =createBeanInstance(beanDefinition,beanName,args);
+           //为bean填充属性
+            applyPropertyValues(beanName,bean,beanDefinition);
+            //执行bean的初始化方法
+            //这个方法也会判断bean是否实现了BeanPostProcessor和DisposableBean,若实现了就会在相应的步骤上执行实现的方法
+            initializeBean(beanName,bean,beanDefinition);
+        &#125; catch (Exception e)&#123;
+            throw new BeansException(&quot;Instantiation of bean failed&quot;,e);
+        &#125;
+        // 注册实现了 DisposableBean 接口的 Bean 对象
+        registerDisposableBeanIfNecessary(beanName,bean,beanDefinition);
+        
+        addSingleton(beanName,bean);
+        return bean;
+    &#125;
+</code></pre>
+<pre><code class="java"> //注册需要销毁的bean
+    protected void registerDisposableBeanIfNecessary(String beanName,Object bean,BeanDefinition beanDefinition)&#123;
+        if(bean instanceof DisposableBean|| StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName()))&#123;
+            registerDisposableBean(beanName,new DisposableBeanAdapter(bean,beanName,beanDefinition));
+        &#125;
+    &#125;
+</code></pre>
+<pre><code class="java">private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception &#123;
+    // 1. 执行 BeanPostProcessor Before 处理
+    Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
 
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//注册需要销毁的bean</span></span><br><span class="line">   <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">registerDisposableBeanIfNecessary</span><span class="params">(String beanName,Object bean,BeanDefinition beanDefinition)</span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(bean <span class="keyword">instanceof</span> DisposableBean|| StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName()))&#123;</span><br><span class="line">           registerDisposableBean(beanName,<span class="keyword">new</span> <span class="title class_">DisposableBeanAdapter</span>(bean,beanName,beanDefinition));</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+    //invokeInitMethods(beanName, wrappedBean, beanDefinition);
+    invokeInitMethods(beanName, wrappedBean, beanDefinition);
 
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> Object <span class="title function_">initializeBean</span><span class="params">(String beanName, Object bean, BeanDefinition beanDefinition)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 1. 执行 BeanPostProcessor Before 处理</span></span><br><span class="line">    <span class="type">Object</span> <span class="variable">wrappedBean</span> <span class="operator">=</span> applyBeanPostProcessorsBeforeInitialization(bean, beanName);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//invokeInitMethods(beanName, wrappedBean, beanDefinition);</span></span><br><span class="line">    invokeInitMethods(beanName, wrappedBean, beanDefinition);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 执行BeanPostProcessor After 处理</span></span><br><span class="line">    wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);</span><br><span class="line">    <span class="keyword">return</span> wrappedBean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+    // 2. 执行BeanPostProcessor After 处理
+    wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+    return wrappedBean;
+&#125;
+</code></pre>
 <p>在AbstractApplicationContext中的registerShutdownHook生命周期钩子:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerShutdownHook</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;close&quot;</span>);</span><br><span class="line">    <span class="comment">//程序结束后执行该方法</span></span><br><span class="line">    Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> <span class="title class_">Thread</span>(<span class="built_in">this</span>::close));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//销毁所有待销毁的对象</span></span><br><span class="line">    getBeanFactory().destroySingletons();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">    @Override
+    public void registerShutdownHook() &#123;
+        System.out.println(&quot;close&quot;);
+        //程序结束后执行该方法
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
+    &#125;
 
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destroySingletons</span><span class="params">()</span> &#123;</span><br><span class="line">    Set&lt;String&gt; keySet = <span class="built_in">this</span>.disposableBeans.keySet();</span><br><span class="line">    Object[] disposableBeanNames = keySet.toArray();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> disposableBeanNames.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">beanName</span> <span class="operator">=</span> disposableBeanNames[i];</span><br><span class="line">        <span class="type">DisposableBean</span> <span class="variable">disposableBean</span> <span class="operator">=</span> disposableBeans.remove(beanName);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            disposableBean.destroy();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Destroy method on bean with name &#x27;&quot;</span> + beanName + <span class="string">&quot;&#x27; threw an exception&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    @Override
+    public void close() &#123;
+        //销毁所有待销毁的对象
+        getBeanFactory().destroySingletons();
+    &#125;
+</code></pre>
+<pre><code class="java">@Override
+public void destroySingletons() &#123;
+    Set&lt;String&gt; keySet = this.disposableBeans.keySet();
+    Object[] disposableBeanNames = keySet.toArray();
 
+    for (int i = disposableBeanNames.length - 1; i &gt;= 0; i--) &#123;
+        Object beanName = disposableBeanNames[i];
+        DisposableBean disposableBean = disposableBeans.remove(beanName);
+        try &#123;
+            disposableBean.destroy();
+        &#125; catch (Exception e) &#123;
+            throw new BeansException(&quot;Destroy method on bean with name &#39;&quot; + beanName + &quot;&#39; threw an exception&quot;, e);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <h1 id="七-Aware接口感知bean的基本信息"><a href="#七-Aware接口感知bean的基本信息" class="headerlink" title="七.Aware接口感知bean的基本信息"></a>七.Aware接口感知bean的基本信息</h1><p>如果说我希望拿到 Spring 框架中一些提供的资源，那么首先需要考虑以一个什么方式去获取，之后你定义出来的获取方式，在 Spring 框架中该怎么去承接，实现了这两项内容，就可以扩展出你需要的一些属于 Spring 框架本身的能力了。</p>
 <p>在关于 Bean 对象实例化阶段我们操作过一些额外定义、属性、初始化和销毁的操作，其实我们如果像获取 Spring 一些如 BeanFactory、ApplicationContext 时，也可以通过此类方式进行实现。那么我们需要定义一个标记性的接口，这个接口不需要有方法，它只起到标记作用就可以，而具体的功能由继承此接口的其他功能性接口定义具体方法，最终这个接口就可以通过 <code>instanceof</code> 进行判断和调用了。整体设计结构如下图：</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-9-01-16818892735599.png" alt="imgwqe51564we6q20"></p>
@@ -546,12 +1063,58 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 <li>继承 Aware 的接口包括：BeanFactoryAware、BeanClassLoaderAware、BeanNameAware和ApplicationContextAware，当然在 Spring 源码中还有一些其他关于注解的，不过目前我们还是用不到。</li>
 <li>在具体的接口实现过程中你可以看到，一部分(<em>BeanFactoryAware、BeanClassLoaderAware、BeanNameAware</em>)在 factory 的 support 文件夹下，另外 ApplicationContextAware 是在 context 的 support 中，这是因为不同的内容获取需要在不同的包下提供。所以，在 AbstractApplicationContext 的具体实现中会用到向 beanFactory 添加 BeanPostProcessor 内容的 <code>ApplicationContextAwareProcessor</code> 操作，最后由 AbstractAutowireCapableBeanFactory 创建 createBean 时处理相应的调用操作。</li>
 </ul>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-9-02-168188927884411.png" alt="weq5165weq02"></h2><h2 id="定义包装器"><a href="#定义包装器" class="headerlink" title="定义包装器:"></a>定义包装器:</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ApplicationContextAwareProcessor</span> <span class="keyword">implements</span> <span class="title class_">BeanPostProcessor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> ApplicationContext applicationContext;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ApplicationContextAwareProcessor</span><span class="params">(ApplicationContext applicationContext)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.applicationContext = applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">postProcessBeforeInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> ApplicationContextAware)&#123;</span><br><span class="line">            ((ApplicationContextAware) bean).setApplicationContext(applicationContext);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">postProcessAfterInitialization</span><span class="params">(Object bean, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-9-02-168188927884411.png" alt="weq5165weq02"></h2><h2 id="定义包装器"><a href="#定义包装器" class="headerlink" title="定义包装器:"></a>定义包装器:</h2><pre><code class="java">public class ApplicationContextAwareProcessor implements BeanPostProcessor &#123;
 
+    private final ApplicationContext applicationContext;
+
+    public ApplicationContextAwareProcessor(ApplicationContext applicationContext) &#123;
+        this.applicationContext = applicationContext;
+    &#125;
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException &#123;
+        if (bean instanceof ApplicationContextAware)&#123;
+            ((ApplicationContextAware) bean).setApplicationContext(applicationContext);
+        &#125;
+        return bean;
+    &#125;
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException &#123;
+        return bean;
+    &#125;
+
+&#125;
+</code></pre>
 <p>由于 ApplicationContext 的获取并不能直接在创建 Bean 时候就可以拿到，所以需要在 refresh 操作时，把 ApplicationContext 写入到一个包装的 BeanPostProcessor 中去，再由 AbstractAutowireCapableBeanFactory.applyBeanPostProcessorsBeforeInitialization 方法调用。</p>
 <p>其他的信息可以在创建bean的时候拿到,因此其他的接口则需要在AbstractAutowireCapableBeanFactory中的initializeBean方法中获取:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//初始化bean</span></span><br><span class="line"><span class="keyword">private</span> Object <span class="title function_">initializeBean</span><span class="params">(String beanName, Object bean, BeanDefinition beanDefinition)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//invokeAwareMethods</span></span><br><span class="line">    <span class="keyword">if</span>(bean <span class="keyword">instanceof</span> Aware)&#123;</span><br><span class="line">        <span class="keyword">if</span>(bean <span class="keyword">instanceof</span> BeanNameAware)&#123;</span><br><span class="line">            ((BeanNameAware)bean).setBeanName(beanName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(bean <span class="keyword">instanceof</span> BeanFactoryAware)&#123;</span><br><span class="line">            ((BeanFactoryAware)bean).setBeanFactory(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> BeanClassLoaderAware)&#123;</span><br><span class="line">            ((BeanClassLoaderAware)bean).setBeanClassLoader(getBeanClassLoader());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 执行 BeanPostProcessor Before 处理</span></span><br><span class="line">    <span class="type">Object</span> <span class="variable">wrappedBean</span> <span class="operator">=</span> applyBeanPostProcessorsBeforeInitialization(bean, beanName);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//invokeInitMethods(beanName, wrappedBean, beanDefinition);</span></span><br><span class="line">    invokeInitMethods(beanName, wrappedBean, beanDefinition);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 执行BeanPostProcessor After 处理</span></span><br><span class="line">    wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);</span><br><span class="line">    <span class="keyword">return</span> wrappedBean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">//初始化bean
+private Object initializeBean(String beanName, Object bean, BeanDefinition beanDefinition) throws Exception &#123;
 
+    //invokeAwareMethods
+    if(bean instanceof Aware)&#123;
+        if(bean instanceof BeanNameAware)&#123;
+            ((BeanNameAware)bean).setBeanName(beanName);
+        &#125;
+        if(bean instanceof BeanFactoryAware)&#123;
+            ((BeanFactoryAware)bean).setBeanFactory(this);
+        &#125;
+        if (bean instanceof BeanClassLoaderAware)&#123;
+            ((BeanClassLoaderAware)bean).setBeanClassLoader(getBeanClassLoader());
+        &#125;
+    &#125;
+
+    // 1. 执行 BeanPostProcessor Before 处理
+    Object wrappedBean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+
+    //invokeInitMethods(beanName, wrappedBean, beanDefinition);
+    invokeInitMethods(beanName, wrappedBean, beanDefinition);
+
+    // 2. 执行BeanPostProcessor After 处理
+    wrappedBean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
+    return wrappedBean;
+&#125;
+</code></pre>
 <h1 id="八-对象的作用域与FactoryBean"><a href="#八-对象的作用域与FactoryBean" class="headerlink" title="八.对象的作用域与FactoryBean"></a>八.对象的作用域与FactoryBean</h1><p>关于提供一个能让使用者定义复杂的 Bean 对象，功能点非常不错，意义也非常大，因为这样做了之后 Spring 的生态种子孵化箱就此提供了，谁家的框架都可以在此标准上完成自己服务的接入。</p>
 <p>但这样的功能逻辑设计上并不复杂，因为整个 Spring 框架在开发的过程中就已经提供了各项扩展能力的<code>接茬</code>，你只需要在合适的位置提供一个接茬的处理接口调用和相应的功能逻辑实现即可，像这里的目标实现就是对外提供一个可以二次从 FactoryBean 的 getObject 方法中获取对象的功能即可，这样所有实现此接口的对象类，就可以扩充自己的对象功能了。<em>MyBatis 就是实现了一个 MapperFactoryBean 类，在 getObject 方法中提供 SqlSession 对执行 CRUD 方法的操作</em> 整体设计结构如下图：</p>
 <p>这样的功能逻辑设计上并不复杂，因为整个 Spring 框架在开发的过程中就已经提供了各项扩展能力的<code>接茬</code>，你只需要在合适的位置提供一个接茬的处理接口调用和相应的功能逻辑实现即可，像这里的目标实现就是对外提供一个可以二次从 FactoryBean 的 getObject 方法中获取对象的功能即可，这样所有实现此接口的对象类，就可以扩充自己的对象功能了。<em>MyBatis 就是实现了一个 MapperFactoryBean 类，在 getObject 方法中提供 SqlSession 对执行 CRUD 方法的操作</em> 整体设计结构如下图：</p>
@@ -563,23 +1126,163 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 <li>不过这次我们把 AbstractBeanFactory 继承的 DefaultSingletonBeanRegistry 类，中间加了一层 FactoryBeanRegistrySupport，这个类在 Spring 框架中主要是处理关于 FactoryBean 注册的支撑操作。</li>
 </ul>
 <h2 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h2><p>bean的作用域信息被添加到了BeanDefinition中,每次创建BeanDefinition都需要设置bean的scope:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doLoadBeanDefinitions</span><span class="params">(InputStream inputStream)</span> <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">     </span><br><span class="line">       <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; childNodes.getLength(); i++) &#123;</span><br><span class="line">           <span class="comment">// 判断元素</span></span><br><span class="line">           <span class="keyword">if</span> (!(childNodes.item(i) <span class="keyword">instanceof</span> Element)) <span class="keyword">continue</span>;</span><br><span class="line">           <span class="comment">// 判断对象</span></span><br><span class="line">           <span class="keyword">if</span> (!<span class="string">&quot;bean&quot;</span>.equals(childNodes.item(i).getNodeName())) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">           <span class="comment">// 解析标签</span></span><br><span class="line">           <span class="type">Element</span> <span class="variable">bean</span> <span class="operator">=</span> (Element) childNodes.item(i);</span><br><span class="line">           <span class="type">String</span> <span class="variable">id</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;id&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">className</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;class&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">initMethod</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;init-method&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">destroyMethodName</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;destroy-method&quot;</span>);</span><br><span class="line">           <span class="type">String</span> <span class="variable">beanScope</span> <span class="operator">=</span> bean.getAttribute(<span class="string">&quot;scope&quot;</span>);</span><br><span class="line"></span><br><span class="line">           <span class="comment">// 获取 Class，方便获取类中的名称</span></span><br><span class="line">           Class&lt;?&gt; clazz = Class.forName(className);</span><br><span class="line">           <span class="comment">// 优先级 id &gt; name</span></span><br><span class="line">           <span class="type">String</span> <span class="variable">beanName</span> <span class="operator">=</span> StrUtil.isNotEmpty(id) ? id : name;</span><br><span class="line">           <span class="keyword">if</span> (StrUtil.isEmpty(beanName)) &#123;</span><br><span class="line">               beanName = StrUtil.lowerFirst(clazz.getSimpleName());</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="comment">// 定义Bean</span></span><br><span class="line">           <span class="type">BeanDefinition</span> <span class="variable">beanDefinition</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanDefinition</span>(clazz);</span><br><span class="line">           beanDefinition.setInitMethodName(initMethod);</span><br><span class="line">           beanDefinition.setDestroyMethodName(destroyMethodName);</span><br><span class="line">		<span class="comment">//设置scope</span></span><br><span class="line">           <span class="keyword">if</span> (StrUtil.isNotEmpty(beanScope)) &#123;</span><br><span class="line">               beanDefinition.setScope(beanScope);</span><br><span class="line">           &#125;</span><br><span class="line">           </span><br><span class="line">           <span class="comment">// ...</span></span><br><span class="line">           </span><br><span class="line">           <span class="comment">// 注册 BeanDefinition</span></span><br><span class="line">           getRegistry().registerBeanDefinition(beanName, beanDefinition);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java"> protected void doLoadBeanDefinitions(InputStream inputStream) throws ClassNotFoundException &#123;
+      
+        for (int i = 0; i &lt; childNodes.getLength(); i++) &#123;
+            // 判断元素
+            if (!(childNodes.item(i) instanceof Element)) continue;
+            // 判断对象
+            if (!&quot;bean&quot;.equals(childNodes.item(i).getNodeName())) continue;
 
+            // 解析标签
+            Element bean = (Element) childNodes.item(i);
+            String id = bean.getAttribute(&quot;id&quot;);
+            String name = bean.getAttribute(&quot;name&quot;);
+            String className = bean.getAttribute(&quot;class&quot;);
+            String initMethod = bean.getAttribute(&quot;init-method&quot;);
+            String destroyMethodName = bean.getAttribute(&quot;destroy-method&quot;);
+            String beanScope = bean.getAttribute(&quot;scope&quot;);
+
+            // 获取 Class，方便获取类中的名称
+            Class&lt;?&gt; clazz = Class.forName(className);
+            // 优先级 id &gt; name
+            String beanName = StrUtil.isNotEmpty(id) ? id : name;
+            if (StrUtil.isEmpty(beanName)) &#123;
+                beanName = StrUtil.lowerFirst(clazz.getSimpleName());
+            &#125;
+
+            // 定义Bean
+            BeanDefinition beanDefinition = new BeanDefinition(clazz);
+            beanDefinition.setInitMethodName(initMethod);
+            beanDefinition.setDestroyMethodName(destroyMethodName);
+            //设置scope
+            if (StrUtil.isNotEmpty(beanScope)) &#123;
+                beanDefinition.setScope(beanScope);
+            &#125;
+            
+            // ...
+            
+            // 注册 BeanDefinition
+            getRegistry().registerBeanDefinition(beanName, beanDefinition);
+        &#125;
+    &#125;
+</code></pre>
 <p>同样,创建bean是需要根据scope判断是否需要放入缓存中,以及非单例bean不需要执行销毁方法:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">protected</span> Object <span class="title function_">createBean</span><span class="params">(String beanName, BeanDefinition beanDefinition, Object[] args)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">      <span class="type">Object</span> <span class="variable">bean</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          bean = createBeanInstance(beanDefinition, beanName, args);</span><br><span class="line">          <span class="comment">// 给 Bean 填充属性</span></span><br><span class="line">          applyPropertyValues(beanName, bean, beanDefinition);</span><br><span class="line">          <span class="comment">// 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法</span></span><br><span class="line">          bean = initializeBean(beanName, bean, beanDefinition);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Instantiation of bean failed&quot;</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 注册实现了 DisposableBean 接口的 Bean 对象</span></span><br><span class="line">      registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 判断 SCOPE_SINGLETON、SCOPE_PROTOTYPE</span></span><br><span class="line">      <span class="keyword">if</span> (beanDefinition.isSingleton()) &#123;</span><br><span class="line">          addSingleton(beanName, bean);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> bean;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">registerDisposableBeanIfNecessary</span><span class="params">(String beanName, Object bean, BeanDefinition beanDefinition)</span> &#123;</span><br><span class="line">      <span class="comment">// 非 Singleton 类型的 Bean 不执行销毁方法</span></span><br><span class="line">      <span class="keyword">if</span> (!beanDefinition.isSingleton()) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) &#123;</span><br><span class="line">          registerDisposableBean(beanName, <span class="keyword">new</span> <span class="title class_">DisposableBeanAdapter</span>(bean, beanName, beanDefinition));</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">  @Override
+    protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException &#123;
+        Object bean = null;
+        try &#123;
+            bean = createBeanInstance(beanDefinition, beanName, args);
+            // 给 Bean 填充属性
+            applyPropertyValues(beanName, bean, beanDefinition);
+            // 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
+            bean = initializeBean(beanName, bean, beanDefinition);
+        &#125; catch (Exception e) &#123;
+            throw new BeansException(&quot;Instantiation of bean failed&quot;, e);
+        &#125;
 
-<h2 id="FactoryBean"><a href="#FactoryBean" class="headerlink" title="FactoryBean"></a>FactoryBean</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">FactoryBean</span>&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    T <span class="title function_">getObject</span><span class="params">()</span> <span class="keyword">throws</span> Exception;</span><br><span class="line"></span><br><span class="line">    Class&lt;?&gt; getObjectType();</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">isSingleton</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        // 注册实现了 DisposableBean 接口的 Bean 对象
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
 
+        // 判断 SCOPE_SINGLETON、SCOPE_PROTOTYPE
+        if (beanDefinition.isSingleton()) &#123;
+            addSingleton(beanName, bean);
+        &#125;
+        return bean;
+    &#125;
+
+    protected void registerDisposableBeanIfNecessary(String beanName, Object bean, BeanDefinition beanDefinition) &#123;
+        // 非 Singleton 类型的 Bean 不执行销毁方法
+        if (!beanDefinition.isSingleton()) return;
+
+        if (bean instanceof DisposableBean || StrUtil.isNotEmpty(beanDefinition.getDestroyMethodName())) &#123;
+            registerDisposableBean(beanName, new DisposableBeanAdapter(bean, beanName, beanDefinition));
+        &#125;
+    &#125;
+</code></pre>
+<h2 id="FactoryBean"><a href="#FactoryBean" class="headerlink" title="FactoryBean"></a>FactoryBean</h2><pre><code class="java">public interface FactoryBean&lt;T&gt; &#123;
+
+    T getObject() throws Exception;
+
+    Class&lt;?&gt; getObjectType();
+
+    boolean isSingleton();
+
+&#125;
+</code></pre>
 <p>FactoryBean 中需要提供3个方法，获取对象、对象类型，以及是否是单例对象，如果是单例对象依然会被放到内存中。</p>
-<h3 id="实现一个-FactoryBean-注册服务"><a href="#实现一个-FactoryBean-注册服务" class="headerlink" title="实现一个 FactoryBean 注册服务"></a>实现一个 FactoryBean 注册服务</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">FactoryBeanRegistrySupport</span> <span class="keyword">extends</span> <span class="title class_">DefaultSingletonBeanRegistry</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Cache of singleton objects created by FactoryBeans: FactoryBean name --&gt; object</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; factoryBeanObjectCache = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, Object&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">getCachedObjectForFactoryBean</span><span class="params">(String beanName)</span> &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">object</span> <span class="operator">=</span> <span class="built_in">this</span>.factoryBeanObjectCache.get(beanName);</span><br><span class="line">        <span class="keyword">return</span> (object != NULL_OBJECT ? object : <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">getObjectFromFactoryBean</span><span class="params">(FactoryBean factory, String beanName)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (factory.isSingleton()) &#123;</span><br><span class="line">            <span class="type">Object</span> <span class="variable">object</span> <span class="operator">=</span> <span class="built_in">this</span>.factoryBeanObjectCache.get(beanName);</span><br><span class="line">            <span class="keyword">if</span> (object == <span class="literal">null</span>) &#123;</span><br><span class="line">                object = doGetObjectFromFactoryBean(factory, beanName);</span><br><span class="line">                <span class="built_in">this</span>.factoryBeanObjectCache.put(beanName, (object != <span class="literal">null</span> ? object : NULL_OBJECT));</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (object != NULL_OBJECT ? object : <span class="literal">null</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> doGetObjectFromFactoryBean(factory, beanName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Object <span class="title function_">doGetObjectFromFactoryBean</span><span class="params">(<span class="keyword">final</span> FactoryBean factory, <span class="keyword">final</span> String beanName)</span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> factory.getObject();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;FactoryBean threw exception on object[&quot;</span> + beanName + <span class="string">&quot;] creation&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="实现一个-FactoryBean-注册服务"><a href="#实现一个-FactoryBean-注册服务" class="headerlink" title="实现一个 FactoryBean 注册服务"></a>实现一个 FactoryBean 注册服务</h3><pre><code class="java">public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanRegistry &#123;
 
+    /**
+     * Cache of singleton objects created by FactoryBeans: FactoryBean name --&gt; object
+     */
+    private final Map&lt;String, Object&gt; factoryBeanObjectCache = new ConcurrentHashMap&lt;String, Object&gt;();
+
+    protected Object getCachedObjectForFactoryBean(String beanName) &#123;
+        Object object = this.factoryBeanObjectCache.get(beanName);
+        return (object != NULL_OBJECT ? object : null);
+    &#125;
+
+    protected Object getObjectFromFactoryBean(FactoryBean factory, String beanName) &#123;
+        if (factory.isSingleton()) &#123;
+            Object object = this.factoryBeanObjectCache.get(beanName);
+            if (object == null) &#123;
+                object = doGetObjectFromFactoryBean(factory, beanName);
+                this.factoryBeanObjectCache.put(beanName, (object != null ? object : NULL_OBJECT));
+            &#125;
+            return (object != NULL_OBJECT ? object : null);
+        &#125; else &#123;
+            return doGetObjectFromFactoryBean(factory, beanName);
+        &#125;
+    &#125;
+
+    private Object doGetObjectFromFactoryBean(final FactoryBean factory, final String beanName)&#123;
+        try &#123;
+            return factory.getObject();
+        &#125; catch (Exception e) &#123;
+            throw new BeansException(&quot;FactoryBean threw exception on object[&quot; + beanName + &quot;] creation&quot;, e);
+        &#125;
+    &#125;
+
+&#125;
+</code></pre>
 <ul>
 <li>FactoryBeanRegistrySupport 类主要处理的就是关于 FactoryBean 此类对象的注册操作，之所以放到这样一个单独的类里，就是希望做到不同领域模块下只负责各自需要完成的功能，避免因为扩展导致类膨胀到难以维护。</li>
 <li>同样这里也定义了缓存操作 factoryBeanObjectCache，用于存放单例类型的对象，避免重复创建。<em>在日常使用用，基本也都是创建的单例对象</em></li>
 <li>doGetObjectFromFactoryBean 是具体的获取 FactoryBean#getObject() 方法，因为既有缓存的处理也有对象的获取，所以额外提供了 getObjectFromFactoryBean 进行逻辑包装，这部分的操作方式是不和你日常做的业务逻辑开发非常相似。<em>从Redis取数据，如果为空就从数据库获取并写入Redis</em></li>
 </ul>
-<h3 id="扩展-AbstractBeanFactory-创建对象逻辑"><a href="#扩展-AbstractBeanFactory-创建对象逻辑" class="headerlink" title="扩展 AbstractBeanFactory 创建对象逻辑"></a>扩展 AbstractBeanFactory 创建对象逻辑</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractBeanFactory</span> <span class="keyword">extends</span> <span class="title class_">FactoryBeanRegistrySupport</span> <span class="keyword">implements</span> <span class="title class_">ConfigurableBeanFactory</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> &lt;T&gt; T <span class="title function_">doGetBean</span><span class="params">(<span class="keyword">final</span> String name, <span class="keyword">final</span> Object[] args)</span> &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">sharedInstance</span> <span class="operator">=</span> getSingleton(name);</span><br><span class="line">        <span class="keyword">if</span> (sharedInstance != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果是 FactoryBean，则需要调用 FactoryBean#getObject</span></span><br><span class="line">            <span class="keyword">return</span> (T) getObjectForBeanInstance(sharedInstance, name);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">BeanDefinition</span> <span class="variable">beanDefinition</span> <span class="operator">=</span> getBeanDefinition(name);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">bean</span> <span class="operator">=</span> createBean(name, beanDefinition, args);</span><br><span class="line">        <span class="keyword">return</span> (T) getObjectForBeanInstance(bean, name);</span><br><span class="line">    &#125;  </span><br><span class="line">   </span><br><span class="line">    <span class="keyword">private</span> Object <span class="title function_">getObjectForBeanInstance</span><span class="params">(Object beanInstance, String beanName)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (!(beanInstance <span class="keyword">instanceof</span> FactoryBean)) &#123;</span><br><span class="line">            <span class="keyword">return</span> beanInstance;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">Object</span> <span class="variable">object</span> <span class="operator">=</span> getCachedObjectForFactoryBean(beanName);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (object == <span class="literal">null</span>) &#123;</span><br><span class="line">            FactoryBean&lt;?&gt; factoryBean = (FactoryBean&lt;?&gt;) beanInstance;</span><br><span class="line">            object = getObjectFromFactoryBean(factoryBean, beanName);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> object;</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="扩展-AbstractBeanFactory-创建对象逻辑"><a href="#扩展-AbstractBeanFactory-创建对象逻辑" class="headerlink" title="扩展 AbstractBeanFactory 创建对象逻辑"></a>扩展 AbstractBeanFactory 创建对象逻辑</h3><pre><code class="java">public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory &#123;
 
+    protected &lt;T&gt; T doGetBean(final String name, final Object[] args) &#123;
+        Object sharedInstance = getSingleton(name);
+        if (sharedInstance != null) &#123;
+            // 如果是 FactoryBean，则需要调用 FactoryBean#getObject
+            return (T) getObjectForBeanInstance(sharedInstance, name);
+        &#125;
+
+        BeanDefinition beanDefinition = getBeanDefinition(name);
+        Object bean = createBean(name, beanDefinition, args);
+        return (T) getObjectForBeanInstance(bean, name);
+    &#125;  
+   
+    private Object getObjectForBeanInstance(Object beanInstance, String beanName) &#123;
+        if (!(beanInstance instanceof FactoryBean)) &#123;
+            return beanInstance;
+        &#125;
+
+        Object object = getCachedObjectForFactoryBean(beanName);
+
+        if (object == null) &#123;
+            FactoryBean&lt;?&gt; factoryBean = (FactoryBean&lt;?&gt;) beanInstance;
+            object = getObjectFromFactoryBean(factoryBean, beanName);
+        &#125;
+
+        return object;
+    &#125;
+        
+    // ...
+&#125;
+</code></pre>
 <ul>
 <li>首先这里把 AbstractBeanFactory 原来继承的 DefaultSingletonBeanRegistry，修改为继承 FactoryBeanRegistrySupport。因为需要扩展出创建 FactoryBean 对象的能力，所以这就想一个链条服务上，截出一个段来处理额外的服务，并把链条再链接上。</li>
 <li>此处新增加的功能主要是在 doGetBean 方法中，添加了调用 <code>(T) getObjectForBeanInstance(sharedInstance, name)</code> 对获取 FactoryBean 的操作。</li>
@@ -601,56 +1304,310 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 <p>或者自定义的CustomEvent</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20230413171805346-168188930639323.png" alt="image-20230413171805346"></p>
 <h2 id="监听器的定义"><a href="#监听器的定义" class="headerlink" title="监听器的定义"></a>监听器的定义</h2><p>ApplicationListener继承顶级接口EventListener:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ApplicationListener</span> &lt;E <span class="keyword">extends</span> <span class="title class_">ApplicationEvent</span>&gt;<span class="keyword">extends</span> <span class="title class_">EventListener</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Handle an application event.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> event the event to respond to</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(E event)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface ApplicationListener &lt;E extends ApplicationEvent&gt;extends EventListener &#123;
+    /**
+     * Handle an application event.
+     * @param event the event to respond to
+     */
+    void onApplicationEvent(E event);
+&#125;
+</code></pre>
 <p>并且提供了一个触发事件的方法供具体的类去实现</p>
 <p>例如:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CustomEventListener</span> <span class="keyword">implements</span> <span class="title class_">ApplicationListener</span>&lt;CustomEvent&gt; &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onApplicationEvent</span><span class="params">(CustomEvent event)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;收到: &quot;</span>+event.getSource()+<span class="string">&quot;消息;时间: &quot;</span>+<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">        System.out.println(<span class="string">&quot;消息: &quot;</span>+event.getId()+<span class="string">&quot;: &quot;</span>+event.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public class CustomEventListener implements ApplicationListener&lt;CustomEvent&gt; &#123;
+    @Override
+    public void onApplicationEvent(CustomEvent event) &#123;
+        System.out.println(&quot;收到: &quot;+event.getSource()+&quot;消息;时间: &quot;+new Date());
+        System.out.println(&quot;消息: &quot;+event.getId()+&quot;: &quot;+event.getMessage());
+    &#125;
+&#125;
+</code></pre>
 <h2 id="事件的发布"><a href="#事件的发布" class="headerlink" title="事件的发布"></a>事件的发布</h2><p>事件的发布由上下文实现,我们定义了一个顶级接口ApplicationEventPublisher,实现该接口的类具有发布事件的功能</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ApplicationEventPublisher</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Notify all listeners registered with this application of an application</span></span><br><span class="line"><span class="comment">     * event. Events may be framework events (such as RequestHandledEvent)</span></span><br><span class="line"><span class="comment">     * or application-specific events.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> event the event to publish</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">publishEvent</span><span class="params">(ApplicationEvent event)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface ApplicationEventPublisher &#123;
+    /**
+     * Notify all listeners registered with this application of an application
+     * event. Events may be framework events (such as RequestHandledEvent)
+     * or application-specific events.
+     * @param event the event to publish
+     */
+    void publishEvent(ApplicationEvent event);
+&#125;
+</code></pre>
 <p>发布事件这一功能在抽象类AbstractApplicationContext中实现:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20230413172355500-168188931056825.png" alt="image-20230413172355500"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">publishEvent</span><span class="params">(ApplicationEvent event)</span> &#123;</span><br><span class="line">    applicationEventMulticaster.multicastEvent(event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">@Override
+public void publishEvent(ApplicationEvent event) &#123;
+    applicationEventMulticaster.multicastEvent(event);
+&#125;
+</code></pre>
 <p>它实现的逻辑就是将加载到的事件发布到事件路由器中,然后执行:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleApplicationEventMulticaster</span> <span class="keyword">extends</span> <span class="title class_">AbstractApplicationEventMulticaster</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">SimpleApplicationEventMulticaster</span><span class="params">(BeanFactory beanFactory)</span> &#123;</span><br><span class="line">        setBeanFactory(beanFactory);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">multicastEvent</span><span class="params">(ApplicationEvent event)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">final</span> ApplicationListener listener : getApplicationListener(event)) &#123;</span><br><span class="line">            <span class="comment">//执行事件</span></span><br><span class="line">            listener.onApplicationEvent(event);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class SimpleApplicationEventMulticaster extends AbstractApplicationEventMulticaster&#123;
 
+    public SimpleApplicationEventMulticaster(BeanFactory beanFactory) &#123;
+        setBeanFactory(beanFactory);
+    &#125;
+
+    @Override
+    public void multicastEvent(ApplicationEvent event) &#123;
+        for (final ApplicationListener listener : getApplicationListener(event)) &#123;
+            //执行事件
+            listener.onApplicationEvent(event);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <h2 id="事件广播器"><a href="#事件广播器" class="headerlink" title="事件广播器"></a>事件广播器</h2><p>事件的发布到事件被具体的监听器执行这一步骤是由广播路由的,广播由一个顶级接口ApplicationEventMulticaster实现:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ApplicationEventMulticaster</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Add a listener to be notified of all events.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> listener the listener to add</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//添加监听器</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">addApplicationListener</span><span class="params">(ApplicationListener&lt;?&gt; listener)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Remove a listener from the notification list.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> listener the listener to remove</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">removeApplicationListener</span><span class="params">(ApplicationListener&lt;?&gt; listener)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Multicast the given application event to appropriate listeners.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> event the event to multicast</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">multicastEvent</span><span class="params">(ApplicationEvent event)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public interface ApplicationEventMulticaster &#123;
+    /**
+     * Add a listener to be notified of all events.
+     * @param listener the listener to add
+     */
+    //添加监听器
+    void addApplicationListener(ApplicationListener&lt;?&gt; listener);
 
+    /**
+     * Remove a listener from the notification list.
+     * @param listener the listener to remove
+     */
+    void removeApplicationListener(ApplicationListener&lt;?&gt; listener);
+
+    /**
+     * Multicast the given application event to appropriate listeners.
+     * @param event the event to multicast
+     */
+    void multicastEvent(ApplicationEvent event);
+&#125;
+</code></pre>
 <p>该接口的核心功能由AbstractApplicationEventMulticaster实现</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20230413172659092-168188931443727.png" alt="image-20230413172659092"></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> Set&lt;ApplicationListener&lt;ApplicationEvent&gt;&gt; applicationListeners = <span class="keyword">new</span> <span class="title class_">LinkedHashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> BeanFactory beanFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">//添加事件监听器</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addApplicationListener</span><span class="params">(ApplicationListener&lt;?&gt; listener)</span> &#123;</span><br><span class="line">    applicationListeners.add((ApplicationListener&lt;ApplicationEvent&gt;) listener);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//移除事件监听器</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">removeApplicationListener</span><span class="params">(ApplicationListener&lt;?&gt; listener)</span> &#123;</span><br><span class="line">    applicationListeners.remove(listener);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">setBeanFactory</span><span class="params">(BeanFactory beanFactory)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.beanFactory = beanFactory;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//由具体的事件,获取到该事件所属的监听器</span></span><br><span class="line"><span class="keyword">protected</span> Collection&lt;ApplicationListener&gt;getApplicationListener(ApplicationEvent event)&#123;</span><br><span class="line">    LinkedList&lt;ApplicationListener&gt; allListeners = <span class="keyword">new</span> <span class="title class_">LinkedList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (ApplicationListener&lt;ApplicationEvent&gt; listener : applicationListeners) &#123;</span><br><span class="line">        <span class="keyword">if</span> (supportsEvent(listener, event)) allListeners.add(listener);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> allListeners;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 监听器是否对该事件感兴趣---就是判断这个监听器的泛型是不是这个事件</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">supportsEvent</span><span class="params">(ApplicationListener&lt;ApplicationEvent&gt; applicationListener, ApplicationEvent event)</span> &#123;</span><br><span class="line">    Class&lt;? <span class="keyword">extends</span> <span class="title class_">ApplicationListener</span>&gt; listenerClass = applicationListener.getClass();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按照 CglibSubclassingInstantiationStrategy、SimpleInstantiationStrategy 不同的实例化类型，</span></span><br><span class="line">    <span class="comment">// 需要判断后获取目标class(被代理之前的class)</span></span><br><span class="line">    Class&lt;?&gt; targetClass = ClassUtils.isCglibProxyClass(listenerClass) ? listenerClass.getSuperclass() : listenerClass;</span><br><span class="line">    <span class="comment">//拿到上层接口---&gt;ApplicationListener &lt;E extends ApplicationEvent&gt;</span></span><br><span class="line">    <span class="type">Type</span> <span class="variable">genericInterface</span> <span class="operator">=</span> targetClass.getGenericInterfaces()[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//拿到泛型中的类的类型</span></span><br><span class="line">    <span class="type">Type</span> <span class="variable">actualTypeArgument</span> <span class="operator">=</span> ((ParameterizedType) genericInterface).getActualTypeArguments()[<span class="number">0</span>];</span><br><span class="line">    <span class="comment">//拿到类名</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">className</span> <span class="operator">=</span> actualTypeArgument.getTypeName();</span><br><span class="line">    Class&lt;?&gt; eventClassName;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        eventClassName = Class.forName(className);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;wrong event class name: &quot;</span> + className);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判定此eventClassName 对象所表示的类或接口与指定的 event.getClass() 参数所表示的类或接口是否相同，或是否是其超类或超接口。</span></span><br><span class="line">    <span class="comment">//isAssignableFrom是用来判断子类和父类的关系的，或者接口的实现类和接口的关系的，默认所有的类的终极父类都是Object。</span></span><br><span class="line">    <span class="comment">// 如果A.isAssignableFrom(B)结果是true，证明B可以转换成为A,也就是A可以由B转换而来。</span></span><br><span class="line">    <span class="keyword">return</span> eventClassName.isAssignableFrom(event.getClass());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public final Set&lt;ApplicationListener&lt;ApplicationEvent&gt;&gt; applicationListeners = new LinkedHashSet&lt;&gt;();
 
+private BeanFactory beanFactory;
+
+//添加事件监听器
+@Override
+public void addApplicationListener(ApplicationListener&lt;?&gt; listener) &#123;
+    applicationListeners.add((ApplicationListener&lt;ApplicationEvent&gt;) listener);
+&#125;
+
+//移除事件监听器
+@Override
+public void removeApplicationListener(ApplicationListener&lt;?&gt; listener) &#123;
+    applicationListeners.remove(listener);
+&#125;
+
+@Override
+public final void setBeanFactory(BeanFactory beanFactory) &#123;
+    this.beanFactory = beanFactory;
+&#125;
+
+//由具体的事件,获取到该事件所属的监听器
+protected Collection&lt;ApplicationListener&gt;getApplicationListener(ApplicationEvent event)&#123;
+    LinkedList&lt;ApplicationListener&gt; allListeners = new LinkedList&lt;&gt;();
+    for (ApplicationListener&lt;ApplicationEvent&gt; listener : applicationListeners) &#123;
+        if (supportsEvent(listener, event)) allListeners.add(listener);
+    &#125;
+    return allListeners;
+&#125;
+/**
+ * 监听器是否对该事件感兴趣---就是判断这个监听器的泛型是不是这个事件
+ */
+protected boolean supportsEvent(ApplicationListener&lt;ApplicationEvent&gt; applicationListener, ApplicationEvent event) &#123;
+    Class&lt;? extends ApplicationListener&gt; listenerClass = applicationListener.getClass();
+
+    // 按照 CglibSubclassingInstantiationStrategy、SimpleInstantiationStrategy 不同的实例化类型，
+    // 需要判断后获取目标class(被代理之前的class)
+    Class&lt;?&gt; targetClass = ClassUtils.isCglibProxyClass(listenerClass) ? listenerClass.getSuperclass() : listenerClass;
+    //拿到上层接口---&gt;ApplicationListener &lt;E extends ApplicationEvent&gt;
+    Type genericInterface = targetClass.getGenericInterfaces()[0];
+    //拿到泛型中的类的类型
+    Type actualTypeArgument = ((ParameterizedType) genericInterface).getActualTypeArguments()[0];
+    //拿到类名
+    String className = actualTypeArgument.getTypeName();
+    Class&lt;?&gt; eventClassName;
+    try &#123;
+        eventClassName = Class.forName(className);
+    &#125; catch (ClassNotFoundException e) &#123;
+        throw new BeansException(&quot;wrong event class name: &quot; + className);
+    &#125;
+    //判定此eventClassName 对象所表示的类或接口与指定的 event.getClass() 参数所表示的类或接口是否相同，或是否是其超类或超接口。
+    //isAssignableFrom是用来判断子类和父类的关系的，或者接口的实现类和接口的关系的，默认所有的类的终极父类都是Object。
+    // 如果A.isAssignableFrom(B)结果是true，证明B可以转换成为A,也就是A可以由B转换而来。
+    return eventClassName.isAssignableFrom(event.getClass());
+&#125;
+</code></pre>
 <p><strong>由getApplicationListener方法完成事件到监听器的路由</strong></p>
 <h2 id="执行逻辑"><a href="#执行逻辑" class="headerlink" title="执行逻辑"></a>执行逻辑</h2><p>在上下文的refresh()方法中,定义了事件相关类的注册和执行顺序:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">    <span class="comment">//1.创建beanFactory并加载BeanDefinition---&gt;由子类完成</span></span><br><span class="line">    refreshBeanFactory();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.获取beanFactory ---&gt;由子类完成</span></span><br><span class="line">    <span class="type">ConfigurableListableBeanFactory</span> <span class="variable">beanFactory</span> <span class="operator">=</span> getBeanFactory();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3.添加ApplicationContextAwareProcessor.使继承ApplicationContextAware的bean对象都能够感知所属的applicationContext</span></span><br><span class="line">    beanFactory.addBeanPostProcessor(<span class="keyword">new</span> <span class="title class_">ApplicationContextAwareProcessor</span>(<span class="built_in">this</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">//4. 在 Bean实例化之前，执行 BeanFactoryPostProcessor</span></span><br><span class="line">    invokeBeanFactoryPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//5. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作</span></span><br><span class="line">    registerBeanPostProcessors(beanFactory);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//6.初始化事件发布者</span></span><br><span class="line">    initApplicationEventMulticaster();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 7. 注册事件监听器</span></span><br><span class="line">    registerListeners();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//8.提前创建单例bean</span></span><br><span class="line">    beanFactory.preInstantiateSingletons();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 9. 发布容器刷新完成事件</span></span><br><span class="line">    finishRefresh();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">@Override
+public void refresh() throws BeansException &#123;
+    //1.创建beanFactory并加载BeanDefinition---&gt;由子类完成
+    refreshBeanFactory();
 
+    //2.获取beanFactory ---&gt;由子类完成
+    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+
+    //3.添加ApplicationContextAwareProcessor.使继承ApplicationContextAware的bean对象都能够感知所属的applicationContext
+    beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+
+    //4. 在 Bean实例化之前，执行 BeanFactoryPostProcessor
+    invokeBeanFactoryPostProcessors(beanFactory);
+
+    //5. BeanPostProcessor 需要提前于其他 Bean 对象实例化之前执行注册操作
+    registerBeanPostProcessors(beanFactory);
+
+    //6.初始化事件发布者
+    initApplicationEventMulticaster();
+
+    // 7. 注册事件监听器
+    registerListeners();
+
+    //8.提前创建单例bean
+    beanFactory.preInstantiateSingletons();
+
+    // 9. 发布容器刷新完成事件
+    finishRefresh();
+&#125;
+</code></pre>
 <p>首先初始化事件广播器:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//初始化事件广播器</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">initApplicationEventMulticaster</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//获取默认BeanFactory</span></span><br><span class="line">    <span class="type">ConfigurableListableBeanFactory</span> <span class="variable">beanFactory</span> <span class="operator">=</span> getBeanFactory();</span><br><span class="line">    <span class="comment">//创建默认事件广播器</span></span><br><span class="line">    applicationEventMulticaster = <span class="keyword">new</span> <span class="title class_">SimpleApplicationEventMulticaster</span>(beanFactory);</span><br><span class="line">    <span class="comment">//将广播器添加到单例池中</span></span><br><span class="line">    beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, applicationEventMulticaster);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//初始化事件广播器
+private void initApplicationEventMulticaster() &#123;
+    //获取默认BeanFactory
+    ConfigurableListableBeanFactory beanFactory = getBeanFactory();
+    //创建默认事件广播器
+    applicationEventMulticaster = new SimpleApplicationEventMulticaster(beanFactory);
+    //将广播器添加到单例池中
+    beanFactory.registerSingleton(APPLICATION_EVENT_MULTICASTER_BEAN_NAME, applicationEventMulticaster);
+&#125;
+</code></pre>
 <p>再注册事件监听器:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//注册事件的listener</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">registerListeners</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//在默认的BeanFactory中,拿到class属性是ApplicationListener.class的BeanDefinition的缓存</span></span><br><span class="line">    Collection&lt;ApplicationListener&gt; applicationListeners = getBeansOfType(ApplicationListener.class).values();</span><br><span class="line">    <span class="keyword">for</span> (ApplicationListener listener : applicationListeners) &#123;</span><br><span class="line">        <span class="comment">//向广播中添加listener</span></span><br><span class="line">        applicationEventMulticaster.addApplicationListener(listener);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">//注册事件的listener
+private void registerListeners() &#123;
+    //在默认的BeanFactory中,拿到class属性是ApplicationListener.class的BeanDefinition的缓存
+    Collection&lt;ApplicationListener&gt; applicationListeners = getBeansOfType(ApplicationListener.class).values();
+    for (ApplicationListener listener : applicationListeners) &#123;
+        //向广播中添加listener
+        applicationEventMulticaster.addApplicationListener(listener);
+    &#125;
+&#125;
+</code></pre>
 <p>最后由上下文发布事件:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">finishRefresh</span><span class="params">()</span> &#123;</span><br><span class="line">    publishEvent(<span class="keyword">new</span> <span class="title class_">ContextRefreshedEvent</span>(<span class="built_in">this</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">publishEvent</span><span class="params">(ApplicationEvent event)</span> &#123;</span><br><span class="line">        applicationEventMulticaster.multicastEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private void finishRefresh() &#123;
+    publishEvent(new ContextRefreshedEvent(this));
+&#125;
+@Override
+    public void publishEvent(ApplicationEvent event) &#123;
+        applicationEventMulticaster.multicastEvent(event);
+    &#125;
+</code></pre>
 <h1 id="十-使用JDK-Cglib实现Aop切面"><a href="#十-使用JDK-Cglib实现Aop切面" class="headerlink" title="十.使用JDK,Cglib实现Aop切面"></a>十.使用JDK,Cglib实现Aop切面</h1><h2 id="基于JDK"><a href="#基于JDK" class="headerlink" title="基于JDK"></a>基于JDK</h2><p>这个功能我想使用自顶向下的方式叙述.</p>
 <p>首先,切面的核心是实现代理对象. 因此,我们可以有两种创建代理对象的方式.一种是基于jdk代理,另外一种是基于Cglib代理</p>
 <p>既然是代理对象,我们需要实现一个自定义的代理对象接口:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">AopProxy</span> &#123;</span><br><span class="line">	<span class="comment">//用于返回代理对象</span></span><br><span class="line">    Object <span class="title function_">getProxy</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public interface AopProxy &#123;
+    //用于返回代理对象
+    Object getProxy();
+&#125;
+</code></pre>
 <p>为了方便,让代理对象类实现InvocationHandler接口,可以直接使用代理对象调用invoke方法:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdkDynamicAopProxy</span> <span class="keyword">implements</span> <span class="title class_">AopProxy</span>, InvocationHandler &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//AdvisedSupport，包装了目标对象、用户自己实现的拦截方法以及方法匹配表达式</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AdvisedSupport advised;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">JdkDynamicAopProxy</span><span class="params">(AdvisedSupport advisedSupport)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.advised=advisedSupport;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//用jdk提供的方式创建代理对象</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getProxy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),</span><br><span class="line">                advised.getTargetSource().getTargetClass(), <span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用包装类中的方法拦截器对方法进行拦截,并进行增强</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="keyword">if</span>(advised.getMethodMatcher().matches(method,advised.getTargetSource().getTarget().getClass()))&#123;</span><br><span class="line">            <span class="type">MethodInterceptor</span> <span class="variable">methodInterceptor</span> <span class="operator">=</span> advised.getMethodInterceptor();</span><br><span class="line">            <span class="keyword">return</span> methodInterceptor.invoke(<span class="keyword">new</span> <span class="title class_">ReflectiveMethodInvocation</span>(advised.getTargetSource().getTarget(),</span><br><span class="line">                    method,args));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> method.invoke(advised.getTargetSource().getTarget(),args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class JdkDynamicAopProxy implements AopProxy, InvocationHandler &#123;
 
+    //AdvisedSupport，包装了目标对象、用户自己实现的拦截方法以及方法匹配表达式
+    private final AdvisedSupport advised;
+
+    public JdkDynamicAopProxy(AdvisedSupport advisedSupport)&#123;
+        this.advised=advisedSupport;
+    &#125;
+
+    //用jdk提供的方式创建代理对象
+    @Override
+    public Object getProxy() &#123;
+        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+                advised.getTargetSource().getTargetClass(), this);
+    &#125;
+
+    //调用包装类中的方法拦截器对方法进行拦截,并进行增强
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
+        if(advised.getMethodMatcher().matches(method,advised.getTargetSource().getTarget().getClass()))&#123;
+            MethodInterceptor methodInterceptor = advised.getMethodInterceptor();
+            return methodInterceptor.invoke(new ReflectiveMethodInvocation(advised.getTargetSource().getTarget(),
+                    method,args));
+        &#125;
+
+        return method.invoke(advised.getTargetSource().getTarget(),args);
+    &#125;
+&#125;
+</code></pre>
 <p>再来看看AdvisedSupport包装类:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 被代理的目标对象</span></span><br><span class="line"><span class="keyword">private</span> TargetSource targetSource;</span><br><span class="line"><span class="comment">// 方法拦截器</span></span><br><span class="line"><span class="keyword">private</span> MethodInterceptor methodInterceptor;</span><br><span class="line"><span class="comment">// 方法匹配器(检查目标方法是否符合通知条件)</span></span><br><span class="line"><span class="keyword">private</span> MethodMatcher methodMatcher;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">// 被代理的目标对象
+private TargetSource targetSource;
+// 方法拦截器
+private MethodInterceptor methodInterceptor;
+// 方法匹配器(检查目标方法是否符合通知条件)
+private MethodMatcher methodMatcher;
+</code></pre>
 <p>它包装了被代理的目标对象,方法拦截器,方法匹配器. 囊括了aop的所有要素</p>
-<h2 id="基于Cglib"><a href="#基于Cglib" class="headerlink" title="基于Cglib"></a>基于Cglib</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Cglib2AopProxy</span> <span class="keyword">implements</span> <span class="title class_">AopProxy</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//包装类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> AdvisedSupport advised;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Cglib2AopProxy</span><span class="params">(AdvisedSupport advised)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.advised=advised;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用cglib提供的创建代理对象的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getProxy</span><span class="params">()</span> &#123;</span><br><span class="line">        Enhancer enhancer=<span class="keyword">new</span> <span class="title class_">Enhancer</span>();</span><br><span class="line"></span><br><span class="line">        enhancer.setSuperclass(advised.getTargetSource().getTarget().getClass());</span><br><span class="line"></span><br><span class="line">        enhancer.setInterfaces(advised.getTargetSource().getTargetClass());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//回调方法是自定义的私有类的重写方法</span></span><br><span class="line">        enhancer.setCallback(<span class="keyword">new</span> <span class="title class_">DynamicAdvisedInterceptor</span>(advised));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> enhancer.create();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//方法拦截器</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">DynamicAdvisedInterceptor</span> <span class="keyword">implements</span> <span class="title class_">MethodInterceptor</span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> AdvisedSupport advised;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">DynamicAdvisedInterceptor</span><span class="params">(AdvisedSupport advised)</span>&#123;</span><br><span class="line">            <span class="built_in">this</span>.advised=advised;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> Object <span class="title function_">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">            CglibMethodInvocation methodInvocation=<span class="keyword">new</span> <span class="title class_">CglibMethodInvocation</span>(advised.getTargetSource().getTarget(),method,args,proxy);</span><br><span class="line">            <span class="comment">//若方法匹配</span></span><br><span class="line">            <span class="keyword">if</span>(advised.getMethodMatcher().matches(method,advised.getTargetSource().getTarget().getClass()))&#123;</span><br><span class="line">                <span class="comment">//执行拦截器的方法</span></span><br><span class="line">                <span class="keyword">return</span> advised.getMethodInterceptor().invoke(methodInvocation);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> methodInvocation.proceed();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//私有类继承ReflectiveMethodInvocation</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">CglibMethodInvocation</span> <span class="keyword">extends</span> <span class="title class_">ReflectiveMethodInvocation</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">final</span> MethodProxy methodProxy;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">CglibMethodInvocation</span><span class="params">(Object target, Method method, Object[] arguments, MethodProxy methodProxy)</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>(target, method, arguments);</span><br><span class="line">            <span class="built_in">this</span>.methodProxy = methodProxy;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> Object <span class="title function_">proceed</span><span class="params">()</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="built_in">this</span>.methodProxy.invoke(<span class="built_in">this</span>.target, <span class="built_in">this</span>.arguments);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="基于Cglib"><a href="#基于Cglib" class="headerlink" title="基于Cglib"></a>基于Cglib</h2><pre><code class="java">public class Cglib2AopProxy implements AopProxy&#123;
 
+    //包装类
+    private final AdvisedSupport advised;
+
+    public Cglib2AopProxy(AdvisedSupport advised)&#123;
+        this.advised=advised;
+    &#125;
+
+
+    //使用cglib提供的创建代理对象的方法
+    @Override
+    public Object getProxy() &#123;
+        Enhancer enhancer=new Enhancer();
+
+        enhancer.setSuperclass(advised.getTargetSource().getTarget().getClass());
+
+        enhancer.setInterfaces(advised.getTargetSource().getTargetClass());
+
+        //回调方法是自定义的私有类的重写方法
+        enhancer.setCallback(new DynamicAdvisedInterceptor(advised));
+
+        return enhancer.create();
+    &#125;
+
+    //方法拦截器
+    private static class DynamicAdvisedInterceptor implements MethodInterceptor&#123;
+        private final AdvisedSupport advised;
+
+        public DynamicAdvisedInterceptor(AdvisedSupport advised)&#123;
+            this.advised=advised;
+        &#125;
+
+        @Override
+        public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable &#123;
+            CglibMethodInvocation methodInvocation=new CglibMethodInvocation(advised.getTargetSource().getTarget(),method,args,proxy);
+            //若方法匹配
+            if(advised.getMethodMatcher().matches(method,advised.getTargetSource().getTarget().getClass()))&#123;
+                //执行拦截器的方法
+                return advised.getMethodInterceptor().invoke(methodInvocation);
+            &#125;
+            return methodInvocation.proceed();
+        &#125;
+    &#125;
+    //私有类继承ReflectiveMethodInvocation
+    private static class CglibMethodInvocation extends ReflectiveMethodInvocation &#123;
+
+        private final MethodProxy methodProxy;
+
+        public CglibMethodInvocation(Object target, Method method, Object[] arguments, MethodProxy methodProxy) &#123;
+            super(target, method, arguments);
+            this.methodProxy = methodProxy;
+        &#125;
+
+        @Override
+        public Object proceed() throws Throwable &#123;
+            return this.methodProxy.invoke(this.target, this.arguments);
+        &#125;
+
+    &#125;
+&#125;
+</code></pre>
 <h1 id="十一-将AOP拓展到bean的生命周期中"><a href="#十一-将AOP拓展到bean的生命周期中" class="headerlink" title="十一.将AOP拓展到bean的生命周期中"></a>十一.将AOP拓展到bean的生命周期中</h1><p>在有了一个 AOP 核心功能的实现后，我们可以通过单元测试的方式进行验证切面功能对方法进行拦截，但如果这是一个面向用户使用的功能，就不太可能让用户这么复杂且没有与 Spring 结合的方式单独使用 AOP，虽然可以满足需求，但使用上还是过去分散。</p>
 <p>因此我们完成 AOP 核心功能与 Spring 框架的整合，最终能通过在 Spring 配置的方式完成切面的操作。</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/spring-13-01-168188932173329.png" alt="imgweqe232fds2"></p>
@@ -666,38 +1623,237 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
 <li>DefaultAdvisorAutoProxyCreator 会依赖于拦截器、代理工厂和Pointcut与Advisor的包装服务 AspectJExpressionPointcutAdvisor，由它提供切面、拦截方法和表达式。</li>
 <li>Spring 的 AOP 把 Advice 细化了 BeforeAdvice、AfterAdvice、AfterReturningAdvice、ThrowsAdvice，目前我们做的测试案例中只用到了 BeforeAdvice，这部分可以对照 Spring 的源码进行补充测试。</li>
 </ul>
-<h2 id="1-定义Advice拦截器链"><a href="#1-定义Advice拦截器链" class="headerlink" title="1.定义Advice拦截器链"></a>1.定义Advice拦截器链</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BeforeAdvice</span> <span class="keyword">extends</span> <span class="title class_">Advice</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="1-定义Advice拦截器链"><a href="#1-定义Advice拦截器链" class="headerlink" title="1.定义Advice拦截器链"></a>1.定义Advice拦截器链</h2><pre><code class="java">public interface BeforeAdvice extends Advice &#123;
 
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MethodBeforeAdvice</span> <span class="keyword">extends</span> <span class="title class_">BeforeAdvice</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Callback before a given method is invoked.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> method method being invoked</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args   arguments to the method</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> target target of the method invocation. May be &lt;code&gt;null&lt;/code&gt;.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable if this object wishes to abort the call.</span></span><br><span class="line"><span class="comment">     *                   Any exception thrown will be returned to the caller if it&#x27;s</span></span><br><span class="line"><span class="comment">     *                   allowed by the method signature. Otherwise the exception</span></span><br><span class="line"><span class="comment">     *                   will be wrapped as a runtime exception.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">before</span><span class="params">(Method method, Object[] args, Object target)</span> <span class="keyword">throws</span> Throwable;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+&#125;
+</code></pre>
+<pre><code class="java">public interface MethodBeforeAdvice extends BeforeAdvice &#123;
 
+    /**
+     * Callback before a given method is invoked.
+     *
+     * @param method method being invoked
+     * @param args   arguments to the method
+     * @param target target of the method invocation. May be &lt;code&gt;null&lt;/code&gt;.
+     * @throws Throwable if this object wishes to abort the call.
+     *                   Any exception thrown will be returned to the caller if it&#39;s
+     *                   allowed by the method signature. Otherwise the exception
+     *                   will be wrapped as a runtime exception.
+     */
+    void before(Method method, Object[] args, Object target) throws Throwable;
+
+&#125;
+</code></pre>
 <p>在 Spring 框架中，Advice 都是通过方法拦截器 MethodInterceptor 实现的。环绕 Advice 类似一个拦截器的链路，Before Advice、After advice等，不过暂时我们需要那么多就只定义了一个 MethodBeforeAdvice 的接口定义</p>
-<h2 id="2-定义Advisor访问者"><a href="#2-定义Advisor访问者" class="headerlink" title="2.定义Advisor访问者"></a>2.定义Advisor访问者</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Advisor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Return the advice part of this aspect. An advice may be an</span></span><br><span class="line"><span class="comment">     * interceptor, a before advice, a throws advice, etc.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> the advice that should apply if the pointcut matches</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> org.aopalliance.intercept.MethodInterceptor</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@see</span> BeforeAdvice</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Advice <span class="title function_">getAdvice</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-定义Advisor访问者"><a href="#2-定义Advisor访问者" class="headerlink" title="2.定义Advisor访问者"></a>2.定义Advisor访问者</h2><pre><code class="java">public interface Advisor &#123;
 
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">PointcutAdvisor</span> <span class="keyword">extends</span> <span class="title class_">Advisor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Get the Pointcut that drives this advisor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    Pointcut <span class="title function_">getPointcut</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    /**
+     * Return the advice part of this aspect. An advice may be an
+     * interceptor, a before advice, a throws advice, etc.
+     * @return the advice that should apply if the pointcut matches
+     * @see org.aopalliance.intercept.MethodInterceptor
+     * @see BeforeAdvice
+     */
+    Advice getAdvice();
 
+&#125;
+</code></pre>
+<pre><code class="java">public interface PointcutAdvisor extends Advisor &#123;
+
+    /**
+     * Get the Pointcut that drives this advisor.
+     */
+    Pointcut getPointcut();
+
+&#125;
+</code></pre>
 <ul>
 <li>PointcutAdvisor 承担了 Pointcut 和 Advice 的组合，Pointcut 用于获取 JoinPoint，而 Advice 决定于 JoinPoint 执行什么操作。</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AspectJExpressionPointcutAdvisor</span> <span class="keyword">implements</span> <span class="title class_">PointcutAdvisor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 切面</span></span><br><span class="line">    <span class="keyword">private</span> AspectJExpressionPointcut pointcut;</span><br><span class="line">    <span class="comment">// 具体的拦截方法</span></span><br><span class="line">    <span class="keyword">private</span> Advice advice;</span><br><span class="line">    <span class="comment">// 表达式</span></span><br><span class="line">    <span class="keyword">private</span> String expression;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setExpression</span><span class="params">(String expression)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.expression = expression;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Pointcut <span class="title function_">getPointcut</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == pointcut) &#123;</span><br><span class="line">            pointcut = <span class="keyword">new</span> <span class="title class_">AspectJExpressionPointcut</span>(expression);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pointcut;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Advice <span class="title function_">getAdvice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> advice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAdvice</span><span class="params">(Advice advice)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.advice = advice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class AspectJExpressionPointcutAdvisor implements PointcutAdvisor &#123;
 
+    // 切面
+    private AspectJExpressionPointcut pointcut;
+    // 具体的拦截方法
+    private Advice advice;
+    // 表达式
+    private String expression;
+
+    public void setExpression(String expression)&#123;
+        this.expression = expression;
+    &#125;
+
+    @Override
+    public Pointcut getPointcut() &#123;
+        if (null == pointcut) &#123;
+            pointcut = new AspectJExpressionPointcut(expression);
+        &#125;
+        return pointcut;
+    &#125;
+
+    @Override
+    public Advice getAdvice() &#123;
+        return advice;
+    &#125;
+
+    public void setAdvice(Advice advice)&#123;
+        this.advice = advice;
+    &#125;
+
+&#125;
+</code></pre>
 <p>AspectJExpressionPointcutAdvisor 实现了 PointcutAdvisor 接口，把切面 pointcut、拦截方法 advice 和具体的拦截表达式包装在一起。这样就可以在 xml 的配置中定义一个 pointcutAdvisor 切面拦截器了</p>
-<h2 id="3-方法拦截器"><a href="#3-方法拦截器" class="headerlink" title="3.方法拦截器"></a>3.方法拦截器</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MethodBeforeAdviceInterceptor</span> <span class="keyword">implements</span> <span class="title class_">MethodInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> MethodBeforeAdvice advice;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MethodBeforeAdviceInterceptor</span><span class="params">(MethodBeforeAdvice advice)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.advice = advice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> MethodBeforeAdvice <span class="title function_">getAdvice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> advice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAdvice</span><span class="params">(MethodBeforeAdvice advice)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.advice = advice;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(MethodInvocation methodInvocation)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="built_in">this</span>.advice.before(methodInvocation.getMethod(), methodInvocation.getArguments(), methodInvocation.getThis());</span><br><span class="line">        <span class="keyword">return</span> methodInvocation.proceed();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-方法拦截器"><a href="#3-方法拦截器" class="headerlink" title="3.方法拦截器"></a>3.方法拦截器</h2><pre><code class="java">public class MethodBeforeAdviceInterceptor implements MethodInterceptor &#123;
 
+    private MethodBeforeAdvice advice;
+
+    public MethodBeforeAdviceInterceptor(MethodBeforeAdvice advice) &#123;
+        this.advice = advice;
+    &#125;
+
+    public MethodBeforeAdvice getAdvice() &#123;
+        return advice;
+    &#125;
+
+    public void setAdvice(MethodBeforeAdvice advice) &#123;
+        this.advice = advice;
+    &#125;
+
+    @Override
+    public Object invoke(MethodInvocation methodInvocation) throws Throwable &#123;
+        this.advice.before(methodInvocation.getMethod(), methodInvocation.getArguments(), methodInvocation.getThis());
+        return methodInvocation.proceed();
+    &#125;
+
+&#125;
+</code></pre>
 <ul>
 <li>MethodBeforeAdviceInterceptor 实现了 MethodInterceptor 接口，在 invoke 方法中调用 advice 中的 before 方法，传入对应的参数信息。</li>
 <li>而这个 advice.before 则是用于自己实现 MethodBeforeAdvice 接口后做的相应处理。</li>
 </ul>
-<h2 id="4-代理工厂"><a href="#4-代理工厂" class="headerlink" title="4.代理工厂"></a>4.代理工厂</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProxyFactory</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AdvisedSupport advisedSupport;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ProxyFactory</span><span class="params">(AdvisedSupport advisedSupport)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.advisedSupport = advisedSupport;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getProxy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> createAopProxy().getProxy();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> AopProxy <span class="title function_">createAopProxy</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (advisedSupport.isProxyTargetClass()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Cglib2AopProxy</span>(advisedSupport);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">JdkDynamicAopProxy</span>(advisedSupport);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-代理工厂"><a href="#4-代理工厂" class="headerlink" title="4.代理工厂"></a>4.代理工厂</h2><pre><code class="java">public class ProxyFactory &#123;
 
+    private AdvisedSupport advisedSupport;
+
+    public ProxyFactory(AdvisedSupport advisedSupport) &#123;
+        this.advisedSupport = advisedSupport;
+    &#125;
+
+    public Object getProxy() &#123;
+        return createAopProxy().getProxy();
+    &#125;
+
+    private AopProxy createAopProxy() &#123;
+        if (advisedSupport.isProxyTargetClass()) &#123;
+            return new Cglib2AopProxy(advisedSupport);
+        &#125;
+
+        return new JdkDynamicAopProxy(advisedSupport);
+    &#125;
+
+&#125;
+</code></pre>
 <p>这个代理工厂主要解决的是关于 JDK 和 Cglib 两种代理的选择问题，有了代理工厂就可以按照不同的创建需求进行控制。</p>
-<h2 id="5-融入Bean生命周期的自动代理创建者"><a href="#5-融入Bean生命周期的自动代理创建者" class="headerlink" title="5.融入Bean生命周期的自动代理创建者"></a>5.融入Bean生命周期的自动代理创建者</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DefaultAdvisorAutoProxyCreator</span> <span class="keyword">implements</span> <span class="title class_">InstantiationAwareBeanPostProcessor</span>, BeanFactoryAware &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> DefaultListableBeanFactory beanFactory;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setBeanFactory</span><span class="params">(BeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="built_in">this</span>.beanFactory = (DefaultListableBeanFactory) beanFactory;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">postProcessBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isInfrastructureClass(beanClass)) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        Collection&lt;AspectJExpressionPointcutAdvisor&gt; advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (AspectJExpressionPointcutAdvisor advisor : advisors) &#123;</span><br><span class="line">            <span class="type">ClassFilter</span> <span class="variable">classFilter</span> <span class="operator">=</span> advisor.getPointcut().getClassFilter();</span><br><span class="line">            <span class="keyword">if</span> (!classFilter.matches(beanClass)) <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">AdvisedSupport</span> <span class="variable">advisedSupport</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AdvisedSupport</span>();</span><br><span class="line"></span><br><span class="line">            <span class="type">TargetSource</span> <span class="variable">targetSource</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                targetSource = <span class="keyword">new</span> <span class="title class_">TargetSource</span>(beanClass.getDeclaredConstructor().newInstance());</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            advisedSupport.setTargetSource(targetSource);</span><br><span class="line">            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());</span><br><span class="line">            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());</span><br><span class="line">            advisedSupport.setProxyTargetClass(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ProxyFactory</span>(advisedSupport).getProxy();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
+<h2 id="5-融入Bean生命周期的自动代理创建者"><a href="#5-融入Bean生命周期的自动代理创建者" class="headerlink" title="5.融入Bean生命周期的自动代理创建者"></a>5.融入Bean生命周期的自动代理创建者</h2><pre><code class="java">public class DefaultAdvisorAutoProxyCreator implements InstantiationAwareBeanPostProcessor, BeanFactoryAware &#123;
 
+    private DefaultListableBeanFactory beanFactory;
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException &#123;
+        this.beanFactory = (DefaultListableBeanFactory) beanFactory;
+    &#125;
+
+    @Override
+    public Object postProcessBeforeInstantiation(Class&lt;?&gt; beanClass, String beanName) throws BeansException &#123;
+
+        if (isInfrastructureClass(beanClass)) return null;
+
+        Collection&lt;AspectJExpressionPointcutAdvisor&gt; advisors = beanFactory.getBeansOfType(AspectJExpressionPointcutAdvisor.class).values();
+
+        for (AspectJExpressionPointcutAdvisor advisor : advisors) &#123;
+            ClassFilter classFilter = advisor.getPointcut().getClassFilter();
+            if (!classFilter.matches(beanClass)) continue;
+
+            AdvisedSupport advisedSupport = new AdvisedSupport();
+
+            TargetSource targetSource = null;
+            try &#123;
+                targetSource = new TargetSource(beanClass.getDeclaredConstructor().newInstance());
+            &#125; catch (Exception e) &#123;
+                e.printStackTrace();
+            &#125;
+            advisedSupport.setTargetSource(targetSource);
+            advisedSupport.setMethodInterceptor((MethodInterceptor) advisor.getAdvice());
+            advisedSupport.setMethodMatcher(advisor.getPointcut().getMethodMatcher());
+            advisedSupport.setProxyTargetClass(false);
+
+            return new ProxyFactory(advisedSupport).getProxy();
+
+        &#125;
+
+        return null;
+    &#125;
+    
+</code></pre>
 <ul>
 <li>这个 DefaultAdvisorAutoProxyCreator 类的主要核心实现在于 postProcessBeforeInstantiation 方法中，从通过 beanFactory.getBeansOfType 获取 AspectJExpressionPointcutAdvisor 开始。</li>
 <li>获取了 advisors 以后就可以遍历相应的 AspectJExpressionPointcutAdvisor 填充对应的属性信息，包括：目标对象、拦截方法、匹配器，之后返回代理对象即可。</li>
 <li>那么现在调用方获取到的这个 Bean 对象就是一个已经被切面注入的对象了，当调用方法的时候，则会被按需拦截，处理用户需要的信息</li>
 </ul>
-<h2 id="6-融入到Bean的生命周期"><a href="#6-融入到Bean的生命周期" class="headerlink" title="6.融入到Bean的生命周期"></a>6.融入到Bean的生命周期</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractAutowireCapableBeanFactory</span> <span class="keyword">extends</span> <span class="title class_">AbstractBeanFactory</span> <span class="keyword">implements</span> <span class="title class_">AutowireCapableBeanFactory</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">InstantiationStrategy</span> <span class="variable">instantiationStrategy</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CglibSubclassingInstantiationStrategy</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">createBean</span><span class="params">(String beanName, BeanDefinition beanDefinition, Object[] args)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">bean</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 判断是否返回代理 Bean 对象</span></span><br><span class="line">            bean = resolveBeforeInstantiation(beanName, beanDefinition);</span><br><span class="line">            <span class="keyword">if</span> (<span class="literal">null</span> != bean) &#123;</span><br><span class="line">                <span class="keyword">return</span> bean;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            bean = createBeanInstance(beanDefinition, beanName, args);</span><br><span class="line">            <span class="comment">// 给 bean 填充属性</span></span><br><span class="line">            applyPropertyValues(beanName, bean, beanDefinition);</span><br><span class="line">            <span class="comment">// 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法</span></span><br><span class="line">            bean = initializeBean(beanName, bean, beanDefinition);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BeansException</span>(<span class="string">&quot;Instantiation of bean failed.&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 注册实现了 DisposableBean 接口的 Bean 对象</span></span><br><span class="line">        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 判断 SCOPE_SINGLETON，SCOPE_PROTOTYPE</span></span><br><span class="line">        <span class="keyword">if</span> (beanDefinition.isSingleton()) &#123;</span><br><span class="line">            registerSingleton(beanName, bean);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Object <span class="title function_">resolveBeforeInstantiation</span><span class="params">(String beanName, BeanDefinition beanDefinition)</span> &#123;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">bean</span> <span class="operator">=</span> applyBeanPostProcessorBeforeInstantiation(beanDefinition.getBeanClass(), beanName);</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> != bean) &#123;</span><br><span class="line">            bean = applyBeanPostProcessorAfterInitialization(bean, beanName);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注意，此方法为新增方法，与 “applyBeanPostProcessorBeforeInitialization” 是两个方法</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">applyBeanPostProcessorBeforeInstantiation</span><span class="params">(Class&lt;?&gt; beanClass, String beanName)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="keyword">for</span> (BeanPostProcessor processor : getBeanPostProcessors()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (processor <span class="keyword">instanceof</span> InstantiationAwareBeanPostProcessor) &#123;</span><br><span class="line">                <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> ((InstantiationAwareBeanPostProcessor)processor).postProcessBeforeInstantiation(beanClass, beanName);</span><br><span class="line">                <span class="keyword">if</span> (<span class="literal">null</span> != result) <span class="keyword">return</span> result;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-融入到Bean的生命周期"><a href="#6-融入到Bean的生命周期" class="headerlink" title="6.融入到Bean的生命周期"></a>6.融入到Bean的生命周期</h2><pre><code class="java">public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory implements AutowireCapableBeanFactory &#123;
+
+    private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
+
+    @Override
+    protected Object createBean(String beanName, BeanDefinition beanDefinition, Object[] args) throws BeansException &#123;
+        Object bean = null;
+        try &#123;
+            // 判断是否返回代理 Bean 对象
+            bean = resolveBeforeInstantiation(beanName, beanDefinition);
+            if (null != bean) &#123;
+                return bean;
+            &#125;
+
+            bean = createBeanInstance(beanDefinition, beanName, args);
+            // 给 bean 填充属性
+            applyPropertyValues(beanName, bean, beanDefinition);
+            // 执行 Bean 的初始化方法和 BeanPostProcessor 的前置和后置处理方法
+            bean = initializeBean(beanName, bean, beanDefinition);
+        &#125; catch (Exception e) &#123;
+            throw new BeansException(&quot;Instantiation of bean failed.&quot;, e);
+        &#125;
+
+        // 注册实现了 DisposableBean 接口的 Bean 对象
+        registerDisposableBeanIfNecessary(beanName, bean, beanDefinition);
+
+        // 判断 SCOPE_SINGLETON，SCOPE_PROTOTYPE
+        if (beanDefinition.isSingleton()) &#123;
+            registerSingleton(beanName, bean);
+        &#125;
+        return bean;
+    &#125;
+
+    protected Object resolveBeforeInstantiation(String beanName, BeanDefinition beanDefinition) &#123;
+        Object bean = applyBeanPostProcessorBeforeInstantiation(beanDefinition.getBeanClass(), beanName);
+        if (null != bean) &#123;
+            bean = applyBeanPostProcessorAfterInitialization(bean, beanName);
+        &#125;
+        return bean;
+    &#125;
+
+    // 注意，此方法为新增方法，与 “applyBeanPostProcessorBeforeInitialization” 是两个方法
+    public Object applyBeanPostProcessorBeforeInstantiation(Class&lt;?&gt; beanClass, String beanName) throws BeansException &#123;
+        for (BeanPostProcessor processor : getBeanPostProcessors()) &#123;
+            if (processor instanceof InstantiationAwareBeanPostProcessor) &#123;
+                Object result = ((InstantiationAwareBeanPostProcessor)processor).postProcessBeforeInstantiation(beanClass, beanName);
+                if (null != result) return result;
+            &#125;
+        &#125;
+        return null;
+    &#125;
+&#125;
+</code></pre>
+
                 
             </div>
             <hr/>
@@ -1118,7 +2274,7 @@ SingletonBeanRegistry: 注册单例bean的接口,由DefaultSingletonBeanFactor">
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             

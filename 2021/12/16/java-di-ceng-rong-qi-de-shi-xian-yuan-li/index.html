@@ -52,7 +52,7 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -428,9 +428,28 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h1 id="JDK中栈的底层实现"><a href="#JDK中栈的底层实现" class="headerlink" title="JDK中栈的底层实现:"></a>JDK中栈的底层实现:</h1><p>java底层Stack是继承Vector的,也就是说是直接实现Collection的(满足先进后出)<br><img src="https://gitee.com/DylanToT99/images/raw/master/images/1667285842751-ae9a32b8-eceb-454e-a90d-7d47d0d19299.png" alt="image.png"><br>创建一个空栈，这里我们不禁有一个疑问，既然它继承了Vector，它的父类是有一个默认容量的，为10，那么Stack的构造方法只有一个，且没有默认大小，那么它是怎么进行扩容的呢，这时候我们去查看它的push()方法，Stack直接调用了Vector类的addElement(E item)方法</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> E <span class="title function_">push</span><span class="params">(E item)</span> &#123;</span><br><span class="line">        addElement(item);</span><br><span class="line"> </span><br><span class="line">        <span class="keyword">return</span> item;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(E e, Object[] elementData, <span class="type">int</span> s)</span> &#123;</span><br><span class="line">       <span class="keyword">if</span> (s == elementData.length)</span><br><span class="line">           elementData = grow();</span><br><span class="line">       elementData[s] = e;</span><br><span class="line">       elementCount = s + <span class="number">1</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> Object[] grow(<span class="type">int</span> minCapacity) &#123;</span><br><span class="line">       <span class="type">int</span> <span class="variable">oldCapacity</span> <span class="operator">=</span> elementData.length;</span><br><span class="line">       <span class="type">int</span> <span class="variable">newCapacity</span> <span class="operator">=</span> ArraysSupport.newLength(oldCapacity,</span><br><span class="line">               minCapacity - oldCapacity, <span class="comment">/* minimum growth */</span></span><br><span class="line">               capacityIncrement &gt; <span class="number">0</span> ? capacityIncrement : oldCapacity</span><br><span class="line">                                          <span class="comment">/* preferred growth */</span>);</span><br><span class="line">       <span class="type">return</span> <span class="variable">elementData</span> <span class="operator">=</span> Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public E push(E item) &#123;
+        addElement(item);
+ 
+        return item;
+    &#125;
+</code></pre>
+<pre><code class="java"> private void add(E e, Object[] elementData, int s) &#123;
+        if (s == elementData.length)
+            elementData = grow();
+        elementData[s] = e;
+        elementCount = s + 1;
+    &#125;
+</code></pre>
+<pre><code class="java"> private Object[] grow(int minCapacity) &#123;
+        int oldCapacity = elementData.length;
+        int newCapacity = ArraysSupport.newLength(oldCapacity,
+                minCapacity - oldCapacity, /* minimum growth */
+                capacityIncrement &gt; 0 ? capacityIncrement : oldCapacity
+                                           /* preferred growth */);
+        return elementData = Arrays.copyOf(elementData, newCapacity);
+    &#125;
+</code></pre>
 <h1 id="JAVA队列（-Queue-及实现类（双端队列）"><a href="#JAVA队列（-Queue-及实现类（双端队列）" class="headerlink" title="JAVA队列（ Queue )及实现类（双端队列）"></a>JAVA队列（ Queue )及实现类（双端队列）</h1><h2 id="队列的定义"><a href="#队列的定义" class="headerlink" title="队列的定义:"></a>队列的定义:</h2><pre><code> 队列是一种特殊的[线性](https://so.csdn.net/so/search?q=%E7%BA%BF%E6%80%A7&amp;spm=1001.2101.3001.7020)表，**遵循先入先出、后入后出的基本原则**，一般来说，它只允许在表的前端进行删除操作，而在表的后端进行插入操作，但是java的某些队列运行在任何地方插入删除；比如我们常用的 LinkedList 集合，它实现了Queue 接口，因此，我们可以理解为 LinkedList 就是一个队列；
 </code></pre>
 <h2 id="java队列特性"><a href="#java队列特性" class="headerlink" title="java队列特性:"></a>java队列特性:</h2><p>队列主要分为阻塞和非阻塞，有界和无界、单向链表和双向链表之分；	</p>
@@ -672,11 +691,16 @@
 <p><img src="E:/After2022/Blog/myblog/source/_posts/Java%E5%BA%95%E5%B1%82%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.assets/image-20230323104639181.png" alt="image-20230323104639181"></p>
 <h2 id="排序规则"><a href="#排序规则" class="headerlink" title="排序规则:"></a>排序规则:</h2><p>若想自定义排序或者实现大顶堆, 则需要重写比较器:</p>
 <p>第一种：Comparator<br>重写compare方法:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">PriorityQueue&lt;Integer&gt; bigHeap=<span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;&gt;(<span class="keyword">new</span> <span class="title class_">Comparator</span>&lt;Integer&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">compare</span><span class="params">(Integer o1, Integer o2)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> o2-o1;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">PriorityQueue&lt;Integer&gt; bigHeap=new PriorityQueue&lt;&gt;(new Comparator&lt;Integer&gt;() &#123;
+    @Override
+    public int compare(Integer o1, Integer o2) &#123;
+        return o2-o1;
+    &#125;
+&#125;);
+</code></pre>
 <p>第二种：lambda表达式<br>借助lambda表达式实现：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Queue&lt;Integer&gt; bigHeap = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;&gt;((o1, o2) -&gt; o2 - o1);</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">Queue&lt;Integer&gt; bigHeap = new PriorityQueue&lt;&gt;((o1, o2) -&gt; o2 - o1);
+</code></pre>
 <p>若需要自定义排序规则:只需要改变构造器的Comparator对象即可</p>
 <blockquote>
 <h3 id="compare返回值"><a href="#compare返回值" class="headerlink" title="compare返回值:"></a>compare返回值:</h3><ul>
@@ -688,28 +712,74 @@
 </blockquote>
 <h2 id="底层原理"><a href="#底层原理" class="headerlink" title="底层原理:"></a>底层原理:</h2><p>通过jdk17源码:可以看到</p>
 <p>若我们传入了自定义的Comparator对象, 程序会调用该构造函数:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">PriorityQueue</span><span class="params">(Comparator&lt;? <span class="built_in">super</span> E&gt; comparator)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(DEFAULT_INITIAL_CAPACITY, comparator);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public PriorityQueue(Comparator&lt;? super E&gt; comparator) &#123;
+        this(DEFAULT_INITIAL_CAPACITY, comparator);
+    &#125;
+</code></pre>
 <p>传入默认的容器大小(11),与自定义的comparator,接下来调用:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">PriorityQueue</span><span class="params">(<span class="type">int</span> initialCapacity,</span></span><br><span class="line"><span class="params">                         Comparator&lt;? <span class="built_in">super</span> E&gt; comparator)</span> &#123;</span><br><span class="line">        <span class="comment">// Note: This restriction of at least one is not actually needed,</span></span><br><span class="line">        <span class="comment">// but continues for 1.5 compatibility</span></span><br><span class="line">        <span class="keyword">if</span> (initialCapacity &lt; <span class="number">1</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>();</span><br><span class="line">        <span class="built_in">this</span>.queue = <span class="keyword">new</span> <span class="title class_">Object</span>[initialCapacity];</span><br><span class="line">        <span class="built_in">this</span>.comparator = comparator;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public PriorityQueue(int initialCapacity,
+                         Comparator&lt;? super E&gt; comparator) &#123;
+        // Note: This restriction of at least one is not actually needed,
+        // but continues for 1.5 compatibility
+        if (initialCapacity &lt; 1)
+            throw new IllegalArgumentException();
+        this.queue = new Object[initialCapacity];
+        this.comparator = comparator;
+    &#125;
+</code></pre>
 <p>将队列初始化为默认大小为11的Object数组, 为比较器赋值. 若此时执行了add()方法会调用offer:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">add</span><span class="params">(E e)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> offer(e);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public boolean add(E e) &#123;
+        return offer(e);
+    &#125;
+</code></pre>
 <p>offer(E e):</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">offer</span><span class="params">(E e)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="literal">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">        modCount++;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> size;</span><br><span class="line">        <span class="keyword">if</span> (i &gt;= queue.length)</span><br><span class="line">            grow(i + <span class="number">1</span>);</span><br><span class="line">        siftUp(i, e);</span><br><span class="line">        size = i + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public boolean offer(E e) &#123;
+        if (e == null)
+            throw new NullPointerException();
+        modCount++;
+        int i = size;
+        if (i &gt;= queue.length)
+            grow(i + 1);
+        siftUp(i, e);
+        size = i + 1;
+        return true;
+ &#125;
+</code></pre>
 <p>默认的大小+1, 若此时队列的大小大于队列的容量, 则执行grow()函数,自动提升容量:</p>
 <p>grow()方法的原理:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">grow</span><span class="params">(<span class="type">int</span> minCapacity)</span> &#123;</span><br><span class="line">       <span class="type">int</span> <span class="variable">oldCapacity</span> <span class="operator">=</span> queue.length;</span><br><span class="line">       <span class="comment">// Double size if small; else grow by 50%</span></span><br><span class="line">       <span class="type">int</span> <span class="variable">newCapacity</span> <span class="operator">=</span> ArraysSupport.newLength(oldCapacity,</span><br><span class="line">               minCapacity - oldCapacity, <span class="comment">/* minimum growth */</span></span><br><span class="line">               oldCapacity &lt; <span class="number">64</span> ? oldCapacity + <span class="number">2</span> : oldCapacity &gt;&gt; <span class="number">1</span></span><br><span class="line">                                          <span class="comment">/* preferred growth */</span>);</span><br><span class="line">       queue = Arrays.copyOf(queue, newCapacity);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java"> private void grow(int minCapacity) &#123;
+        int oldCapacity = queue.length;
+        // Double size if small; else grow by 50%
+        int newCapacity = ArraysSupport.newLength(oldCapacity,
+                minCapacity - oldCapacity, /* minimum growth */
+                oldCapacity &lt; 64 ? oldCapacity + 2 : oldCapacity &gt;&gt; 1
+                                           /* preferred growth */);
+        queue = Arrays.copyOf(queue, newCapacity);
+    &#125;
+</code></pre>
 <p>若原容量小于64, 则直接将容量提升为2*oldCapacity+2(该容量要小于Integer.MAX_VALUE-8,细节在ArraysSupport类中),否则将容量扩大百分之50.</p>
 <p>容量处理完之后执行siftUp方法:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">siftUp</span><span class="params">(<span class="type">int</span> k, E x)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (comparator != <span class="literal">null</span>)</span><br><span class="line">        siftUpUsingComparator(k, x, queue, comparator);<span class="comment">//判断是否传入自定义的comparator</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        siftUpComparable(k, x, queue);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private void siftUp(int k, E x) &#123;
+    if (comparator != null)
+        siftUpUsingComparator(k, x, queue, comparator);//判断是否传入自定义的comparator
+    else
+        siftUpComparable(k, x, queue);
+&#125;
+</code></pre>
 <p>调用siftUpUsingComparator()方法:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> &lt;T&gt; <span class="keyword">void</span> <span class="title function_">siftUpUsingComparator</span><span class="params">(</span></span><br><span class="line"><span class="params">        <span class="type">int</span> k, T x, Object[] es, Comparator&lt;? <span class="built_in">super</span> T&gt; cmp)</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (k &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">parent</span> <span class="operator">=</span> (k - <span class="number">1</span>) &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">            <span class="type">Object</span> <span class="variable">e</span> <span class="operator">=</span> es[parent];</span><br><span class="line">            <span class="keyword">if</span> (cmp.compare(x, (T) e) &gt;= <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            es[k] = e;</span><br><span class="line">            k = parent;</span><br><span class="line">        &#125;</span><br><span class="line">        es[k] = x;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">private static &lt;T&gt; void siftUpUsingComparator(
+        int k, T x, Object[] es, Comparator&lt;? super T&gt; cmp) &#123;
+        while (k &gt; 0) &#123;
+            int parent = (k - 1) &gt;&gt;&gt; 1;
+            Object e = es[parent];
+            if (cmp.compare(x, (T) e) &gt;= 0)
+                break;
+            es[k] = e;
+            k = parent;
+        &#125;
+        es[k] = x;
+    &#125;
+</code></pre>
 <p>根据自定义的比较器,向上提升需要插入的元素X,以大顶堆(完全二叉树)为例: </p>
 <p>首先该方法获取最底层子树的父节点所在的位置(  int parent &#x3D; (k - 1) &gt;&gt;&gt; 1;),根据比较器判断x与父节点的权重大小,若x比e大,则compare返回负值, 将插入位置k的值赋值为e, 再将父节点位置的下标赋给k,循环, 直到找到父节点的值大于x的值的位置, 再将x插到k位置.</p>
 <blockquote>
@@ -1136,7 +1206,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             

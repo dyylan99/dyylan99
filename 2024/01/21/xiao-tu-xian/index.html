@@ -64,7 +64,7 @@ npm i sass -D
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -442,8 +442,8 @@ npm i sass -D
                 <h1 id="一-项目起步"><a href="#一-项目起步" class="headerlink" title="一.项目起步"></a>一.项目起步</h1><h2 id="1-1-定制主题"><a href="#1-1-定制主题" class="headerlink" title="1.1 定制主题"></a>1.1 定制主题</h2><ul>
 <li>安装 scss:</li>
 </ul>
-<figure class="highlight coffeescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">npm</span> i sass -D</span><br></pre></td></tr></table></figure>
-
+<pre><code>npm i sass -D
+</code></pre>
 <ul>
 <li>准备定制样式文件</li>
 </ul>
@@ -451,36 +451,132 @@ npm i sass -D
 <ul>
 <li>对elementPlus进行样式覆盖</li>
 </ul>
-<h3 id="1-1-1-定制化样式文件"><a href="#1-1-1-定制化样式文件" class="headerlink" title="1.1.1 定制化样式文件"></a>1.1.1 定制化样式文件</h3><figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="comment">/* 只需要重写你需要的即可 */</span></span><br><span class="line"><span class="keyword">@forward</span> <span class="string">&#x27;element-plus/theme-chalk/src/common/var.scss&#x27;</span> with (</span><br><span class="line">  <span class="variable">$colors</span>: (</span><br><span class="line">    <span class="string">&#x27;primary&#x27;</span>: (</span><br><span class="line">      // 主色</span><br><span class="line">      <span class="string">&#x27;base&#x27;</span>: <span class="number">#27ba9b</span>,</span><br><span class="line">    ),</span><br><span class="line">    <span class="string">&#x27;success&#x27;</span>: (</span><br><span class="line">      // 成功色</span><br><span class="line">      <span class="string">&#x27;base&#x27;</span>: <span class="number">#1dc779</span>,</span><br><span class="line">    ),</span><br><span class="line">    <span class="string">&#x27;warning&#x27;</span>: (</span><br><span class="line">      // 警告色</span><br><span class="line">      <span class="string">&#x27;base&#x27;</span>: <span class="number">#ffb302</span>,</span><br><span class="line">    ),</span><br><span class="line">    <span class="string">&#x27;danger&#x27;</span>: (</span><br><span class="line">      // 危险色</span><br><span class="line">      <span class="string">&#x27;base&#x27;</span>: <span class="number">#e26237</span>,</span><br><span class="line">    ),</span><br><span class="line">    <span class="string">&#x27;error&#x27;</span>: (</span><br><span class="line">      // 错误色</span><br><span class="line">      <span class="string">&#x27;base&#x27;</span>: <span class="number">#cf4444</span>,</span><br><span class="line">    ),</span><br><span class="line">  )</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
+<h3 id="1-1-1-定制化样式文件"><a href="#1-1-1-定制化样式文件" class="headerlink" title="1.1.1 定制化样式文件"></a>1.1.1 定制化样式文件</h3><pre><code class="scss">/* 只需要重写你需要的即可 */
+@forward &#39;element-plus/theme-chalk/src/common/var.scss&#39; with (
+  $colors: (
+    &#39;primary&#39;: (
+      // 主色
+      &#39;base&#39;: #27ba9b,
+    ),
+    &#39;success&#39;: (
+      // 成功色
+      &#39;base&#39;: #1dc779,
+    ),
+    &#39;warning&#39;: (
+      // 警告色
+      &#39;base&#39;: #ffb302,
+    ),
+    &#39;danger&#39;: (
+      // 危险色
+      &#39;base&#39;: #e26237,
+    ),
+    &#39;error&#39;: (
+      // 错误色
+      &#39;base&#39;: #cf4444,
+    ),
+  )
+)
+</code></pre>
 <h3 id="1-1-2-自动导入配置"><a href="#1-1-2-自动导入配置" class="headerlink" title="1.1.2 自动导入配置"></a>1.1.2 自动导入配置</h3><p>这里自动导入需要深入到elementPlus的组件中，按照官方的配置文档来</p>
 <ol>
 <li>自动导入定制化样式文件进行样式覆盖</li>
 <li>按需定制主题配置 （需要安装 unplugin-element-plus）</li>
 </ol>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; fileURLToPath, <span class="variable constant_">URL</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;node:url&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; defineConfig &#125; <span class="keyword">from</span> <span class="string">&#x27;vite&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//elementPlus按需导入</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">AutoImport</span> <span class="keyword">from</span> <span class="string">&#x27;unplugin-auto-import/vite&#x27;</span></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">Components</span> <span class="keyword">from</span> <span class="string">&#x27;unplugin-vue-components/vite&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; <span class="title class_">ElementPlusResolver</span> &#125; <span class="keyword">from</span> <span class="string">&#x27;unplugin-vue-components/resolvers&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> vue <span class="keyword">from</span> <span class="string">&#x27;@vitejs/plugin-vue&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// https://vitejs.dev/config/</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="title function_">defineConfig</span>(&#123;</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="title function_">vue</span>(),</span><br><span class="line">      <span class="comment">// ...</span></span><br><span class="line">      <span class="title class_">AutoImport</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [<span class="title class_">ElementPlusResolver</span>()],</span><br><span class="line">      &#125;),</span><br><span class="line">      <span class="title class_">Components</span>(&#123;</span><br><span class="line">        <span class="attr">resolvers</span>: [</span><br><span class="line">          <span class="comment">//1. 配置elementPlus采用sass</span></span><br><span class="line">          <span class="title class_">ElementPlusResolver</span>(&#123;<span class="attr">importStyle</span>: <span class="string">&quot;sass&quot;</span>&#125;)</span><br><span class="line">        ],</span><br><span class="line">      &#125;),</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">resolve</span>: &#123;</span><br><span class="line">    <span class="attr">alias</span>: &#123;</span><br><span class="line">      <span class="string">&#x27;@&#x27;</span>: <span class="title function_">fileURLToPath</span>(<span class="keyword">new</span> <span class="title function_">URL</span>(<span class="string">&#x27;./src&#x27;</span>, <span class="keyword">import</span>.<span class="property">meta</span>.<span class="property">url</span>))</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">css</span>: &#123;</span><br><span class="line">    <span class="attr">preprocessorOptions</span>: &#123;</span><br><span class="line">      <span class="attr">scss</span>: &#123;</span><br><span class="line">        <span class="comment">// 自动导入定制化样式文件进行样式覆盖</span></span><br><span class="line">        <span class="attr">additionalData</span>: <span class="string">`</span></span><br><span class="line"><span class="string">          @use &quot;@/styles/element/index.scss&quot; as *;</span></span><br><span class="line"><span class="string">        `</span>,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="js">import &#123; fileURLToPath, URL &#125; from &#39;node:url&#39;
 
-<h2 id="1-2-axios-配置"><a href="#1-2-axios-配置" class="headerlink" title="1.2 axios 配置"></a>1.2 axios 配置</h2><h3 id="1-2-1-安装axios"><a href="#1-2-1-安装axios" class="headerlink" title="1.2.1 安装axios"></a>1.2.1 安装axios</h3><figure class="highlight coffeescript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">npm</span> i axios</span><br></pre></td></tr></table></figure>
+import &#123; defineConfig &#125; from &#39;vite&#39;
 
+//elementPlus按需导入
+import AutoImport from &#39;unplugin-auto-import/vite&#39;
+import Components from &#39;unplugin-vue-components/vite&#39;
+import &#123; ElementPlusResolver &#125; from &#39;unplugin-vue-components/resolvers&#39;
 
+import vue from &#39;@vitejs/plugin-vue&#39;
 
+// https://vitejs.dev/config/
+export default defineConfig(&#123;
+  plugins: [
+    vue(),
+      // ...
+      AutoImport(&#123;
+        resolvers: [ElementPlusResolver()],
+      &#125;),
+      Components(&#123;
+        resolvers: [
+          //1. 配置elementPlus采用sass
+          ElementPlusResolver(&#123;importStyle: &quot;sass&quot;&#125;)
+        ],
+      &#125;),
+  ],
+  resolve: &#123;
+    alias: &#123;
+      &#39;@&#39;: fileURLToPath(new URL(&#39;./src&#39;, import.meta.url))
+    &#125;
+  &#125;,
+  css: &#123;
+    preprocessorOptions: &#123;
+      scss: &#123;
+        // 自动导入定制化样式文件进行样式覆盖
+        additionalData: `
+          @use &quot;@/styles/element/index.scss&quot; as *;
+        `,
+      &#125;
+    &#125;
+  &#125;
+&#125;)
+</code></pre>
+<h2 id="1-2-axios-配置"><a href="#1-2-axios-配置" class="headerlink" title="1.2 axios 配置"></a>1.2 axios 配置</h2><h3 id="1-2-1-安装axios"><a href="#1-2-1-安装axios" class="headerlink" title="1.2.1 安装axios"></a>1.2.1 安装axios</h3><pre><code>npm i axios
+</code></pre>
 <h3 id="1-2-2-配置基础实例"><a href="#1-2-2-配置基础实例" class="headerlink" title="1.2.2 配置基础实例"></a>1.2.2 配置基础实例</h3><ul>
 <li>接口基础地址</li>
 <li>接口超时时间</li>
 <li>请求拦截器</li>
 <li>相应拦截器</li>
 </ul>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&#x27;axios&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> httpInstance=axios.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">baseURL</span>: <span class="string">&#x27;http://pcapi-xiaotuxian-front-devtest.itheima.net&#x27;</span>,</span><br><span class="line">    <span class="attr">timeout</span>: <span class="number">5000</span>  <span class="comment">//五秒钟</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">//拦截器</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// axios请求拦截器</span></span><br><span class="line">httpInstance.<span class="property">interceptors</span>.<span class="property">request</span>.<span class="title function_">use</span>(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> config</span><br><span class="line">  &#125;, <span class="function"><span class="params">e</span> =&gt;</span> <span class="title class_">Promise</span>.<span class="title function_">reject</span>(e))</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// axios响应式拦截器</span></span><br><span class="line">  httpInstance.<span class="property">interceptors</span>.<span class="property">response</span>.<span class="title function_">use</span>(<span class="function"><span class="params">res</span> =&gt;</span> res.<span class="property">data</span>, <span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">reject</span>(e)</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> httpInstance</span><br></pre></td></tr></table></figure>
+<pre><code class="ts">import axios from &#39;axios&#39;
 
+const httpInstance=axios.create(&#123;
+    baseURL: &#39;http://pcapi-xiaotuxian-front-devtest.itheima.net&#39;,
+    timeout: 5000  //五秒钟
+&#125;)
+
+//拦截器
+
+// axios请求拦截器
+httpInstance.interceptors.request.use(config =&gt; &#123;
+    return config
+  &#125;, e =&gt; Promise.reject(e))
+  
+  // axios响应式拦截器
+  httpInstance.interceptors.response.use(res =&gt; res.data, e =&gt; &#123;
+    return Promise.reject(e)
+  &#125;)
+
+export default httpInstance
+</code></pre>
 <h3 id="1-2-3-项目路由设计"><a href="#1-2-3-项目路由设计" class="headerlink" title="1.2.3 项目路由设计"></a>1.2.3 项目路由设计</h3><p><strong>路由设计原则：找页面的切换方式，如果是整体切换，则为一级路由，如果是在一级路由的内部进行的内容切换，则为二级路由</strong></p>
 <h2 id="1-3-scss文件自动导入"><a href="#1-3-scss文件自动导入" class="headerlink" title="1.3 scss文件自动导入"></a>1.3 scss文件自动导入</h2><p>为什么需要自动导入?</p>
 <p>在项目中一些组件共享的色值会以scss变量的方式统一放到名为var.scss的文件中,正常的组件使用需要先导入scss文件,再使用其内部的变量. 自动导入可以免去导入文件的步骤,比较简单</p>
 <p>文件内容</p>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="variable">$xtxColor</span>: <span class="number">#27ba9b</span>;</span><br><span class="line"><span class="variable">$helpColor</span>: <span class="number">#e26237</span>;</span><br><span class="line"><span class="variable">$sucColor</span>: <span class="number">#1dc779</span>;</span><br><span class="line"><span class="variable">$warnColor</span>: <span class="number">#ffb302</span>;</span><br><span class="line"><span class="variable">$priceColor</span>: <span class="number">#cf4444</span>;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="scss">$xtxColor: #27ba9b;
+$helpColor: #e26237;
+$sucColor: #1dc779;
+$warnColor: #ffb302;
+$priceColor: #cf4444;
+</code></pre>
 <p>在vite.config.ts中:</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="attr">css</span>: &#123;</span><br><span class="line">    <span class="attr">preprocessorOptions</span>: &#123;</span><br><span class="line">      <span class="attr">scss</span>: &#123;</span><br><span class="line">        <span class="comment">// 自动导入scss文件</span></span><br><span class="line">        <span class="attr">additionalData</span>: <span class="string">`</span></span><br><span class="line"><span class="string">          @use &quot;@/styles/element/index.scss&quot; as *;</span></span><br><span class="line"><span class="string">          @use &quot;@/styles/var.scss&quot; as *;</span></span><br><span class="line"><span class="string">        `</span>,</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="ts">css: &#123;
+    preprocessorOptions: &#123;
+      scss: &#123;
+        // 自动导入scss文件
+        additionalData: `
+          @use &quot;@/styles/element/index.scss&quot; as *;
+          @use &quot;@/styles/var.scss&quot; as *;
+        `,
+      &#125;
+    &#125;
+&#125;
+</code></pre>
 <h1 id="二-Layout开发"><a href="#二-Layout开发" class="headerlink" title="二. Layout开发"></a>二. Layout开发</h1><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240321201545019.png" alt="image-20240321201545019"></p>
 <h2 id="2-1引入字体图标"><a href="#2-1引入字体图标" class="headerlink" title="2.1引入字体图标:"></a>2.1引入字体图标:</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images2/image-20240321201518826.png" alt="image-20240321201518826"></p>
 <p>字体图标采用的是阿里的字体图标库，样式文件已经准备好，在 index.html文件中引入即可(不稳定,仅供开发环境使用)</p>
@@ -490,26 +586,99 @@ npm i sass -D
 <ul>
 <li>使用vueUse帮助获取滚动数据:</li>
 </ul>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script setup lang=<span class="string">&quot;ts&quot;</span>&gt;</span><br><span class="line"><span class="keyword">import</span> &#123; useScroll &#125; <span class="keyword">from</span> <span class="string">&#x27;@vueuse/core&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> el = ref&lt;<span class="title class_">HTMLElement</span> | <span class="literal">null</span>&gt;(<span class="literal">null</span>)</span><br><span class="line"><span class="keyword">const</span> &#123; x, y, isScrolling, arrivedState, directions &#125; = <span class="title function_">useScroll</span>(el)</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">ref</span>=<span class="string">&quot;el&quot;</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<pre><code class="js">&lt;script setup lang=&quot;ts&quot;&gt;
+import &#123; useScroll &#125; from &#39;@vueuse/core&#39;
 
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line"><span class="keyword">import</span> &#123; useScroll &#125; <span class="keyword">from</span> <span class="string">&#x27;@vueuse/core&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123;useCategoryStore&#125; <span class="keyword">from</span> <span class="string">&quot;@/stores/category.ts&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//拿到纵向滚动距离</span></span><br><span class="line"><span class="keyword">const</span> &#123;y&#125;=<span class="title function_">useScroll</span>(<span class="variable language_">window</span>)</span><br></pre></td></tr></table></figure>
+const el = ref&lt;HTMLElement | null&gt;(null)
+const &#123; x, y, isScrolling, arrivedState, directions &#125; = useScroll(el)
+&lt;/script&gt;
 
+&lt;template&gt;
+  &lt;div ref=&quot;el&quot; /&gt;
+&lt;/template&gt;
+</code></pre>
+<pre><code class="ts">&lt;script setup&gt;
+import &#123; useScroll &#125; from &#39;@vueuse/core&#39;
+import &#123;useCategoryStore&#125; from &quot;@/stores/category.ts&quot;;
+
+
+//拿到纵向滚动距离
+const &#123;y&#125;=useScroll(window)
+</code></pre>
 <ul>
 <li>添加新的导航组件样式类名</li>
 </ul>
-<figure class="highlight scss"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.app-header-sticky</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">position</span>: fixed;</span><br><span class="line">  <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">z-index</span>: <span class="number">999</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#fff</span>;</span><br><span class="line">  <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#e4e4e4</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 此处为关键样式!!!</span></span><br><span class="line">    <span class="comment">// 默认状态将其向上平移100%,使其不显示</span></span><br><span class="line">    <span class="comment">// 状态一：往上平移自身高度 + 完全透明</span></span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-<span class="number">100%</span>);</span><br><span class="line">  <span class="attribute">opacity</span>: <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 状态二：移除平移 + 完全不透明</span></span><br><span class="line">  &amp;<span class="selector-class">.show</span> &#123;</span><br><span class="line">      <span class="comment">//这段CSS代码片段定义了一个元素属性的过渡效果。</span></span><br><span class="line">      <span class="comment">// 当元素的样式发生任何变化时，例如颜色、尺寸或位置等属性发生变化时，这个过渡效果将在0.3秒内以线性方式完成动画过渡。</span></span><br><span class="line">      <span class="comment">//transition: all 表示所有可过渡的CSS属性都将应用此过渡效果。</span></span><br><span class="line">      <span class="comment">//0.3s 指定了过渡动画的持续时间是0.3秒。</span></span><br><span class="line">      <span class="comment">//linear 是过渡 timing function（计时函数），表示在动画进行过程中，速度是均匀的，不会出现加速或减速的情况。</span></span><br><span class="line">    <span class="attribute">transition</span>: all <span class="number">0.3s</span> linear;</span><br><span class="line">    <span class="attribute">transform</span>: none;</span><br><span class="line">    <span class="attribute">opacity</span>: <span class="number">1</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="scss">.app-header-sticky &#123;
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999;
+  background-color: #fff;
+  border-bottom: 1px solid #e4e4e4;
 
+    // 此处为关键样式!!!
+    // 默认状态将其向上平移100%,使其不显示
+    // 状态一：往上平移自身高度 + 完全透明
+  transform: translateY(-100%);
+  opacity: 0;
+
+  // 状态二：移除平移 + 完全不透明
+  &amp;.show &#123;
+      //这段CSS代码片段定义了一个元素属性的过渡效果。
+      // 当元素的样式发生任何变化时，例如颜色、尺寸或位置等属性发生变化时，这个过渡效果将在0.3秒内以线性方式完成动画过渡。
+      //transition: all 表示所有可过渡的CSS属性都将应用此过渡效果。
+      //0.3s 指定了过渡动画的持续时间是0.3秒。
+      //linear 是过渡 timing function（计时函数），表示在动画进行过程中，速度是均匀的，不会出现加速或减速的情况。
+    transition: all 0.3s linear;
+    transform: none;
+    opacity: 1;
+  &#125;
+</code></pre>
 <h2 id="2-3-pinia优化重复请求的数据"><a href="#2-3-pinia优化重复请求的数据" class="headerlink" title="2.3 pinia优化重复请求的数据"></a>2.3 pinia优化重复请求的数据</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images3/image-20240318164527320.png" alt="image-20240318164527320"></p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images3/image-20240318164535343.png" alt="image-20240318164535343"></p>
 <p>思路: 父组件中发送pinia封装好的请求,拿到数据存到pinia中, 子组件再从pinia中取,实现一次请求,多个组件共用数据的效果</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line">category.<span class="property">ts</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123; ref &#125; <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123; defineStore &#125; <span class="keyword">from</span> <span class="string">&#x27;pinia&#x27;</span></span><br><span class="line"><span class="keyword">import</span> &#123;getCategoryApi&#125; <span class="keyword">from</span> <span class="string">&quot;@/apis/layout&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> useCategoryStore</span><br><span class="line">    = <span class="title function_">defineStore</span>(<span class="string">&#x27;category&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 当前导航列表的逻辑</span></span><br><span class="line">    <span class="keyword">const</span> categoryList=<span class="title function_">ref</span>([])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="title function_">getCategory</span>=<span class="keyword">async</span> (<span class="params"></span>)=&gt;&#123;</span><br><span class="line">        <span class="keyword">const</span> res=<span class="keyword">await</span> <span class="title function_">getCategoryApi</span>()</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(res)</span><br><span class="line">        categoryList.<span class="property">value</span>=res.<span class="property">result</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//返回数据和方法</span></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        categoryList,</span><br><span class="line">        getCategory</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="ts">category.ts
 
+import &#123; ref &#125; from &#39;vue&#39;
+import &#123; defineStore &#125; from &#39;pinia&#39;
+import &#123;getCategoryApi&#125; from &quot;@/apis/layout&quot;;
+
+export const useCategoryStore
+    = defineStore(&#39;category&#39;, () =&gt; &#123;
+    // 当前导航列表的逻辑
+    const categoryList=ref([])
+
+    const getCategory=async ()=&gt;&#123;
+        const res=await getCategoryApi()
+        console.log(res)
+        categoryList.value=res.result
+    &#125;
+
+    //返回数据和方法
+    return &#123;
+        categoryList,
+        getCategory
+    &#125;
+&#125;)
+</code></pre>
 <p>父组件使用:</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useCategoryStore&#125; <span class="keyword">from</span> <span class="string">&quot;@/stores/category&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;onMounted&#125; <span class="keyword">from</span> <span class="string">&quot;vue&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//触发获取导航列表的action</span></span><br><span class="line"><span class="keyword">const</span> categoryStore=<span class="title function_">useCategoryStore</span>()</span><br><span class="line"><span class="title function_">onMounted</span>(<span class="function">()=&gt;</span>&#123;</span><br><span class="line">    categoryStore.<span class="title function_">getCategory</span>()</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="ts">import &#123;useCategoryStore&#125; from &quot;@/stores/category&quot;;
+import &#123;onMounted&#125; from &quot;vue&quot;;
 
+//触发获取导航列表的action
+const categoryStore=useCategoryStore()
+onMounted(()=&gt;&#123;
+    categoryStore.getCategory()
+&#125;)
+</code></pre>
 <p>子组件获取数据</p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;useCategoryStore&#125; <span class="keyword">from</span> <span class="string">&quot;@/stores/category.ts&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用pinia的值</span></span><br><span class="line"><span class="keyword">const</span> categoryStore=<span class="title function_">useCategoryStore</span>()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="ts">import &#123;useCategoryStore&#125; from &quot;@/stores/category.ts&quot;;
 
+//使用pinia的值
+const categoryStore=useCategoryStore()
+</code></pre>
 <h1 id="三-Home页开发"><a href="#三-Home页开发" class="headerlink" title="三. Home页开发"></a>三. Home页开发</h1><h2 id="3-1-整体结构的创建"><a href="#3-1-整体结构的创建" class="headerlink" title="3.1 整体结构的创建"></a>3.1 整体结构的创建</h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images3/image-20240319153624016.png" alt="image-20240319153624016"></p>
 <p>1- 按照结构新增五个组件，准备最简单的模版，分别在Home模块的入口组件中引入</p>
 <ul>
@@ -519,19 +688,84 @@ npm i sass -D
 <li>HomeHot</li>
 <li>HomeProduct</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line">import HomeCategory from &#x27;./components/HomeCategory.vue&#x27;</span><br><span class="line">import HomeBanner from &#x27;./components/HomeBanner.vue&#x27;</span><br><span class="line">import HomeNew from &#x27;./components/HomeNew.vue&#x27;</span><br><span class="line">import HomeHot from &#x27;./components/HomeHot.vue&#x27;</span><br><span class="line">import homeProduct from &#x27;./components/HomeProduct.vue&#x27;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">    &lt;HomeCategory /&gt;</span><br><span class="line">    &lt;HomeBanner /&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">  &lt;HomeNew /&gt;</span><br><span class="line">  &lt;HomeHot /&gt;</span><br><span class="line">  &lt;homeProduct /&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="vue">&lt;script setup&gt;
+import HomeCategory from &#39;./components/HomeCategory.vue&#39;
+import HomeBanner from &#39;./components/HomeBanner.vue&#39;
+import HomeNew from &#39;./components/HomeNew.vue&#39;
+import HomeHot from &#39;./components/HomeHot.vue&#39;
+import homeProduct from &#39;./components/HomeProduct.vue&#39;
+&lt;/script&gt;
 
+&lt;template&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;HomeCategory /&gt;
+    &lt;HomeBanner /&gt;
+  &lt;/div&gt;
+  &lt;HomeNew /&gt;
+  &lt;HomeHot /&gt;
+  &lt;homeProduct /&gt;
+&lt;/template&gt;
+</code></pre>
 <h2 id="3-2-banner轮播图的实现"><a href="#3-2-banner轮播图的实现" class="headerlink" title="3.2 banner轮播图的实现"></a>3.2 banner轮播图的实现</h2><p>使用elementUI的组件:</p>
 <p><strong>Carousel 走马灯</strong></p>
 <p>在有限空间内，循环播放同一类型的图片、文字等内容</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;div class=&quot;home-banner&quot;&gt;</span><br><span class="line">      &lt;el-carousel height=&quot;500px&quot; motion-blur interval=&quot;1800&quot;&gt;</span><br><span class="line">          &lt;el-carousel-item v-for=&quot;item in bannerList&quot; :key=&quot;item.id&quot;&gt;</span><br><span class="line">              &lt;img :src=&quot;item.imgUrl&quot;  alt=&quot;&quot;&gt;</span><br><span class="line">          &lt;/el-carousel-item&gt;</span><br><span class="line">      &lt;/el-carousel&gt;</span><br><span class="line">  &lt;/div&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="vue">  &lt;div class=&quot;home-banner&quot;&gt;
+        &lt;el-carousel height=&quot;500px&quot; motion-blur interval=&quot;1800&quot;&gt;
+            &lt;el-carousel-item v-for=&quot;item in bannerList&quot; :key=&quot;item.id&quot;&gt;
+                &lt;img :src=&quot;item.imgUrl&quot;  alt=&quot;&quot;&gt;
+            &lt;/el-carousel-item&gt;
+        &lt;/el-carousel&gt;
+    &lt;/div&gt;
+</code></pre>
 <h2 id="3-3-面板组件的封装"><a href="#3-3-面板组件的封装" class="headerlink" title="3.3 面板组件的封装"></a>3.3 面板组件的封装</h2><p>抽象了一个公用的展示组件, 用props和插槽传值</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line"></span><br><span class="line"> //定义props</span><br><span class="line">defineProps(&#123;</span><br><span class="line">  title: &#123;</span><br><span class="line">    type: String,</span><br><span class="line">    default: &#x27;&#x27;</span><br><span class="line">  &#125;,</span><br><span class="line">  subTitle: &#123;</span><br><span class="line">    type: String,</span><br><span class="line">    default: &#x27;&#x27;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div class=&quot;home-panel&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;container&quot;&gt;</span><br><span class="line">      &lt;div class=&quot;head&quot;&gt;</span><br><span class="line">        &lt;!-- 主标题和副标题 --&gt;</span><br><span class="line">        &lt;h3&gt;</span><br><span class="line">          &#123;&#123; title &#125;&#125;&lt;small&gt;&#123;&#123; subTitle &#125;&#125;&lt;/small&gt;</span><br><span class="line">        &lt;/h3&gt;</span><br><span class="line">      &lt;/div&gt;</span><br><span class="line">      &lt;!-- 主体内容区域 ,使用插槽--&gt;</span><br><span class="line">      &lt;slot/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="vue">&lt;script setup&gt;
 
+ //定义props
+defineProps(&#123;
+  title: &#123;
+    type: String,
+    default: &#39;&#39;
+  &#125;,
+  subTitle: &#123;
+    type: String,
+    default: &#39;&#39;
+  &#125;
+&#125;)
+
+&lt;/script&gt;
+
+
+&lt;template&gt;
+  &lt;div class=&quot;home-panel&quot;&gt;
+    &lt;div class=&quot;container&quot;&gt;
+      &lt;div class=&quot;head&quot;&gt;
+        &lt;!-- 主标题和副标题 --&gt;
+        &lt;h3&gt;
+          &#123;&#123; title &#125;&#125;&lt;small&gt;&#123;&#123; subTitle &#125;&#125;&lt;/small&gt;
+        &lt;/h3&gt;
+      &lt;/div&gt;
+      &lt;!-- 主体内容区域 ,使用插槽--&gt;
+      &lt;slot/&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
 <p><strong>实现方式</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;HomePanel title=&quot;人气推荐&quot; sub-title=&quot;人气爆款 不容错过&quot;&gt;</span><br><span class="line">        &lt;!--插槽区域--&gt;</span><br><span class="line">        &lt;ul class=&quot;goods-list&quot;&gt;</span><br><span class="line">            &lt;li v-for=&quot;item in hotList&quot; :key=&quot;item.id&quot;&gt;</span><br><span class="line">                &lt;RouterLink to=&quot;/&quot;&gt;</span><br><span class="line">                    &lt;img v-img-lazy=&quot;item.picture&quot; alt=&quot;&quot;/&gt;</span><br><span class="line">                    &lt;p class=&quot;name&quot;&gt;&#123;&#123; item.title &#125;&#125;&lt;/p&gt;</span><br><span class="line">                    &lt;p class=&quot;desc&quot;&gt;&#123;&#123; item.alt &#125;&#125;&lt;/p&gt;</span><br><span class="line">                &lt;/RouterLink&gt;</span><br><span class="line">            &lt;/li&gt;</span><br><span class="line">        &lt;/ul&gt;</span><br><span class="line">    &lt;/HomePanel&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="vue">&lt;template&gt;
+    &lt;HomePanel title=&quot;人气推荐&quot; sub-title=&quot;人气爆款 不容错过&quot;&gt;
+        &lt;!--插槽区域--&gt;
+        &lt;ul class=&quot;goods-list&quot;&gt;
+            &lt;li v-for=&quot;item in hotList&quot; :key=&quot;item.id&quot;&gt;
+                &lt;RouterLink to=&quot;/&quot;&gt;
+                    &lt;img v-img-lazy=&quot;item.picture&quot; alt=&quot;&quot;/&gt;
+                    &lt;p class=&quot;name&quot;&gt;&#123;&#123; item.title &#125;&#125;&lt;/p&gt;
+                    &lt;p class=&quot;desc&quot;&gt;&#123;&#123; item.alt &#125;&#125;&lt;/p&gt;
+                &lt;/RouterLink&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/HomePanel&gt;
+&lt;/template&gt;
+</code></pre>
 <h2 id="3-4-懒加载指令的实现"><a href="#3-4-懒加载指令的实现" class="headerlink" title="3.4 懒加载指令的实现"></a>3.4 懒加载指令的实现</h2><ol>
 <li>为了抽象出公共逻辑, 我决定使用插件的方式来完成指令的注册</li>
 <li>指令的逻辑实现:<ul>
@@ -547,16 +781,64 @@ npm i sass -D
 <p>当内容出现时:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images3/image-20240319160320298.png" alt="image-20240319160320298"></p>
 <p>源码分析</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script setup&gt;</span><br><span class="line">import &#123; ref &#125; from &#x27;vue&#x27;</span><br><span class="line">import &#123; useIntersectionObserver &#125; from &#x27;@vueuse/core&#x27;</span><br><span class="line"></span><br><span class="line">//target是监视目标</span><br><span class="line">const target = ref(null)</span><br><span class="line">//是否出现在视口区域内</span><br><span class="line">const targetIsVisible = ref(false)</span><br><span class="line">//stop是该方法返回对象的一个属性, 能够让监视程序停止</span><br><span class="line">const &#123; stop &#125; = useIntersectionObserver(</span><br><span class="line">  target,</span><br><span class="line">    //isIntersecting: 是否出现(x和y方向都可检测)</span><br><span class="line">    //observerElement 监视的元素</span><br><span class="line">  ([&#123; isIntersecting &#125;], observerElement) =&gt; &#123;</span><br><span class="line">    targetIsVisible.value = isIntersecting</span><br><span class="line">  &#125;,</span><br><span class="line">)</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div ref=&quot;target&quot;&gt;</span><br><span class="line">    &lt;h1&gt;Hello world&lt;/h1&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br></pre></td></tr></table></figure>
+<pre><code class="vue">&lt;script setup&gt;
+import &#123; ref &#125; from &#39;vue&#39;
+import &#123; useIntersectionObserver &#125; from &#39;@vueuse/core&#39;
 
+//target是监视目标
+const target = ref(null)
+//是否出现在视口区域内
+const targetIsVisible = ref(false)
+//stop是该方法返回对象的一个属性, 能够让监视程序停止
+const &#123; stop &#125; = useIntersectionObserver(
+  target,
+    //isIntersecting: 是否出现(x和y方向都可检测)
+    //observerElement 监视的元素
+  ([&#123; isIntersecting &#125;], observerElement) =&gt; &#123;
+    targetIsVisible.value = isIntersecting
+  &#125;,
+)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div ref=&quot;target&quot;&gt;
+    &lt;h1&gt;Hello world&lt;/h1&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
 <p> vue3的自定义指令api可以配合该方法一起使用</p>
 <p>将一个自定义指令全局注册到应用层级是一种常见的做法：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = <span class="title function_">createApp</span>(&#123;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使 v-focus 在所有组件中都可用</span></span><br><span class="line">app.<span class="title function_">directive</span>(<span class="string">&#x27;focus&#x27;</span>, &#123;</span><br><span class="line">  <span class="comment">/* ... */</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<pre><code class="js">const app = createApp(&#123;&#125;)
 
+// 使 v-focus 在所有组件中都可用
+app.directive(&#39;focus&#39;, &#123;
+  /* ... */
+&#125;)
+</code></pre>
 <p>指令钩子</p>
 <p>一个指令的定义对象可以提供几种钩子函数 (都是可选的)：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> myDirective = &#123;</span><br><span class="line">  <span class="comment">// 在绑定元素的 attribute 前</span></span><br><span class="line">  <span class="comment">// 或事件监听器应用前调用</span></span><br><span class="line">  <span class="title function_">created</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;</span><br><span class="line">    <span class="comment">// 下面会介绍各个参数的细节</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 在元素被插入到 DOM 前调用</span></span><br><span class="line">  <span class="title function_">beforeMount</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;&#125;,</span><br><span class="line">  <span class="comment">// 在绑定元素的父组件</span></span><br><span class="line">  <span class="comment">// 及他自己的所有子节点都挂载完成后调用</span></span><br><span class="line">  <span class="title function_">mounted</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;&#125;,</span><br><span class="line">  <span class="comment">// 绑定元素的父组件更新前调用</span></span><br><span class="line">  <span class="title function_">beforeUpdate</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;&#125;,</span><br><span class="line">  <span class="comment">// 在绑定元素的父组件</span></span><br><span class="line">  <span class="comment">// 及他自己的所有子节点都更新后调用</span></span><br><span class="line">  <span class="title function_">updated</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;&#125;,</span><br><span class="line">  <span class="comment">// 绑定元素的父组件卸载前调用</span></span><br><span class="line">  <span class="title function_">beforeUnmount</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;&#125;,</span><br><span class="line">  <span class="comment">// 绑定元素的父组件卸载后调用</span></span><br><span class="line">  <span class="title function_">unmounted</span>(<span class="params">el, binding, vnode, prevVnode</span>) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="js">const myDirective = &#123;
+  // 在绑定元素的 attribute 前
+  // 或事件监听器应用前调用
+  created(el, binding, vnode, prevVnode) &#123;
+    // 下面会介绍各个参数的细节
+  &#125;,
+  // 在元素被插入到 DOM 前调用
+  beforeMount(el, binding, vnode, prevVnode) &#123;&#125;,
+  // 在绑定元素的父组件
+  // 及他自己的所有子节点都挂载完成后调用
+  mounted(el, binding, vnode, prevVnode) &#123;&#125;,
+  // 绑定元素的父组件更新前调用
+  beforeUpdate(el, binding, vnode, prevVnode) &#123;&#125;,
+  // 在绑定元素的父组件
+  // 及他自己的所有子节点都更新后调用
+  updated(el, binding, vnode, prevVnode) &#123;&#125;,
+  // 绑定元素的父组件卸载前调用
+  beforeUnmount(el, binding, vnode, prevVnode) &#123;&#125;,
+  // 绑定元素的父组件卸载后调用
+  unmounted(el, binding, vnode, prevVnode) &#123;&#125;
+&#125;
+</code></pre>
 <p>钩子参数</p>
 <p>指令的钩子会传递以下几种参数：</p>
 <ul>
@@ -574,14 +856,59 @@ npm i sass -D
 <li><code>prevNode</code>：代表之前的渲染中指令所绑定元素的 VNode。仅在 <code>beforeUpdate</code> 和 <code>updated</code> 钩子中可用。</li>
 </ul>
 <p><strong>实现方式</strong></p>
-<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; useIntersectionObserver &#125; <span class="keyword">from</span> <span class="string">&#x27;@vueuse/core&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> lazyPlugin=&#123;</span><br><span class="line">    <span class="title function_">install</span>(<span class="params">app:<span class="built_in">any</span></span>)&#123;</span><br><span class="line">        <span class="comment">// 定义全局指令</span></span><br><span class="line">        app.<span class="title function_">directive</span>(<span class="string">&quot;img-lazy&quot;</span>,&#123;</span><br><span class="line">            <span class="comment">//钩子函数</span></span><br><span class="line">            <span class="title function_">mounted</span>(<span class="params">el:<span class="built_in">any</span>,binding:<span class="built_in">any</span></span>)&#123;</span><br><span class="line">                <span class="comment">//el :代表指令绑定的元素, 该场景下指的是img元素</span></span><br><span class="line">                <span class="comment">//binding: binding.value 是指令等于号后面绑定的表达式的值</span></span><br><span class="line">                <span class="variable language_">console</span>.<span class="title function_">log</span>(el,binding)</span><br><span class="line">               <span class="keyword">const</span> &#123;stop&#125;= <span class="title function_">useIntersectionObserver</span>(</span><br><span class="line">                    el,</span><br><span class="line">                    <span class="function">(<span class="params">[&#123; isIntersecting &#125;]</span>) =&gt;</span> &#123;</span><br><span class="line">                        <span class="variable language_">console</span>.<span class="title function_">log</span>(isIntersecting)</span><br><span class="line">                        <span class="keyword">if</span> (isIntersecting)&#123;</span><br><span class="line">                            <span class="comment">//进入视口区域,将指令绑定的值赋值给img的src</span></span><br><span class="line">                            el.<span class="property">src</span>=binding.<span class="property">value</span></span><br><span class="line">                            <span class="comment">//第一次赋值完毕后,停止监听避免资源浪费</span></span><br><span class="line">                            <span class="title function_">stop</span>()</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;,</span><br><span class="line">                )</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="ts">import &#123; useIntersectionObserver &#125; from &#39;@vueuse/core&#39;
 
+export const lazyPlugin=&#123;
+    install(app:any)&#123;
+        // 定义全局指令
+        app.directive(&quot;img-lazy&quot;,&#123;
+            //钩子函数
+            mounted(el:any,binding:any)&#123;
+                //el :代表指令绑定的元素, 该场景下指的是img元素
+                //binding: binding.value 是指令等于号后面绑定的表达式的值
+                console.log(el,binding)
+               const &#123;stop&#125;= useIntersectionObserver(
+                    el,
+                    ([&#123; isIntersecting &#125;]) =&gt; &#123;
+                        console.log(isIntersecting)
+                        if (isIntersecting)&#123;
+                            //进入视口区域,将指令绑定的值赋值给img的src
+                            el.src=binding.value
+                            //第一次赋值完毕后,停止监听避免资源浪费
+                            stop()
+                        &#125;
+                    &#125;,
+                )
+            &#125;
+        &#125;)
+    &#125;
+&#125;
+</code></pre>
 <p>在入口文件中注册插件</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//引入懒加载插件,并注册</span></span><br><span class="line"><span class="keyword">import</span> &#123;*lazyPlugin*&#125; <span class="keyword">from</span> <span class="string">&quot;@/directives&quot;</span>;</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(*lazyPlugin*)</span><br></pre></td></tr></table></figure>
+<pre><code class="js">//引入懒加载插件,并注册
+import &#123;*lazyPlugin*&#125; from &quot;@/directives&quot;;
 
+app.use(*lazyPlugin*)
+</code></pre>
 <h2 id="3-5-goodItem的封装"><a href="#3-5-goodItem的封装" class="headerlink" title="3.5 goodItem的封装"></a>3.5 goodItem的封装</h2><p>展示组件的封装思路: 样式为静态结构, 数据需要展示什么就将其封装为props, 若样式在某些地方不同,则使用插槽来完成样式的多样化</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">    &lt;RouterLink to=&quot;/&quot; class=&quot;goods-item&quot;&gt;</span><br><span class="line">        &lt;img v-img-lazy=&quot;goods.picture&quot; alt=&quot;&quot; /&gt;</span><br><span class="line">        &lt;p class=&quot;name ellipsis&quot;&gt;&#123;&#123; goods.name &#125;&#125;&lt;/p&gt;</span><br><span class="line">        &lt;p class=&quot;desc ellipsis&quot;&gt;&#123;&#123; goods.desc &#125;&#125;&lt;/p&gt;</span><br><span class="line">        &lt;p class=&quot;price&quot;&gt;&amp;yen;&#123;&#123; goods.price &#125;&#125;&lt;/p&gt;</span><br><span class="line">    &lt;/RouterLink&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script setup lang=&quot;ts&quot;&gt;</span><br><span class="line"></span><br><span class="line">defineProps(&#123;</span><br><span class="line">    goods:&#123;</span><br><span class="line">        type:Object,</span><br><span class="line">        default:()=&gt;&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="vue">&lt;template&gt;
+    &lt;RouterLink to=&quot;/&quot; class=&quot;goods-item&quot;&gt;
+        &lt;img v-img-lazy=&quot;goods.picture&quot; alt=&quot;&quot; /&gt;
+        &lt;p class=&quot;name ellipsis&quot;&gt;&#123;&#123; goods.name &#125;&#125;&lt;/p&gt;
+        &lt;p class=&quot;desc ellipsis&quot;&gt;&#123;&#123; goods.desc &#125;&#125;&lt;/p&gt;
+        &lt;p class=&quot;price&quot;&gt;&amp;yen;&#123;&#123; goods.price &#125;&#125;&lt;/p&gt;
+    &lt;/RouterLink&gt;
+&lt;/template&gt;
 
+&lt;script setup lang=&quot;ts&quot;&gt;
+
+defineProps(&#123;
+    goods:&#123;
+        type:Object,
+        default:()=&gt;&#123;&#125;
+    &#125;
+&#125;)
+</code></pre>
 
                 
             </div>
@@ -979,7 +1306,7 @@ npm i sass -D
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             

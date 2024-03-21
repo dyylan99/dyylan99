@@ -57,7 +57,7 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -447,41 +447,304 @@
 <hr>
 </blockquote>
 <h2 id="创建Maven工程"><a href="#创建Maven工程" class="headerlink" title="创建Maven工程"></a><strong>创建Maven工程</strong></h2><p><img src="https://gitee.com/DylanToT99/images/raw/57179e6b9bba6f6ee0170027f49ac8b02f3559b4/images/spring-framework-helloworld-3.png" alt="images/spring-framework-helloworld-3.png  0 → 100644"></p>
-<h2 id="引入Spring框架的POM依赖，以及查看这些依赖之间的关系"><a href="#引入Spring框架的POM依赖，以及查看这些依赖之间的关系" class="headerlink" title="引入Spring框架的POM依赖，以及查看这些依赖之间的关系"></a><strong>引入Spring框架的POM依赖，以及查看这些依赖之间的关系</strong></h2><figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>tech.pdai<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>001-spring-framework-demo-helloworld-xml<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">spring.version</span>&gt;</span>5.3.9<span class="tag">&lt;/<span class="name">spring.version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">aspectjweaver.version</span>&gt;</span>1.9.6<span class="tag">&lt;/<span class="name">aspectjweaver.version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjweaver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;aspectjweaver.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="引入Spring框架的POM依赖，以及查看这些依赖之间的关系"><a href="#引入Spring框架的POM依赖，以及查看这些依赖之间的关系" class="headerlink" title="引入Spring框架的POM依赖，以及查看这些依赖之间的关系"></a><strong>引入Spring框架的POM依赖，以及查看这些依赖之间的关系</strong></h2><pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
 
+    &lt;groupId&gt;tech.pdai&lt;/groupId&gt;
+    &lt;artifactId&gt;001-spring-framework-demo-helloworld-xml&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;maven.compiler.source&gt;8&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;8&lt;/maven.compiler.target&gt;
+        &lt;spring.version&gt;5.3.9&lt;/spring.version&gt;
+        &lt;aspectjweaver.version&gt;1.9.6&lt;/aspectjweaver.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+            &lt;version&gt;$&#123;spring.version&#125;&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+            &lt;version&gt;$&#123;spring.version&#125;&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+            &lt;version&gt;$&#123;spring.version&#125;&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.aspectj&lt;/groupId&gt;
+            &lt;artifactId&gt;aspectjweaver&lt;/artifactId&gt;
+            &lt;version&gt;$&#123;aspectjweaver.version&#125;&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+&lt;/project&gt;
+</code></pre>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/spring-framework-helloworld-4.png" alt="img"></p>
-<h2 id="POJO-User"><a href="#POJO-User" class="headerlink" title="POJO - User"></a><strong>POJO - User</strong></h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework.entity;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * user&#x27;s name.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * user&#x27;s age.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * init.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name name</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> age  age</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">User</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getAge</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAge</span><span class="params">(<span class="type">int</span> age)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="POJO-User"><a href="#POJO-User" class="headerlink" title="POJO - User"></a><strong>POJO - User</strong></h2><pre><code class="java">package tech.pdai.springframework.entity;
 
-<h2 id="DAO-获取-POJO，-UserDaoServiceImpl-mock-数据"><a href="#DAO-获取-POJO，-UserDaoServiceImpl-mock-数据" class="headerlink" title="DAO 获取 POJO， UserDaoServiceImpl (mock 数据)"></a><strong>DAO 获取 POJO， UserDaoServiceImpl (mock 数据)</strong></h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework.dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.entity.User;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserDaoImpl</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * init.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">UserDaoImpl</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * mocked to find user list.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> user list</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;User&gt; <span class="title function_">findUserList</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.singletonList(<span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;pdai&quot;</span>, <span class="number">18</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+/**
+ * @author pdai
+ */
+public class User &#123;
 
+    /**
+     * user&#39;s name.
+     */
+    private String name;
+
+    /**
+     * user&#39;s age.
+     */
+    private int age;
+
+    /**
+     * init.
+     *
+     * @param name name
+     * @param age  age
+     */
+    public User(String name, int age) &#123;
+        this.name = name;
+        this.age = age;
+    &#125;
+
+    public String getName() &#123;
+        return name;
+    &#125;
+
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+
+    public int getAge() &#123;
+        return age;
+    &#125;
+
+    public void setAge(int age) &#123;
+        this.age = age;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="DAO-获取-POJO，-UserDaoServiceImpl-mock-数据"><a href="#DAO-获取-POJO，-UserDaoServiceImpl-mock-数据" class="headerlink" title="DAO 获取 POJO， UserDaoServiceImpl (mock 数据)"></a><strong>DAO 获取 POJO， UserDaoServiceImpl (mock 数据)</strong></h2><pre><code class="java">package tech.pdai.springframework.dao;
+
+import java.util.Collections;
+import java.util.List;
+
+import tech.pdai.springframework.entity.User;
+
+/**
+ * @author pdai
+ */
+public class UserDaoImpl &#123;
+
+    /**
+     * init.
+     */
+    public UserDaoImpl() &#123;
+    &#125;
+
+    /**
+     * mocked to find user list.
+     *
+     * @return user list
+     */
+    public List&lt;User&gt; findUserList() &#123;
+        return Collections.singletonList(new User(&quot;pdai&quot;, 18));
+    &#125;
+&#125;
+</code></pre>
 <p>并增加daos.xml</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">class</span>=<span class="string">&quot;tech.pdai.springframework.dao.UserDaoImpl&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- additional collaborators and configuration for this bean go here --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- more bean definitions for data access objects go here --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+    &lt;bean id=&quot;userDao&quot; class=&quot;tech.pdai.springframework.dao.UserDaoImpl&quot;&gt;
+        &lt;!-- additional collaborators and configuration for this bean go here --&gt;
+    &lt;/bean&gt;
+    &lt;!-- more bean definitions for data access objects go here --&gt;
+&lt;/beans&gt;
+</code></pre>
+<h2 id="业务层-UserServiceImpl（调用DAO层）"><a href="#业务层-UserServiceImpl（调用DAO层）" class="headerlink" title="业务层 UserServiceImpl（调用DAO层）"></a><strong>业务层 UserServiceImpl（调用DAO层）</strong></h2><pre><code class="java">package tech.pdai.springframework.service;
 
-<h2 id="业务层-UserServiceImpl（调用DAO层）"><a href="#业务层-UserServiceImpl（调用DAO层）" class="headerlink" title="业务层 UserServiceImpl（调用DAO层）"></a><strong>业务层 UserServiceImpl（调用DAO层）</strong></h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.dao.UserDaoImpl;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.entity.User;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * user dao impl.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> UserDaoImpl userDao;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * init.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">UserServiceImpl</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * find user list.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> user list</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;User&gt; <span class="title function_">findUserList</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.userDao.findUserList();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * set dao.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> userDao user dao</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUserDao</span><span class="params">(UserDaoImpl userDao)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.userDao = userDao;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+import java.util.List;
 
+import tech.pdai.springframework.dao.UserDaoImpl;
+import tech.pdai.springframework.entity.User;
+
+/**
+ * @author pdai
+ */
+public class UserServiceImpl &#123;
+
+    /**
+     * user dao impl.
+     */
+    private UserDaoImpl userDao;
+
+    /**
+     * init.
+     */
+    public UserServiceImpl() &#123;
+    &#125;
+
+    /**
+     * find user list.
+     *
+     * @return user list
+     */
+    public List&lt;User&gt; findUserList() &#123;
+        return this.userDao.findUserList();
+    &#125;
+
+    /**
+     * set dao.
+     *
+     * @param userDao user dao
+     */
+    public void setUserDao(UserDaoImpl userDao) &#123;
+        this.userDao = userDao;
+    &#125;
+&#125;
+</code></pre>
 <p>并增加services.xml</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- services --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;userService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;tech.pdai.springframework.service.UserServiceImpl&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;userDao&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;userDao&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- additional collaborators and configuration for this bean go here --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- more bean definitions for services go here --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+    &lt;!-- services --&gt;
+    &lt;bean id=&quot;userService&quot; class=&quot;tech.pdai.springframework.service.UserServiceImpl&quot;&gt;
+        &lt;property name=&quot;userDao&quot; ref=&quot;userDao&quot;/&gt;
+        &lt;!-- additional collaborators and configuration for this bean go here --&gt;
+    &lt;/bean&gt;
+    &lt;!-- more bean definitions for services go here --&gt;
+&lt;/beans&gt;
+</code></pre>
+<h2 id="拦截所有service中的方法，并输出记录"><a href="#拦截所有service中的方法，并输出记录" class="headerlink" title="拦截所有service中的方法，并输出记录"></a><strong>拦截所有service中的方法，并输出记录</strong></h2><pre><code class="java">package tech.pdai.springframework.aspect;
 
-<h2 id="拦截所有service中的方法，并输出记录"><a href="#拦截所有service中的方法，并输出记录" class="headerlink" title="拦截所有service中的方法，并输出记录"></a><strong>拦截所有service中的方法，并输出记录</strong></h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework.aspect;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.ProceedingJoinPoint;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Around;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.annotation.Aspect;</span><br><span class="line"><span class="keyword">import</span> org.aspectj.lang.reflect.MethodSignature;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.EnableAspectJAutoProxy;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Aspect</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogAspect</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * aspect for every methods under service package.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Around(&quot;execution(* tech.pdai.springframework.service.*.*(..))&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">businessService</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        <span class="comment">// get attribute through annotation</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> ((MethodSignature) pjp.getSignature()).getMethod();</span><br><span class="line">        System.out.println(<span class="string">&quot;execute method: &quot;</span> + method.getName());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// continue to process</span></span><br><span class="line">        <span class="keyword">return</span> pjp.proceed();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+import java.lang.reflect.Method;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+
+/**
+ * @author pdai
+ */
+@Aspect
+public class LogAspect &#123;
+
+    /**
+     * aspect for every methods under service package.
+     */
+    @Around(&quot;execution(* tech.pdai.springframework.service.*.*(..))&quot;)
+    public Object businessService(ProceedingJoinPoint pjp) throws Throwable &#123;
+        // get attribute through annotation
+        Method method = ((MethodSignature) pjp.getSignature()).getMethod();
+        System.out.println(&quot;execute method: &quot; + method.getName());
+
+        // continue to process
+        return pjp.proceed();
+    &#125;
+
+&#125;
+</code></pre>
 <p>并增加aspects.xml</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:aop</span>=<span class="string">&quot;http://www.springframework.org/schema/aop&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/aop</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/aop/spring-aop.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/context</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/context/spring-context.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;tech.pdai.springframework&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">aop:aspectj-autoproxy</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;logAspect&quot;</span> <span class="attr">class</span>=<span class="string">&quot;tech.pdai.springframework.aspect.LogAspect&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- configure properties of aspect here as normal --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- more bean definitions for data access objects go here --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<pre><code class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/aop
+ http://www.springframework.org/schema/aop/spring-aop.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context.xsd
+&quot;&gt;
 
-<h2 id="组装App"><a href="#组装App" class="headerlink" title="组装App"></a><strong>组装App</strong></h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.entity.User;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * main interfaces.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args args</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// create and configure beans</span></span><br><span class="line">        <span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;aspects.xml&quot;</span>, <span class="string">&quot;daos.xml&quot;</span>, <span class="string">&quot;services.xml&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// retrieve configured instance</span></span><br><span class="line">        <span class="type">UserServiceImpl</span> <span class="variable">service</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;userService&quot;</span>, UserServiceImpl.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// use configured instance</span></span><br><span class="line">        List&lt;User&gt; userList = service.findUserList();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// print info from beans</span></span><br><span class="line">        userList.forEach(a -&gt; System.out.println(a.getName() + <span class="string">&quot;,&quot;</span> + a.getAge()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+    &lt;context:component-scan base-package=&quot;tech.pdai.springframework&quot; /&gt;
 
+    &lt;aop:aspectj-autoproxy/&gt;
+
+    &lt;bean id=&quot;logAspect&quot; class=&quot;tech.pdai.springframework.aspect.LogAspect&quot;&gt;
+        &lt;!-- configure properties of aspect here as normal --&gt;
+    &lt;/bean&gt;
+    &lt;!-- more bean definitions for data access objects go here --&gt;
+&lt;/beans&gt;
+</code></pre>
+<h2 id="组装App"><a href="#组装App" class="headerlink" title="组装App"></a><strong>组装App</strong></h2><pre><code class="java">package tech.pdai.springframework;
+
+import java.util.List;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import tech.pdai.springframework.entity.User;
+import tech.pdai.springframework.service.UserServiceImpl;
+
+/**
+ * @author pdai
+ */
+public class App &#123;
+
+    /**
+     * main interfaces.
+     *
+     * @param args args
+     */
+    public static void main(String[] args) &#123;
+        // create and configure beans
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext(&quot;aspects.xml&quot;, &quot;daos.xml&quot;, &quot;services.xml&quot;);
+
+        // retrieve configured instance
+        UserServiceImpl service = context.getBean(&quot;userService&quot;, UserServiceImpl.class);
+
+        // use configured instance
+        List&lt;User&gt; userList = service.findUserList();
+
+        // print info from beans
+        userList.forEach(a -&gt; System.out.println(a.getName() + &quot;,&quot; + a.getAge()));
+    &#125;
+&#125;
+</code></pre>
 <h2 id="整体结构和运行app"><a href="#整体结构和运行app" class="headerlink" title="整体结构和运行app"></a><strong>整体结构和运行app</strong></h2><p><img src="https://gitee.com/DylanToT99/images/raw/master/images/spring-framework-helloworld-5.png" alt="img"></p>
 <h1 id="这个例子体现了Spring的哪些核心功能"><a href="#这个例子体现了Spring的哪些核心功能" class="headerlink" title="这个例子体现了Spring的哪些核心功能"></a>这个例子体现了Spring的哪些核心功能</h1><h2 id="控制反转-IOC"><a href="#控制反转-IOC" class="headerlink" title="控制反转 - IOC"></a>控制反转 - IOC</h2><ul>
 <li><strong>如果没有Spring框架，我们需要自己创建User&#x2F;Dao&#x2F;Service等</strong>，比如：</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">UserDaoImpl</span> <span class="variable">userDao</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserDaoImpl</span>();</span><br><span class="line"><span class="type">UserSericeImpl</span> <span class="variable">userService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserServiceImpl</span>();</span><br><span class="line">userService.setUserDao(userDao);</span><br><span class="line">List&lt;User&gt; userList = userService.findUserList();</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">UserDaoImpl userDao = new UserDaoImpl();
+UserSericeImpl userService = new UserServiceImpl();
+userService.setUserDao(userDao);
+List&lt;User&gt; userList = userService.findUserList();
+</code></pre>
 <hr>
 <ul>
 <li><strong>有了Spring框架，可以将原有Bean的创建工作转给框架, 需要用时从Bean的容器中获取即可，这样便简化了开发工作</strong></li>
 </ul>
 <p>Bean的创建和使用分离了。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// create and configure beans</span></span><br><span class="line"><span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span></span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;aspects.xml&quot;</span>, <span class="string">&quot;daos.xml&quot;</span>, <span class="string">&quot;services.xml&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// retrieve configured instance</span></span><br><span class="line"><span class="type">UserServiceImpl</span> <span class="variable">service</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;userService&quot;</span>, UserServiceImpl.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// use configured instance</span></span><br><span class="line">List&lt;User&gt; userList = service.findUserList();</span><br></pre></td></tr></table></figure>
+<pre><code class="java">// create and configure beans
+ApplicationContext context =
+        new ClassPathXmlApplicationContext(&quot;aspects.xml&quot;, &quot;daos.xml&quot;, &quot;services.xml&quot;);
 
+// retrieve configured instance
+UserServiceImpl service = context.getBean(&quot;userService&quot;, UserServiceImpl.class);
+
+// use configured instance
+List&lt;User&gt; userList = service.findUserList();
+</code></pre>
 <hr>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images/spring-framework-helloworld-6.png" alt="img"></p>
 <p>更进一步，<strong>你便能理解为何会有如下的知识点了</strong>：</p>
@@ -497,13 +760,32 @@
 <h2 id="面向切面-AOP"><a href="#面向切面-AOP" class="headerlink" title="面向切面 - AOP"></a>面向切面 - AOP</h2><ul>
 <li><strong>如果没有Spring框架，我们需要在每个service的方法中都添加记录日志的方法</strong>，比如：</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* find user list.</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* <span class="doctag">@return</span> user list</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">public</span> List&lt;User&gt; <span class="title function_">findUserList</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;execute method findUserList&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">this</span>.userDao.findUserList();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">/**
+* find user list.
+*
+* @return user list
+*/
+public List&lt;User&gt; findUserList() &#123;
+    System.out.println(&quot;execute method findUserList&quot;);
+    return this.userDao.findUserList();
+&#125;
+</code></pre>
 <ul>
 <li><strong>有了Spring框架，通过@Aspect注解 定义了切面，这个切面中定义了拦截所有service中的方法，并记录日志； 可以明显看到，框架将日志记录和业务需求的代码解耦了，不再是侵入式的了</strong></li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* aspect for every methods under service package.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="meta">@Around(&quot;execution(* tech.pdai.springframework.service.*.*(..))&quot;)</span></span><br><span class="line"><span class="keyword">public</span> Object <span class="title function_">businessService</span><span class="params">(ProceedingJoinPoint pjp)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">    <span class="comment">// get attribute through annotation</span></span><br><span class="line">    <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> ((MethodSignature) pjp.getSignature()).getMethod();</span><br><span class="line">    System.out.println(<span class="string">&quot;execute method: &quot;</span> + method.getName());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// continue to process</span></span><br><span class="line">    <span class="keyword">return</span> pjp.proceed();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">/**
+* aspect for every methods under service package.
+*/
+@Around(&quot;execution(* tech.pdai.springframework.service.*.*(..))&quot;)
+public Object businessService(ProceedingJoinPoint pjp) throws Throwable &#123;
+    // get attribute through annotation
+    Method method = ((MethodSignature) pjp.getSignature()).getMethod();
+    System.out.println(&quot;execute method: &quot; + method.getName());
 
+    // continue to process
+    return pjp.proceed();
+&#125;
+</code></pre>
 <hr>
 <p>更进一步，<strong>你便能理解为何会有如下的知识点了</strong>：</p>
 <ol>
@@ -518,13 +800,86 @@
 <li>User，UserDaoImpl, UserServiceImpl，LogAspect不用改</li>
 <li>将原通过.xml配置转换为Java配置</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.EnableAspectJAutoProxy;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.aspect.LogAspect;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.dao.UserDaoImpl;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BeansConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> user dao</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean(&quot;userDao&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> UserDaoImpl <span class="title function_">userDao</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">UserDaoImpl</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> user service</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean(&quot;userService&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> UserServiceImpl <span class="title function_">userService</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">UserServiceImpl</span> <span class="variable">userService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserServiceImpl</span>();</span><br><span class="line">        userService.setUserDao(userDao());</span><br><span class="line">        <span class="keyword">return</span> userService;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> log aspect</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean(&quot;logAspect&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> LogAspect <span class="title function_">logAspect</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">LogAspect</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package tech.pdai.springframework.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import tech.pdai.springframework.aspect.LogAspect;
+import tech.pdai.springframework.dao.UserDaoImpl;
+import tech.pdai.springframework.service.UserServiceImpl;
+
+/**
+ * @author pdai
+ */
+@EnableAspectJAutoProxy
+@Configuration
+public class BeansConfig &#123;
+
+    /**
+     * @return user dao
+     */
+    @Bean(&quot;userDao&quot;)
+    public UserDaoImpl userDao() &#123;
+        return new UserDaoImpl();
+    &#125;
+
+    /**
+     * @return user service
+     */
+    @Bean(&quot;userService&quot;)
+    public UserServiceImpl userService() &#123;
+        UserServiceImpl userService = new UserServiceImpl();
+        userService.setUserDao(userDao());
+        return userService;
+    &#125;
+
+    /**
+     * @return log aspect
+     */
+    @Bean(&quot;logAspect&quot;)
+    public LogAspect logAspect() &#123;
+        return new LogAspect();
+    &#125;
+&#125;
+</code></pre>
 <ul>
 <li><strong>在App中加载BeansConfig的配置</strong></li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.config.BeansConfig;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.entity.User;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * main interfaces.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args args</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// create and configure beans</span></span><br><span class="line">        <span class="type">AnnotationConfigApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(BeansConfig.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// retrieve configured instance</span></span><br><span class="line">        <span class="type">UserServiceImpl</span> <span class="variable">service</span> <span class="operator">=</span> context.getBean(<span class="string">&quot;userService&quot;</span>, UserServiceImpl.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// use configured instance</span></span><br><span class="line">        List&lt;User&gt; userList = service.findUserList();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// print info from beans</span></span><br><span class="line">        userList.forEach(a -&gt; System.out.println(a.getName() + <span class="string">&quot;,&quot;</span> + a.getAge()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package tech.pdai.springframework;
 
+import java.util.List;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import tech.pdai.springframework.config.BeansConfig;
+import tech.pdai.springframework.entity.User;
+import tech.pdai.springframework.service.UserServiceImpl;
+
+/**
+ * @author pdai
+ */
+public class App &#123;
+
+    /**
+     * main interfaces.
+     *
+     * @param args args
+     */
+    public static void main(String[] args) &#123;
+        // create and configure beans
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeansConfig.class);
+
+        // retrieve configured instance
+        UserServiceImpl service = context.getBean(&quot;userService&quot;, UserServiceImpl.class);
+
+        // use configured instance
+        List&lt;User&gt; userList = service.findUserList();
+
+        // print info from beans
+        userList.forEach(a -&gt; System.out.println(a.getName() + &quot;,&quot; + a.getAge()));
+    &#125;
+&#125;
+</code></pre>
 <hr>
 <ul>
 <li><strong>整体结构和运行app</strong></li>
@@ -534,23 +889,104 @@
 <ul>
 <li><strong>BeanConfig 不再需要Java配置</strong></li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScan;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.ComponentScans;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.EnableAspectJAutoProxy;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableAspectJAutoProxy</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BeansConfig</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package tech.pdai.springframework.config;
 
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+
+/**
+ * @author pdai
+ */
+@Configuration
+@EnableAspectJAutoProxy
+public class BeansConfig &#123;
+
+&#125;
+</code></pre>
 <ul>
 <li><strong>UserDaoImpl 增加了 @Repository注解</strong></li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserDaoImpl</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * mocked to find user list.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> user list</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;User&gt; <span class="title function_">findUserList</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Collections.singletonList(<span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;pdai&quot;</span>, <span class="number">18</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">/**
+ * @author pdai
+ */
+@Repository
+public class UserDaoImpl &#123;
 
+    /**
+     * mocked to find user list.
+     *
+     * @return user list
+     */
+    public List&lt;User&gt; findUserList() &#123;
+        return Collections.singletonList(new User(&quot;pdai&quot;, 18));
+    &#125;
+&#125;
+</code></pre>
 <ul>
 <li><strong>UserServiceImpl 增加了@Service 注解，并通过@Autowired注入userDao</strong>.</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * user dao impl.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserDaoImpl userDao;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * find user list.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> user list</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;User&gt; <span class="title function_">findUserList</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> userDao.findUserList();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">/**
+ * @author pdai
+ */
+@Service
+public class UserServiceImpl &#123;
 
+    /**
+     * user dao impl.
+     */
+    @Autowired
+    private UserDaoImpl userDao;
+
+    /**
+     * find user list.
+     *
+     * @return user list
+     */
+    public List&lt;User&gt; findUserList() &#123;
+        return userDao.findUserList();
+    &#125;
+
+&#125;
+</code></pre>
 <ul>
 <li><strong>在App中扫描tech.pdai.springframework包</strong></li>
 </ul>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> tech.pdai.springframework;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.AnnotationConfigApplicationContext;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.entity.User;</span><br><span class="line"><span class="keyword">import</span> tech.pdai.springframework.service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> pdai</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * main interfaces.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args args</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// create and configure beans</span></span><br><span class="line">        <span class="type">AnnotationConfigApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(</span><br><span class="line">                <span class="string">&quot;tech.pdai.springframework&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// retrieve configured instance</span></span><br><span class="line">        <span class="type">UserServiceImpl</span> <span class="variable">service</span> <span class="operator">=</span> context.getBean(UserServiceImpl.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// use configured instance</span></span><br><span class="line">        List&lt;User&gt; userList = service.findUserList();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// print info from beans</span></span><br><span class="line">        userList.forEach(a -&gt; System.out.println(a.getName() + <span class="string">&quot;,&quot;</span> + a.getAge()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">package tech.pdai.springframework;
 
+import java.util.List;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import tech.pdai.springframework.entity.User;
+import tech.pdai.springframework.service.UserServiceImpl;
+
+/**
+ * @author pdai
+ */
+public class App &#123;
+
+    /**
+     * main interfaces.
+     *
+     * @param args args
+     */
+    public static void main(String[] args) &#123;
+        // create and configure beans
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
+                &quot;tech.pdai.springframework&quot;);
+
+        // retrieve configured instance
+        UserServiceImpl service = context.getBean(UserServiceImpl.class);
+
+        // use configured instance
+        List&lt;User&gt; userList = service.findUserList();
+
+        // print info from beans
+        userList.forEach(a -&gt; System.out.println(a.getName() + &quot;,&quot; + a.getAge()));
+    &#125;
+&#125;
+</code></pre>
 <hr>
 <ul>
 <li><strong>整体结构和运行app</strong></li>
@@ -990,7 +1426,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             

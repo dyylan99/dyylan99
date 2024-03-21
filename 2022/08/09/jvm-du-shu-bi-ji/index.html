@@ -52,7 +52,7 @@
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -506,11 +506,81 @@
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20221213125031369.png" alt="img"></p>
 <p>上面的工作都完成后，从虚拟机的视角看，新的对象已经产生了。<br><strong>但是从Java程序的时间看，对象创建才刚刚开始。</strong></p>
 <p>构造函数，即Class文件中的**<init>**()方法还没执行，所有字段都为默认的零值，对象需要的其他资源和状态信息也还没有按照预定的意图构造好，一般来说(由字节码中new指令是否跟随invokespecial指令所决定，Java编译器会在遇到new关键字的地方同时生成这两条字节码指令，但如果直接通过其他方式产生的则不一定如此)，new指令之后会接着执行&lt; init&gt;()方法，按照代码对对象进行初始化，然后一个可用的对象才算被构造出来。<br>例如: 下面一个类:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">objectTest</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> n;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">objectTest</span><span class="params">()</span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">objectTest</span><span class="params">(<span class="type">int</span> n)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.n=n;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">objectTest</span> <span class="variable">objectTest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">objectTest</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class objectTest &#123;
+    private int n;
 
+    public objectTest()&#123;
+
+    &#125;
+    public objectTest(int n)&#123;
+        this.n=n;
+    &#125;
+
+    public static void main(String[] args) &#123;
+        objectTest objectTest = new objectTest();
+    &#125;
+&#125;
+</code></pre>
 <p>对应的字节码:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">com</span>/dylan/jvm/objectTest &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// compiled from: objectTest.java</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// access flags 0x2</span></span><br><span class="line">  <span class="keyword">private</span> I n</span><br><span class="line"></span><br><span class="line">  <span class="comment">// access flags 0x1</span></span><br><span class="line">  <span class="keyword">public</span> &lt;init&gt;()V</span><br><span class="line">   L0</span><br><span class="line">    LINENUMBER <span class="number">12</span> L0</span><br><span class="line">    ALOAD <span class="number">0</span></span><br><span class="line">    INVOKESPECIAL java/lang/Object.&lt;init&gt; ()V</span><br><span class="line">   L1</span><br><span class="line">    LINENUMBER <span class="number">14</span> L1</span><br><span class="line">    RETURN</span><br><span class="line">   L2</span><br><span class="line">    LOCALVARIABLE <span class="built_in">this</span> Lcom/dylan/jvm/objectTest; L0 L2 <span class="number">0</span></span><br><span class="line">    MAXSTACK = <span class="number">1</span></span><br><span class="line">    MAXLOCALS = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// access flags 0x1</span></span><br><span class="line">  <span class="keyword">public</span> &lt;init&gt;(I)V</span><br><span class="line">   L0</span><br><span class="line">    LINENUMBER <span class="number">15</span> L0</span><br><span class="line">    ALOAD <span class="number">0</span></span><br><span class="line">    INVOKESPECIAL java/lang/Object.&lt;init&gt; ()V</span><br><span class="line">   L1</span><br><span class="line">    LINENUMBER <span class="number">16</span> L1</span><br><span class="line">    ALOAD <span class="number">0</span></span><br><span class="line">    ILOAD <span class="number">1</span></span><br><span class="line">    PUTFIELD com/dylan/jvm/objectTest.n : I</span><br><span class="line">   L2</span><br><span class="line">    LINENUMBER <span class="number">17</span> L2</span><br><span class="line">    RETURN</span><br><span class="line">   L3</span><br><span class="line">    LOCALVARIABLE <span class="built_in">this</span> Lcom/dylan/jvm/objectTest; L0 L3 <span class="number">0</span></span><br><span class="line">    LOCALVARIABLE n I L0 L3 <span class="number">1</span></span><br><span class="line">    MAXSTACK = <span class="number">2</span></span><br><span class="line">    MAXLOCALS = <span class="number">2</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// access flags 0x9</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="title function_">main</span><span class="params">([Ljava/lang/String;)</span>V</span><br><span class="line">   L0</span><br><span class="line">    LINENUMBER <span class="number">20</span> L0</span><br><span class="line">    NEW com/dylan/jvm/objectTest <span class="comment">//分配内存</span></span><br><span class="line">    DUP<span class="comment">//复制</span></span><br><span class="line">    INVOKESPECIAL com/dylan/jvm/objectTest.&lt;init&gt; ()V  <span class="comment">//调用构造方法</span></span><br><span class="line">    ASTORE <span class="number">1</span> <span class="comment">//建立关联</span></span><br><span class="line">   L1</span><br><span class="line">    LINENUMBER <span class="number">21</span> L1</span><br><span class="line">    RETURN</span><br><span class="line">   L2</span><br><span class="line">    LOCALVARIABLE args [Ljava/lang/String; L0 L2 <span class="number">0</span></span><br><span class="line">    LOCALVARIABLE objectTest Lcom/dylan/jvm/objectTest; L1 L2 <span class="number">1</span></span><br><span class="line">    MAXSTACK = <span class="number">2</span></span><br><span class="line">    MAXLOCALS = <span class="number">2</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class com/dylan/jvm/objectTest &#123;
 
+  // compiled from: objectTest.java
+
+  // access flags 0x2
+  private I n
+
+  // access flags 0x1
+  public &lt;init&gt;()V
+   L0
+    LINENUMBER 12 L0
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.&lt;init&gt; ()V
+   L1
+    LINENUMBER 14 L1
+    RETURN
+   L2
+    LOCALVARIABLE this Lcom/dylan/jvm/objectTest; L0 L2 0
+    MAXSTACK = 1
+    MAXLOCALS = 1
+
+  // access flags 0x1
+  public &lt;init&gt;(I)V
+   L0
+    LINENUMBER 15 L0
+    ALOAD 0
+    INVOKESPECIAL java/lang/Object.&lt;init&gt; ()V
+   L1
+    LINENUMBER 16 L1
+    ALOAD 0
+    ILOAD 1
+    PUTFIELD com/dylan/jvm/objectTest.n : I
+   L2
+    LINENUMBER 17 L2
+    RETURN
+   L3
+    LOCALVARIABLE this Lcom/dylan/jvm/objectTest; L0 L3 0
+    LOCALVARIABLE n I L0 L3 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+
+  // access flags 0x9
+  public static main([Ljava/lang/String;)V
+   L0
+    LINENUMBER 20 L0
+    NEW com/dylan/jvm/objectTest //分配内存
+    DUP//复制
+    INVOKESPECIAL com/dylan/jvm/objectTest.&lt;init&gt; ()V  //调用构造方法
+    ASTORE 1 //建立关联
+   L1
+    LINENUMBER 21 L1
+    RETURN
+   L2
+    LOCALVARIABLE args [Ljava/lang/String; L0 L2 0
+    LOCALVARIABLE objectTest Lcom/dylan/jvm/objectTest; L1 L2 1
+    MAXSTACK = 2
+    MAXLOCALS = 2
+&#125;
+</code></pre>
 <h3 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h3><p>**对象头(Header)<strong>、</strong>实例数据(Instance Data)*<em>和*<em>对齐填充(Padding)</em></em></p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20221213132312083.png" alt="img"></p>
 <p>对象自身的运行时数据的长度在32位和64位的虚拟机(未开启压缩指针)中分别为32个比特和64个比特，官方称它为“Mark Word”。</p>
@@ -524,16 +594,24 @@
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20221213133024970.png" alt="img"></p>
 <h4 id="一个Object占多少字节？"><a href="#一个Object占多少字节？" class="headerlink" title="一个Object占多少字节？"></a>一个Object占多少字节？</h4><p>Object o &#x3D; new Object();</p>
 <p>&#x2F;&#x2F;虚拟机参数:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">java -XX:+PrintCommandLineFlags -version</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">java -XX:+PrintCommandLineFlags -version
+</code></pre>
 <p>想把这两项关掉，+改成-就行。</p>
 <p>-XX:-UseCompressedClassPointers -XX:-UseCompressedOops</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20221213135845538.png" alt="img"></p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20221213135904634.png" alt="img"></p>
 <p>使用jol查看内存信息:</p>
 <p>运行类:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ramTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">int</span> []a=<span class="keyword">new</span> <span class="title class_">int</span>[<span class="number">1</span>];</span><br><span class="line">        <span class="type">Object</span> <span class="variable">o</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Object</span>();</span><br><span class="line">        System.out.println(ClassLayout.parseInstance(a).toPrintable());</span><br><span class="line">        System.out.println(ClassLayout.parseInstance(o).toPrintable());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class ramTest &#123;
+    public static void main(String[] args) &#123;
+        int []a=new int[1];
+        Object o = new Object();
+        System.out.println(ClassLayout.parseInstance(a).toPrintable());
+        System.out.println(ClassLayout.parseInstance(o).toPrintable());
 
+    &#125;
+&#125;
+</code></pre>
 <p>结果:</p>
 <p>数组a:(大小为24byte,开启压缩的情况下)</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20221213142642798.png" alt="img"></p>
@@ -559,8 +637,18 @@
 <h2 id="3-OutOfMemoryError异常"><a href="#3-OutOfMemoryError异常" class="headerlink" title="3 OutOfMemoryError异常"></a>3 OutOfMemoryError异常</h2><h3 id="Java堆溢出"><a href="#Java堆溢出" class="headerlink" title="Java堆溢出"></a>Java堆溢出</h3><p>只要不断地创建对象，并且保证GC Roots到对象之间有可达路径来避免垃圾回收机制清除这些对象，那么随着对象数量的增加，总容量触及最大堆的容量限制后就会产生内存溢出异常。</p>
 <p>上面限制Java堆的大小为20MB，不可扩展(<strong>将堆的最小值-Xms参数与最大值-Xmx参数设置为一样即可避免堆自动扩展</strong>)，通过参数**<code>-XX：+HeapDumpOnOutOfMemoryError</code>可以让虚拟机在内存溢出异常的时候Dump出当前的内存堆转储快照以便进行事后分析。**</p>
 <p>添加虚拟机参数:-Xms10M -Xmx10M -XX:SurvivorRatio&#x3D;8 -XX:+PrintGCDetails -XX:+HeapDumpOnOutOfMemoryError</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MapTest</span> &#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">OOMObject</span>&#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">		List&lt;OOMObject&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;OOMObject&gt;();</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">true</span>) &#123;</span><br><span class="line">			list.add(<span class="keyword">new</span> <span class="title class_">OOMObject</span>());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class MapTest &#123;
+    static class OOMObject&#123;
+    &#125;
 
+    public static void main(String[] args) &#123;
+        List&lt;OOMObject&gt; list = new ArrayList&lt;OOMObject&gt;();
+        while(true) &#123;
+            list.add(new OOMObject());
+        &#125;
+    &#125;
+&#125;
+</code></pre>
 <p>快照文件:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/image-20230327204941014.png" alt="image-20230327204941014"></p>
 <p>文件内容:</p>
@@ -625,11 +713,50 @@
 </li>
 </ul>
 <p>示例：限制堆內存 50MB，其中新生代 30MB，老年代 20MB；依次分配 5 次 10MB 的byte[]对象，仅使用软引用来引用，观察 GC 过程</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReferenceTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="comment">// softRefList --&gt; SoftReference --&gt; 10MB byte[]</span></span><br><span class="line">        List&lt;SoftReference&lt;<span class="type">byte</span>[]&gt;&gt; softRefList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        ReferenceQueue&lt;<span class="type">byte</span>[]&gt; softRefQueue = <span class="keyword">new</span> <span class="title class_">ReferenceQueue</span>&lt;&gt;(); <span class="comment">// 无效引用队列</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">            SoftReference&lt;<span class="type">byte</span>[]&gt; softRef = <span class="keyword">new</span> <span class="title class_">SoftReference</span>&lt;&gt;(<span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">10</span>*<span class="number">1024</span>*<span class="number">1024</span>], softRefQueue);</span><br><span class="line">            softRefList.add(softRef);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (SoftReference&lt;<span class="type">byte</span>[]&gt; ref : softRefList) <span class="comment">// dump 所有软引用指向的对象，检查是否已被回收</span></span><br><span class="line">                System.out.print(ref.get() == <span class="literal">null</span> ? <span class="string">&quot;gced &quot;</span> : <span class="string">&quot;ok &quot;</span>);</span><br><span class="line">            System.out.println();</span><br><span class="line">        &#125;</span><br><span class="line">        Reference&lt;? <span class="keyword">extends</span> <span class="title class_">byte</span>[]&gt; ref = softRefQueue.poll();</span><br><span class="line">        <span class="keyword">while</span> (ref != <span class="literal">null</span>) &#123;</span><br><span class="line">            softRefList.remove(ref); <span class="comment">// 解除对软引用对象本身的引用</span></span><br><span class="line">            ref = softRefQueue.poll();</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;effective soft ref: &quot;</span> + softRefList.size()); <span class="comment">// 2</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class ReferenceTest &#123;
+    public static void main(String[] args) &#123;
+        // softRefList --&gt; SoftReference --&gt; 10MB byte[]
+        List&lt;SoftReference&lt;byte[]&gt;&gt; softRefList = new ArrayList&lt;&gt;();
+        ReferenceQueue&lt;byte[]&gt; softRefQueue = new ReferenceQueue&lt;&gt;(); // 无效引用队列
+        for (int i = 0; i &lt; 5; i++) &#123;
+            SoftReference&lt;byte[]&gt; softRef = new SoftReference&lt;&gt;(new byte[10*1024*1024], softRefQueue);
+            softRefList.add(softRef);
 
+            for (SoftReference&lt;byte[]&gt; ref : softRefList) // dump 所有软引用指向的对象，检查是否已被回收
+                System.out.print(ref.get() == null ? &quot;gced &quot; : &quot;ok &quot;);
+            System.out.println();
+        &#125;
+        Reference&lt;? extends byte[]&gt; ref = softRefQueue.poll();
+        while (ref != null) &#123;
+            softRefList.remove(ref); // 解除对软引用对象本身的引用
+            ref = softRefQueue.poll();
+        &#125;
+        System.out.println(&quot;effective soft ref: &quot; + softRefList.size()); // 2
+    &#125;
+
+&#125;
+</code></pre>
 <p>结果:</p>
-<figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="variable">ok</span> </span><br><span class="line"><span class="punctuation">[</span><span class="variable">GC</span> <span class="punctuation">(</span><span class="variable">Allocation</span> <span class="built_in">Failure</span><span class="punctuation">)</span> <span class="punctuation">[</span><span class="variable">PSYoungGen</span><span class="operator">:</span> <span class="number">13542</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">968</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">27136</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="number">13542</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">11216</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">47616</span><span class="built_in">K</span><span class="punctuation">)</span><span class="operator">,</span> <span class="number">0.0050112</span> <span class="variable">secs</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="built_in">Times</span><span class="operator">:</span> <span class="variable">user</span><span class="operator">=</span><span class="number">0.00</span> <span class="variable">sys</span><span class="operator">=</span><span class="number">0.00</span><span class="operator">,</span> <span class="variable">real</span><span class="operator">=</span><span class="number">0.00</span> <span class="variable">secs</span><span class="punctuation">]</span> </span><br><span class="line"><span class="punctuation">[</span><span class="built_in">Full</span> <span class="variable">GC</span> <span class="punctuation">(</span><span class="variable">Ergonomics</span><span class="punctuation">)</span> <span class="punctuation">[</span><span class="variable">PSYoungGen</span><span class="operator">:</span> <span class="number">968</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">0</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">27136</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="variable">ParOldGen</span><span class="operator">:</span> <span class="number">10248</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">10956</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">20480</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="number">11216</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">10956</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">47616</span><span class="built_in">K</span><span class="punctuation">)</span><span class="operator">,</span> <span class="punctuation">[</span><span class="variable">Metaspace</span><span class="operator">:</span> <span class="number">3107</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">3107</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">1056768</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="operator">,</span> <span class="number">0.0046552</span> <span class="variable">secs</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="built_in">Times</span><span class="operator">:</span> <span class="variable">user</span><span class="operator">=</span><span class="number">0.00</span> <span class="variable">sys</span><span class="operator">=</span><span class="number">0.00</span><span class="operator">,</span> <span class="variable">real</span><span class="operator">=</span><span class="number">0.01</span> <span class="variable">secs</span><span class="punctuation">]</span> </span><br><span class="line"><span class="variable">ok</span> <span class="variable">ok</span> </span><br><span class="line"><span class="variable">ok</span> <span class="variable">ok</span> <span class="variable">ok</span> </span><br><span class="line"><span class="punctuation">[</span><span class="built_in">Full</span> <span class="variable">GC</span> <span class="punctuation">(</span><span class="variable">Ergonomics</span><span class="punctuation">)</span> <span class="punctuation">[</span><span class="variable">PSYoungGen</span><span class="operator">:</span> <span class="number">20918</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">20480</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">27136</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="variable">ParOldGen</span><span class="operator">:</span> <span class="number">10956</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">10953</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">20480</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="number">31875</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">31433</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">47616</span><span class="built_in">K</span><span class="punctuation">)</span><span class="operator">,</span> <span class="punctuation">[</span><span class="variable">Metaspace</span><span class="operator">:</span> <span class="number">3107</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">3107</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">1056768</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="operator">,</span> <span class="number">0.0045133</span> <span class="variable">secs</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="built_in">Times</span><span class="operator">:</span> <span class="variable">user</span><span class="operator">=</span><span class="number">0.00</span> <span class="variable">sys</span><span class="operator">=</span><span class="number">0.00</span><span class="operator">,</span> <span class="variable">real</span><span class="operator">=</span><span class="number">0.01</span> <span class="variable">secs</span><span class="punctuation">]</span> </span><br><span class="line"><span class="punctuation">[</span><span class="built_in">Full</span> <span class="variable">GC</span> <span class="punctuation">(</span><span class="variable">Allocation</span> <span class="built_in">Failure</span><span class="punctuation">)</span> <span class="punctuation">[</span><span class="variable">PSYoungGen</span><span class="operator">:</span> <span class="number">20480</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">0</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">27136</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="variable">ParOldGen</span><span class="operator">:</span> <span class="number">10953</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">698</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">20480</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="number">31433</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">698</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">47616</span><span class="built_in">K</span><span class="punctuation">)</span><span class="operator">,</span> <span class="punctuation">[</span><span class="variable">Metaspace</span><span class="operator">:</span> <span class="number">3107</span><span class="built_in">K</span><span class="operator">-&gt;</span><span class="number">3107</span><span class="built_in">K</span><span class="punctuation">(</span><span class="number">1056768</span><span class="built_in">K</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="operator">,</span> <span class="number">0.0046123</span> <span class="variable">secs</span><span class="punctuation">]</span> <span class="punctuation">[</span><span class="built_in">Times</span><span class="operator">:</span> <span class="variable">user</span><span class="operator">=</span><span class="number">0.00</span> <span class="variable">sys</span><span class="operator">=</span><span class="number">0.00</span><span class="operator">,</span> <span class="variable">real</span><span class="operator">=</span><span class="number">0.00</span> <span class="variable">secs</span><span class="punctuation">]</span> </span><br><span class="line"><span class="variable">gced</span> <span class="variable">gced</span> <span class="variable">gced</span> <span class="variable">ok</span> </span><br><span class="line"><span class="variable">gced</span> <span class="variable">gced</span> <span class="variable">gced</span> <span class="variable">ok</span> <span class="variable">ok</span> </span><br><span class="line"><span class="variable">effective</span> <span class="variable">soft</span> <span class="variable">ref</span><span class="operator">:</span> <span class="number">2</span></span><br><span class="line"><span class="variable">Heap</span></span><br><span class="line"> <span class="variable">PSYoungGen</span>      <span class="variable">total</span> <span class="number">27136</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">used</span> <span class="number">21552</span><span class="built_in">K</span> <span class="punctuation">[</span><span class="number">0</span><span class="variable">x00000000fe200000</span><span class="operator">,</span> <span class="number">0</span><span class="variable">x0000000100000000</span><span class="operator">,</span> <span class="number">0</span><span class="variable">x0000000100000000</span><span class="punctuation">)</span></span><br><span class="line">  <span class="variable">eden</span> <span class="variable">space</span> <span class="number">23552</span><span class="built_in">K</span><span class="operator">,</span> <span class="number">91</span><span class="operator">%</span> <span class="variable">used</span> <span class="punctuation">[</span><span class="number">0</span><span class="variable">x00000000fe200000</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000ff70c248</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000ff900000</span><span class="punctuation">)</span></span><br><span class="line">  <span class="variable">from</span> <span class="variable">space</span> <span class="number">3584</span><span class="built_in">K</span><span class="operator">,</span> <span class="number">0</span><span class="operator">%</span> <span class="variable">used</span> <span class="punctuation">[</span><span class="number">0</span><span class="variable">x00000000ff900000</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000ff900000</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000ffc80000</span><span class="punctuation">)</span></span><br><span class="line">  <span class="variable">to</span>   <span class="variable">space</span> <span class="number">3584</span><span class="built_in">K</span><span class="operator">,</span> <span class="number">0</span><span class="operator">%</span> <span class="variable">used</span> <span class="punctuation">[</span><span class="number">0</span><span class="variable">x00000000ffc80000</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000ffc80000</span><span class="operator">,</span><span class="number">0</span><span class="variable">x0000000100000000</span><span class="punctuation">)</span></span><br><span class="line"> <span class="variable">ParOldGen</span>       <span class="variable">total</span> <span class="number">20480</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">used</span> <span class="number">698</span><span class="built_in">K</span> <span class="punctuation">[</span><span class="number">0</span><span class="variable">x00000000fce00000</span><span class="operator">,</span> <span class="number">0</span><span class="variable">x00000000fe200000</span><span class="operator">,</span> <span class="number">0</span><span class="variable">x00000000fe200000</span><span class="punctuation">)</span></span><br><span class="line">  <span class="variable">object</span> <span class="variable">space</span> <span class="number">20480</span><span class="built_in">K</span><span class="operator">,</span> <span class="number">3</span><span class="operator">%</span> <span class="variable">used</span> <span class="punctuation">[</span><span class="number">0</span><span class="variable">x00000000fce00000</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000fceaeac8</span><span class="operator">,</span><span class="number">0</span><span class="variable">x00000000fe200000</span><span class="punctuation">)</span></span><br><span class="line"> <span class="variable">Metaspace</span>       <span class="variable">used</span> <span class="number">3116</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">capacity</span> <span class="number">4486</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">committed</span> <span class="number">4864</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">reserved</span> <span class="number">1056768</span><span class="built_in">K</span></span><br><span class="line">  <span class="variable">class</span> <span class="variable">space</span>    <span class="variable">used</span> <span class="number">323</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">capacity</span> <span class="number">386</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">committed</span> <span class="number">512</span><span class="built_in">K</span><span class="operator">,</span> <span class="variable">reserved</span> <span class="number">1048576</span><span class="built_in">K</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code>ok 
+[GC (Allocation Failure) [PSYoungGen: 13542K-&gt;968K(27136K)] 13542K-&gt;11216K(47616K), 0.0050112 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+[Full GC (Ergonomics) [PSYoungGen: 968K-&gt;0K(27136K)] [ParOldGen: 10248K-&gt;10956K(20480K)] 11216K-&gt;10956K(47616K), [Metaspace: 3107K-&gt;3107K(1056768K)], 0.0046552 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+ok ok 
+ok ok ok 
+[Full GC (Ergonomics) [PSYoungGen: 20918K-&gt;20480K(27136K)] [ParOldGen: 10956K-&gt;10953K(20480K)] 31875K-&gt;31433K(47616K), [Metaspace: 3107K-&gt;3107K(1056768K)], 0.0045133 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+[Full GC (Allocation Failure) [PSYoungGen: 20480K-&gt;0K(27136K)] [ParOldGen: 10953K-&gt;698K(20480K)] 31433K-&gt;698K(47616K), [Metaspace: 3107K-&gt;3107K(1056768K)], 0.0046123 secs] [Times: user=0.00 sys=0.00, real=0.00 secs] 
+gced gced gced ok 
+gced gced gced ok ok 
+effective soft ref: 2
+Heap
+ PSYoungGen      total 27136K, used 21552K [0x00000000fe200000, 0x0000000100000000, 0x0000000100000000)
+  eden space 23552K, 91% used [0x00000000fe200000,0x00000000ff70c248,0x00000000ff900000)
+  from space 3584K, 0% used [0x00000000ff900000,0x00000000ff900000,0x00000000ffc80000)
+  to   space 3584K, 0% used [0x00000000ffc80000,0x00000000ffc80000,0x0000000100000000)
+ ParOldGen       total 20480K, used 698K [0x00000000fce00000, 0x00000000fe200000, 0x00000000fe200000)
+  object space 20480K, 3% used [0x00000000fce00000,0x00000000fceaeac8,0x00000000fe200000)
+ Metaspace       used 3116K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 323K, capacity 386K, committed 512K, reserved 1048576K
+</code></pre>
 <h2 id="2-3-生存还是死亡"><a href="#2-3-生存还是死亡" class="headerlink" title="2.3 生存还是死亡"></a>2.3 生存还是死亡</h2><p>即时是在可达性分析算法中判定为不可达的对象，也不是“非死不可”的，要真正宣告一个对象死亡，至少要经历两次标记过程：</p>
 <ul>
 <li><p>如果对象在进行可达性分析后发现没有与GC Roots相链接的引用链，那它将会被第一次标记</p>
@@ -699,8 +826,12 @@
 <p>卡表：记忆集的字节数组实现；将老年代内存划分为 Card Page（512KB）大小的子内存块，若新建跨代引用，则将对应的 Card 标记为 dirty，GC 时只需扫描老年代中被标记为 dirty 的子内存块</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/a630a1aaced4e48a0806dd2ee9f29dae.png" alt="个人笔记，深入理解 JVM，很全！（终于有人把JVM说清楚了）"></p>
 <p>写屏障：有别于volatile禁用指令重排的内存屏障，GC 中的写屏障是在对象引用更新时执行额外 hook 动作的机制。简单实现：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">oop_field_store</span><span class="params">(oop* field, oop new_val)</span> &#123; <span class="comment">// oop: ordinary object pointer</span></span><br><span class="line"><span class="comment">// pre_write_barrier(field, new_val); // 写前屏障：更新前先执行，使用 oop 旧状态</span></span><br><span class="line">*field = new_val;</span><br><span class="line">post_write_barrier(field, new_val); <span class="comment">// 写后屏障：更新完才执行</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">void oop_field_store(oop* field, oop new_val) &#123; // oop: ordinary object pointer
+// pre_write_barrier(field, new_val); // 写前屏障：更新前先执行，使用 oop 旧状态
+*field = new_val;
+post_write_barrier(field, new_val); // 写后屏障：更新完才执行
+&#125;
+</code></pre>
 <p>使用写屏障保证 CardTable 的实时更新:</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/c164e31afff97c383555210346d1baca.png" alt="个人笔记，深入理解 JVM，很全！（终于有人把JVM说清楚了）"></p>
 <h2 id="2-8正确GC-并发可达性分析"><a href="#2-8正确GC-并发可达性分析" class="headerlink" title="2.8正确GC:并发可达性分析"></a>2.8正确GC:并发可达性分析</h2><p><strong>问题：</strong>GC Roots 的对象源固定，故枚举时 STW 时间短暂且可控。但后续可达性分析的时间复杂度与堆中对象数量成正相关，即堆中对象越多，对象图越复杂，堆变大后 STW 时间不可接受</p>
@@ -801,29 +932,76 @@
 <li>对象优先分配在 Eden 区</li>
 </ol>
 <p>新对象在 Eden 区分配，空间不足则触发 Minor GC，<strong>存活对象拷贝到 To Survivor</strong>，若还是内存不足则通过分配担保机制转移到老年区，依旧不足才 OOM</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> int_1MB=<span class="number">1024</span>*<span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">byte</span>[] allocation1,allocation2,allocation3,allocation4;</span><br><span class="line">        allocation1=<span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span>*int_1MB];</span><br><span class="line">        allocation2=<span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span>*int_1MB];</span><br><span class="line">        allocation3=<span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">2</span>*int_1MB];</span><br><span class="line">        <span class="comment">//发生GC</span></span><br><span class="line">        allocation4=<span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span>*int_1MB];</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//GC参数:-Xmn10M是给新生代分10M,-XX:SurvivorRatio=8是Eden区和一个survivor区的大小比</span></span><br><span class="line"><span class="comment">//-Xms20M -Xmx20M -Xmn10M -XX:SurvivorRatio=8 -XX:+PrintGCDetails</span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">    private static final int int_1MB=1024*1024;
 
+    public static void main(String[] args) &#123;
+        byte[] allocation1,allocation2,allocation3,allocation4;
+        allocation1=new byte[2*int_1MB];
+        allocation2=new byte[2*int_1MB];
+        allocation3=new byte[2*int_1MB];
+        //发生GC
+        allocation4=new byte[4*int_1MB];
+    &#125;
+//GC参数:-Xmn10M是给新生代分10M,-XX:SurvivorRatio=8是Eden区和一个survivor区的大小比
+//-Xms20M -Xmx20M -Xmn10M -XX:SurvivorRatio=8 -XX:+PrintGCDetails
+</code></pre>
 <p>结果:</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">[GC (Allocation Failure) [PSYoungGen: 6455K-&gt;936K(9216K)] 6455K-&gt;5040K(19456K), <span class="number">0.0022870</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs] </span><br><span class="line">Heap</span><br><span class="line"> PSYoungGen      total 9216K, used 7290K [<span class="number">0x00000000ff600000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line">  eden space 8192K, <span class="number">77</span>% used [<span class="number">0x00000000ff600000</span>,<span class="number">0x00000000ffc349c8</span>,<span class="number">0x00000000ffe00000</span>)</span><br><span class="line">  from space 1024K, <span class="number">91</span>% used [<span class="number">0x00000000ffe00000</span>,<span class="number">0x00000000ffeea020</span>,<span class="number">0x00000000fff00000</span>)</span><br><span class="line">  to   space 1024K, <span class="number">0</span>% used [<span class="number">0x00000000fff00000</span>,<span class="number">0x00000000fff00000</span>,<span class="number">0x0000000100000000</span>)</span><br><span class="line"> ParOldGen       total 10240K, used 4104K [<span class="number">0x00000000fec00000</span>, <span class="number">0x00000000ff600000</span>, <span class="number">0x00000000ff600000</span>)</span><br><span class="line"> <span class="comment">//第四个byte数组由于minorGC一次之后也无法存放在新生代,所以只能放在老年代(object space)</span></span><br><span class="line">  object space 10240K, <span class="number">40</span>% used [<span class="number">0x00000000fec00000</span>,<span class="number">0x00000000ff002020</span>,<span class="number">0x00000000ff600000</span>)</span><br><span class="line"> Metaspace       used 3113K, capacity 4486K, committed 4864K, reserved 1056768K</span><br><span class="line">  <span class="keyword">class</span> <span class="title class_">space</span>    used 323K, capacity 386K, committed 512K, reserved 1048576K</span><br></pre></td></tr></table></figure>
-
-
-
+<pre><code class="java">[GC (Allocation Failure) [PSYoungGen: 6455K-&gt;936K(9216K)] 6455K-&gt;5040K(19456K), 0.0022870 secs] [Times: user=0.00 sys=0.00, real=0.01 secs] 
+Heap
+ PSYoungGen      total 9216K, used 7290K [0x00000000ff600000, 0x0000000100000000, 0x0000000100000000)
+  eden space 8192K, 77% used [0x00000000ff600000,0x00000000ffc349c8,0x00000000ffe00000)
+  from space 1024K, 91% used [0x00000000ffe00000,0x00000000ffeea020,0x00000000fff00000)
+  to   space 1024K, 0% used [0x00000000fff00000,0x00000000fff00000,0x0000000100000000)
+ ParOldGen       total 10240K, used 4104K [0x00000000fec00000, 0x00000000ff600000, 0x00000000ff600000)
+ //第四个byte数组由于minorGC一次之后也无法存放在新生代,所以只能放在老年代(object space)
+  object space 10240K, 40% used [0x00000000fec00000,0x00000000ff002020,0x00000000ff600000)
+ Metaspace       used 3113K, capacity 4486K, committed 4864K, reserved 1056768K
+  class space    used 323K, capacity 386K, committed 512K, reserved 1048576K
+</code></pre>
 <ol start="2">
 <li>大对象直接进入老年区</li>
 </ol>
 <p>对于 Serial, ParNew，可配置超过阈值 -XX:PretenureSizeThreshold 的大对象（连续内存），直接在老年代中分配，避免频繁触发 minor gc，导致 Eden 和 Survivor 产生大量的内存复制操作</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">byte</span>[] buf1 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * MB];</span><br><span class="line"></span><br><span class="line"><span class="comment">// java -verbose:gc -Xms20m -Xmx20m -Xmn10m -XX:+PrintGCDetails -XX:+UseSerialGC</span></span><br><span class="line"><span class="comment">// -XX:PretenureSizeThreshold=3145728 com.ch03.Allocation // 3145728 即 3MB</span></span><br><span class="line">Heap</span><br><span class="line"> def <span class="keyword">new</span> <span class="title class_">generation</span>   total 9216K, used 843K </span><br><span class="line">eden space 8192K,  <span class="number">10</span>% used </span><br><span class="line">from space 1024K,   <span class="number">0</span>% used </span><br><span class="line">to   space 1024K,   <span class="number">0</span>% used </span><br><span class="line"> tenured generation   total 10240K, used 4096K </span><br><span class="line"> the space 10240K,  <span class="number">40</span>% used <span class="comment">// buf1</span></span><br></pre></td></tr></table></figure>
+<pre><code class="java">byte[] buf1 = new byte[4 * MB];
 
-
-
+// java -verbose:gc -Xms20m -Xmx20m -Xmn10m -XX:+PrintGCDetails -XX:+UseSerialGC
+// -XX:PretenureSizeThreshold=3145728 com.ch03.Allocation // 3145728 即 3MB
+Heap
+ def new generation   total 9216K, used 843K 
+eden space 8192K,  10% used 
+from space 1024K,   0% used 
+to   space 1024K,   0% used 
+ tenured generation   total 10240K, used 4096K 
+ the space 10240K,  40% used // buf1
+</code></pre>
 <ol start="3">
 <li><strong>长期存活的对象进入老年代</strong></li>
 </ol>
 <p><strong>对象头中 4bit 的 age 字段存储了对象当前 GC 分代年龄</strong>，当超过阈值-XX:MaxTenuringThreshold（默认 15，也即 age 字段最大值）后，将晋升到老年代，可搭配-XX:+PrintTenuringDistribution观察分代分布</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">byte</span>[] buf1 = <span class="keyword">new</span> <span class="title class_">byte</span>[MB / <span class="number">16</span>];</span><br><span class="line"><span class="type">byte</span>[] buf2 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * MB];</span><br><span class="line"><span class="type">byte</span>[] buf3 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * MB]; <span class="comment">// 触发 minor gc</span></span><br><span class="line">buf3 = <span class="literal">null</span>;</span><br><span class="line">buf3 = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">4</span> * MB];</span><br><span class="line"></span><br><span class="line"><span class="comment">// java -verbose:gc -Xms20m -Xmx20m -Xmn10m -XX:+PrintGCDetails -XX:+UseSerialGC </span></span><br><span class="line"><span class="comment">// -XX:MaxTenuringThreshold=1 -XX:+PrintTenuringDistribution com.ch03.Allocation</span></span><br><span class="line">[GC (Allocation Failure) [DefNew</span><br><span class="line">Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> <span class="title class_">threshold</span> <span class="number">1</span> (max <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">- age   <span class="number">1</span>:     <span class="number">359280</span> bytes,     <span class="number">359280</span> total</span><br><span class="line">  : 4839K-&gt;350K(9216K)] 4839K-&gt;4446K(19456K), <span class="number">0.0017247</span> secs] </span><br><span class="line">  <span class="comment">// 至此，buf1 熬过了第一次收集，age=1</span></span><br><span class="line">  [GC (Allocation Failure) [DefNew</span><br><span class="line">  Desired survivor size <span class="number">524288</span> bytes, <span class="keyword">new</span> <span class="title class_">threshold</span> <span class="number">1</span> (max <span class="number">1</span>): 4446K-&gt;0K(9216K)] 8542K-&gt;4438K(19456K)] </span><br><span class="line">  Heap</span><br><span class="line">   def <span class="keyword">new</span> <span class="title class_">generation</span>   total 9216K, used 4178K </span><br><span class="line">  eden space 8192K,  <span class="number">51</span>% used </span><br><span class="line">  from space 1024K,   <span class="number">0</span>% used <span class="comment">// buf1 在第二轮收集中被提前晋升</span></span><br><span class="line">  to   space 1024K,   <span class="number">0</span>% used </span><br><span class="line">   tenured generation   total 10240K, used 4438K </span><br><span class="line">   the space 10240K,  <span class="number">43</span>% used </span><br></pre></td></tr></table></figure>
+<pre><code class="java">byte[] buf1 = new byte[MB / 16];
+byte[] buf2 = new byte[4 * MB];
+byte[] buf3 = new byte[4 * MB]; // 触发 minor gc
+buf3 = null;
+buf3 = new byte[4 * MB];
 
+// java -verbose:gc -Xms20m -Xmx20m -Xmn10m -XX:+PrintGCDetails -XX:+UseSerialGC 
+// -XX:MaxTenuringThreshold=1 -XX:+PrintTenuringDistribution com.ch03.Allocation
+[GC (Allocation Failure) [DefNew
+Desired survivor size 524288 bytes, new threshold 1 (max 1)
 
-
+- age   1:     359280 bytes,     359280 total
+  : 4839K-&gt;350K(9216K)] 4839K-&gt;4446K(19456K), 0.0017247 secs] 
+  // 至此，buf1 熬过了第一次收集，age=1
+  [GC (Allocation Failure) [DefNew
+  Desired survivor size 524288 bytes, new threshold 1 (max 1): 4446K-&gt;0K(9216K)] 8542K-&gt;4438K(19456K)] 
+  Heap
+   def new generation   total 9216K, used 4178K 
+  eden space 8192K,  51% used 
+  from space 1024K,   0% used // buf1 在第二轮收集中被提前晋升
+  to   space 1024K,   0% used 
+   tenured generation   total 10240K, used 4438K 
+   the space 10240K,  43% used 
+</code></pre>
 <ol start="4">
 <li><strong>分代年龄动态判定</strong></li>
 </ol>
@@ -832,24 +1010,141 @@
 <li><strong>空间分配担保</strong></li>
 </ol>
 <p>老年代作为 To Survivor 区的担保区域，当 Eden + From Survivor 中存活对象的总大小超出 To Survivor 时，将尝试存入老年代。JDK6 之后，只要老年代的连续空间大于新生代对象的总大小，或之前晋升的平均大小，则只会进行 Minor GC，否则进行 Full GC</p>
-<h1 id="三-字节码指令"><a href="#三-字节码指令" class="headerlink" title="三.字节码指令"></a>三.字节码指令</h1><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">JVM 面向操作数栈（operand stack）设计了指令集，每个指令由 <span class="number">1</span> 字节的操作码（opcode）表示，其后跟随 <span class="number">0</span> 个或多个操作数（operand），指令集列表参考 Java bytecode instruction listings</span><br><span class="line"></span><br><span class="line">大部分与数据类型相关的指令，其操作码符号都会带类型前缀，如 i 前缀表示操作 <span class="type">int</span>，剩余对应关系为 b:<span class="type">byte</span>, c:<span class="type">char</span>, s:<span class="type">short</span>, f:<span class="type">float</span>, d:<span class="type">double</span>, l:<span class="type">long</span>, a:reference</span><br><span class="line">由于指令集大小有限（<span class="number">256</span>个），故 <span class="type">boolean</span>, <span class="type">byte</span>, <span class="type">char</span>, <span class="type">short</span> 会被转为<span class="type">int</span>运算</span><br><span class="line">字节码可大致分为六类：</span><br><span class="line"></span><br><span class="line">加载和存储指令：将变量从局部变量表 slot 加载到操作数栈的栈顶，反向则是存储</span><br><span class="line"><span class="comment">// 将 slot 0,1,2,3,N 加载到栈顶，T 表示类型简记前缀，可取 i,l,f,d,a</span></span><br><span class="line">Tload_0, Tload_1, Tload_2, Tload_3, Tload n</span><br><span class="line"><span class="comment">// 将栈顶数据写回指定的 slot</span></span><br><span class="line">Tstore_0, Tstore_1, Tstore_2, Tstore_3, Tstore n</span><br><span class="line"><span class="comment">// 将不同范围的常量值加载到栈顶，由于 0~5 常量过于常用，有单独对应的指令，ldc 则加载普通常量</span></span><br><span class="line">bipush, sipush, Tconst_[<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>], aconst_null, ldc</span><br><span class="line">-----------------------------------------</span><br><span class="line">运算指令</span><br><span class="line">Tadd, Tsub, Tmul, Tdiv, Trem     <span class="comment">// 算术运算：加减乘除，取余</span></span><br><span class="line">Tneg, Tor, Tand, Txor            <span class="comment">// 位运算：取反、或、与、异或</span></span><br><span class="line">dcmpg, dcmpl, fcmpg, fcmpl, lcmp <span class="comment">// 比较运算：后缀 g 即 greater, l 即 less than</span></span><br><span class="line">iinc                             <span class="comment">// 局部自增运算，与 iload 搭配使用</span></span><br><span class="line">-------------------------------------------------------</span><br><span class="line">强制类型转换指令：窄化转换为 T 类型（长度为 N）时，会直接丢弃除了低 N 位外的其他位，可能会导致数据溢出、正负号不确定，浮点数转整型则会丢失精度</span><br><span class="line">i2b <span class="comment">// int -&gt; byte</span></span><br><span class="line">i2c, i2s; l2i, f2i, d2i; d2l, f2l; d2f</span><br><span class="line">------------------------------------------------</span><br><span class="line">对象创建与访问指令：类实例、数组都是对象，存储结构不同，创建和访问指令有所区别</span><br><span class="line"><span class="keyword">new</span>                                      <span class="comment">// 创建类实例</span></span><br><span class="line">newarray, annewarray, multianewarry      <span class="comment">// 创建基本类型数组、引用类型数组、多维引用类型数组</span></span><br><span class="line">getfield, putfield; getstatic, putstatic <span class="comment">// 读写类实例字段；读写类静态字段</span></span><br><span class="line">Taload, Tastore; arraylength             <span class="comment">// 读写数组元素；计算数组长度</span></span><br><span class="line"><span class="keyword">instanceof</span>; checkcast                    <span class="comment">// 校验对象是否为类实例；执行强制转换</span></span><br><span class="line">--------------------------------------------------</span><br><span class="line">操作数栈管理指令</span><br><span class="line">pop, pop2       <span class="comment">// 弹出栈顶 1，2 元素</span></span><br><span class="line">dup, dup2; swap <span class="comment">// 复制栈顶 1，2 个元素并重新入栈；交换栈顶两个元素</span></span><br><span class="line">控制转移指令：判断条件成立，则跳转到指定的指令行（修改 PC 指向）</span><br><span class="line">if_&lt;icmpeq,icmpne;icmplt,icmple;icmpgt,icmpge;acmpe,acmpne&gt; <span class="comment">// 整型比较，引用相等性判断</span></span><br><span class="line"><span class="keyword">if</span>&lt;eq,lt,le,gt,ge,<span class="literal">null</span>,nonnull&gt;                             <span class="comment">// 搭配其他类型的比较运算指令使用</span></span><br><span class="line">-----------------------------------------------------------</span><br><span class="line">方法调用与返回指令</span><br><span class="line">invokevirtual   <span class="comment">// 根据对象的实际类型进行分派，调用对应的方法（比如继承后方法重写） </span></span><br><span class="line">invokespecial   <span class="comment">// 调用特殊方法，如 &lt;cint&gt;()V, &lt;init&gt;()V 等初始化方法、私有方法、父类方法</span></span><br><span class="line">invokestatic    <span class="comment">// 调用类的静态方法</span></span><br><span class="line">invokeinterface <span class="comment">// 调用接口方法（实现接口的类对象，但被声明为接口类型，调用方法）</span></span><br><span class="line">invokedynamic   <span class="comment">// TODO</span></span><br><span class="line">Treturn, <span class="keyword">return</span> <span class="comment">// 返回指定类型，返回 void</span></span><br><span class="line">--------------------------------------------------</span><br><span class="line">异常处理指令：athrow 抛出异常，异常处理则由 exception_table 描述</span><br><span class="line">同步指令：<span class="keyword">synchronized</span> 对象锁由 monitorenter, monitorexit 搭配对象的 monitor 锁共同实现</span><br></pre></td></tr></table></figure>
+<h1 id="三-字节码指令"><a href="#三-字节码指令" class="headerlink" title="三.字节码指令"></a>三.字节码指令</h1><pre><code class="java">JVM 面向操作数栈（operand stack）设计了指令集，每个指令由 1 字节的操作码（opcode）表示，其后跟随 0 个或多个操作数（operand），指令集列表参考 Java bytecode instruction listings
 
+大部分与数据类型相关的指令，其操作码符号都会带类型前缀，如 i 前缀表示操作 int，剩余对应关系为 b:byte, c:char, s:short, f:float, d:double, l:long, a:reference
+由于指令集大小有限（256个），故 boolean, byte, char, short 会被转为int运算
+字节码可大致分为六类：
+
+加载和存储指令：将变量从局部变量表 slot 加载到操作数栈的栈顶，反向则是存储
+// 将 slot 0,1,2,3,N 加载到栈顶，T 表示类型简记前缀，可取 i,l,f,d,a
+Tload_0, Tload_1, Tload_2, Tload_3, Tload n
+// 将栈顶数据写回指定的 slot
+Tstore_0, Tstore_1, Tstore_2, Tstore_3, Tstore n
+// 将不同范围的常量值加载到栈顶，由于 0~5 常量过于常用，有单独对应的指令，ldc 则加载普通常量
+bipush, sipush, Tconst_[0,1,2,3,4,5], aconst_null, ldc
+-----------------------------------------
+运算指令
+Tadd, Tsub, Tmul, Tdiv, Trem     // 算术运算：加减乘除，取余
+Tneg, Tor, Tand, Txor            // 位运算：取反、或、与、异或
+dcmpg, dcmpl, fcmpg, fcmpl, lcmp // 比较运算：后缀 g 即 greater, l 即 less than
+iinc                             // 局部自增运算，与 iload 搭配使用
+-------------------------------------------------------
+强制类型转换指令：窄化转换为 T 类型（长度为 N）时，会直接丢弃除了低 N 位外的其他位，可能会导致数据溢出、正负号不确定，浮点数转整型则会丢失精度
+i2b // int -&gt; byte
+i2c, i2s; l2i, f2i, d2i; d2l, f2l; d2f
+------------------------------------------------
+对象创建与访问指令：类实例、数组都是对象，存储结构不同，创建和访问指令有所区别
+new                                      // 创建类实例
+newarray, annewarray, multianewarry      // 创建基本类型数组、引用类型数组、多维引用类型数组
+getfield, putfield; getstatic, putstatic // 读写类实例字段；读写类静态字段
+Taload, Tastore; arraylength             // 读写数组元素；计算数组长度
+instanceof; checkcast                    // 校验对象是否为类实例；执行强制转换
+--------------------------------------------------
+操作数栈管理指令
+pop, pop2       // 弹出栈顶 1，2 元素
+dup, dup2; swap // 复制栈顶 1，2 个元素并重新入栈；交换栈顶两个元素
+控制转移指令：判断条件成立，则跳转到指定的指令行（修改 PC 指向）
+if_&lt;icmpeq,icmpne;icmplt,icmple;icmpgt,icmpge;acmpe,acmpne&gt; // 整型比较，引用相等性判断
+if&lt;eq,lt,le,gt,ge,null,nonnull&gt;                             // 搭配其他类型的比较运算指令使用
+-----------------------------------------------------------
+方法调用与返回指令
+invokevirtual   // 根据对象的实际类型进行分派，调用对应的方法（比如继承后方法重写） 
+invokespecial   // 调用特殊方法，如 &lt;cint&gt;()V, &lt;init&gt;()V 等初始化方法、私有方法、父类方法
+invokestatic    // 调用类的静态方法
+invokeinterface // 调用接口方法（实现接口的类对象，但被声明为接口类型，调用方法）
+invokedynamic   // TODO
+Treturn, return // 返回指定类型，返回 void
+--------------------------------------------------
+异常处理指令：athrow 抛出异常，异常处理则由 exception_table 描述
+同步指令：synchronized 对象锁由 monitorenter, monitorexit 搭配对象的 monitor 锁共同实现
+</code></pre>
 <h1 id="四-类加载过程"><a href="#四-类加载过程" class="headerlink" title="四.类加载过程"></a>四.类加载过程</h1><p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/05970c54559776859098fd33d74d3f13.png" alt="个人笔记，深入理解 JVM，很全！（终于有人把JVM说清楚了）"></p>
 <h2 id="1-加载"><a href="#1-加载" class="headerlink" title="1. 加载"></a><strong>1. 加载</strong></h2><p>原理：委托 ClassLoader 读取 Class 二进制字节流，载入到方法区内存，并在堆内存中生成对应的java.lang.Class对象相互引用</p>
 <p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/f45d23e2713ac8c96a5c88cffe9dc524.png" alt="个人笔记，深入理解 JVM，很全！（终于有人把JVM说清楚了）"></p>
 <h2 id="2-验证"><a href="#2-验证" class="headerlink" title="2. 验证"></a><strong>2. 验证</strong></h2><p>校验字节流确保符合 Class 文件格式，执行语义分析确保符合 Java 语法，校验字节码指令合法性</p>
 <h2 id="3-准备"><a href="#3-准备" class="headerlink" title="3.准备"></a><strong>3.准备</strong></h2><p>在堆中分配类变量（<strong>static</strong>）内存并初始化为零值，主义还没到执行 putstatic 指令赋值的初始化阶段，但静态常量属性除外：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassX</span> &#123;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> <span class="number">2</span>;          <span class="comment">// 常量的值在编译期就已知，准备阶段完成赋值，值存储在 ConstantValue</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;str&quot;</span>; <span class="comment">// 字符串静态常量同理</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> java.lang.String str;</span><br><span class="line">descriptor: Ljava/lang/String;</span><br><span class="line">flags: ACC_STATIC, ACC_FINAL</span><br><span class="line">ConstantValue: String str</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="java">public class ClassX &#123;
+final static int n = 2;          // 常量的值在编译期就已知，准备阶段完成赋值，值存储在 ConstantValue
+final static String str = &quot;str&quot;; // 字符串静态常量同理
+&#125;
 
+static final java.lang.String str;
+descriptor: Ljava/lang/String;
+flags: ACC_STATIC, ACC_FINAL
+ConstantValue: String str
+</code></pre>
 <h2 id="4-解析"><a href="#4-解析" class="headerlink" title="4.解析"></a>4.解析</h2><p><strong>将常量池中的符号引用（Class_info, Fieldref_info, Methodref_info）替换为直接引用（内存地址）</strong></p>
 <h2 id="5-初始化"><a href="#5-初始化" class="headerlink" title="5.初始化"></a>5.初始化</h2><p>javac 会从上到下合并类中 static 变量赋值、static 语句块，生成类构造器()V，在初始化阶段执行，此方法的执行由 JVM 保证线程安全；注意 JVM 规定有且仅有的，会立即触发对类初始化的六种 case</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassX</span> &#123;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">  println(<span class="string">&quot;main class ClassX init&quot;</span>); <span class="comment">// 1. main() 所在的主类，总是先被初始化</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">  <span class="comment">// 首次会触发类的初始化</span></span><br><span class="line">  <span class="comment">// SubX b = new SubX();  // new 对象 // 2. new, getsatic, putstatic, invokestatic 指令</span></span><br><span class="line">  <span class="comment">// println(SuperX.a);    // 读写类的 static 变量，或调用 static 方法 </span></span><br><span class="line">  <span class="comment">// println(SubX.c);      // 3. 子类初始化，会触发父类初始化</span></span><br><span class="line">  <span class="comment">// println(SubX.a);      //    子类访问父类的静态变量，只会触发父类初始化</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 不会触发类的初始化</span></span><br><span class="line">  <span class="comment">// println(SubX.b);      // 1. 访问类的静态常量（基本类型、字符串字面量）</span></span><br><span class="line">  <span class="comment">// println(SubX.class);  // 2. 访问类对象</span></span><br><span class="line">  <span class="comment">// println(new SubX[2]); // 3. 创建类的数组</span></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SuperX</span> &#123;</span><br><span class="line"><span class="keyword">static</span> <span class="type">int</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">  println(<span class="string">&quot;class SuperX initiated&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SubX</span> <span class="keyword">extends</span> <span class="title class_">SuperX</span> &#123;</span><br><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> <span class="type">double</span> <span class="variable">b</span> <span class="operator">=</span> <span class="number">0.1</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="type">boolean</span> <span class="variable">c</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">  println(<span class="string">&quot;class SubX initiated&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">public class ClassX &#123;
+static &#123;
+  println(&quot;main class ClassX init&quot;); // 1. main() 所在的主类，总是先被初始化
+&#125;
+ 
+public static void main(String[] args) throws Exception &#123;
+  // 首次会触发类的初始化
+  // SubX b = new SubX();  // new 对象 // 2. new, getsatic, putstatic, invokestatic 指令
+  // println(SuperX.a);    // 读写类的 static 变量，或调用 static 方法 
+  // println(SubX.c);      // 3. 子类初始化，会触发父类初始化
+  // println(SubX.a);      //    子类访问父类的静态变量，只会触发父类初始化
+  
+  // 不会触发类的初始化
+  // println(SubX.b);      // 1. 访问类的静态常量（基本类型、字符串字面量）
+  // println(SubX.class);  // 2. 访问类对象
+  // println(new SubX[2]); // 3. 创建类的数组
+&#125;
+&#125;
+ 
+class SuperX &#123;
+static int a = 0;
+static &#123;
+  println(&quot;class SuperX initiated&quot;);
+&#125;
+&#125;
+ 
+class SubX extends SuperX &#123;
+final static double b = 0.1;
+static boolean c = false;
+static &#123;
+  println(&quot;class SubX initiated&quot;);
+&#125;
+&#125;
+</code></pre>
 <h1 id="五-类加载器"><a href="#五-类加载器" class="headerlink" title="五.类加载器"></a>五.类加载器</h1><p><img src="https://gitee.com/DylanToT99/images/raw/master/images1/b71073a9cf3eacd71d7144b0f75371b5.png" alt="个人笔记，深入理解 JVM，很全！（终于有人把JVM说清楚了）"></p>
 <p>双亲委派机制</p>
 <p>原理：一个类加载器收到加载某个类的请求时，会先委派上层的父类加载器去加载，逐层向上，当父类加载器逐层向下反馈都无法加载此类后，该类加载器才会尝试自己加载；此模型保证了，诸如 rt.jar 中的java.lang.Object类，不论在底层哪种类加载器中都一定是被 Bootstrap 类加载器加载， JVM 中仅此一份，保证了一致性</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// java/lang/ClassLoader</span></span><br><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="type">boolean</span> resolve) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">        <span class="comment">// 1. 先检查自己的加载器是否已加载此类</span></span><br><span class="line">        Class&lt;?&gt; c = findLoadedClass(name);</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="type">long</span> <span class="variable">t0</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// 2. 还有上层则委派给上层去加载</span></span><br><span class="line">                    c = parent.loadClass(name, <span class="literal">false</span>);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// 3. 如果没有上级，则委派给 Bootstrap 加载</span></span><br><span class="line">                    c = findBootstrapClassOrNull(name);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                <span class="comment">// 类不存在</span></span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 4. 到自己的 classpath 中查找类，用户自定义 ClassLoader 自定义了查找规则</span></span><br><span class="line">                <span class="type">long</span> <span class="variable">t1</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                c = findClass(name);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">            resolveClass(c);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> c;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<pre><code class="java">// java/lang/ClassLoader
+protected Class&lt;?&gt; loadClass(String name, boolean resolve) throws ClassNotFoundException &#123;
+    synchronized (getClassLoadingLock(name)) &#123;
+        // 1. 先检查自己的加载器是否已加载此类
+        Class&lt;?&gt; c = findLoadedClass(name);
+        if (c == null) &#123;
+            long t0 = System.nanoTime();
+            try &#123;
+                if (parent != null) &#123;
+                    // 2. 还有上层则委派给上层去加载
+                    c = parent.loadClass(name, false);
+                &#125; else &#123;
+                    // 3. 如果没有上级，则委派给 Bootstrap 加载
+                    c = findBootstrapClassOrNull(name);
+                &#125;
+            &#125; catch (ClassNotFoundException e) &#123;
+                // 类不存在
+            &#125;
+ 
+            if (c == null) &#123;
+                // 4. 到自己的 classpath 中查找类，用户自定义 ClassLoader 自定义了查找规则
+                long t1 = System.nanoTime();
+                c = findClass(name);
+            &#125;
+        &#125;
+        if (resolve) &#123;
+            resolveClass(c);
+        &#125;
+        return c;
+    &#125;
+&#125;
+</code></pre>
 
                 
             </div>
@@ -1279,7 +1574,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             

@@ -60,7 +60,7 @@ flush tables with read lock
 
     <script src="/libs/jquery/jquery-3.6.0.min.js"></script>
 
-<meta name="generator" content="Hexo 7.1.1"><link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+<meta name="generator" content="Hexo 7.1.1"></head>
 
 
 <body>
@@ -443,16 +443,16 @@ flush tables with read lock
 <p>全局锁是怎么用的？</p>
 </blockquote>
 <p>要使用全局锁，则要执行这条命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">flush tables <span class="keyword">with</span> read lock</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">flush tables with read lock
+</code></pre>
 <p>执行后，<strong>整个数据库就处于只读状态了</strong>，这时其他线程执行以下操作，都会被阻塞：</p>
 <ul>
 <li>对数据的增删改操作，比如 insert、delete、update 等语句；</li>
 <li>对表结构的更改操作，比如 alter table、drop table 等语句。</li>
 </ul>
 <p>如果要释放全局锁，则要执行这条命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">unlock tables
+</code></pre>
 <p>当然，当会话断开了，全局锁会被自动释放。</p>
 <blockquote>
 <p>全局锁的应用场景是什么</p>
@@ -473,13 +473,17 @@ flush tables with read lock
 </ul>
 <h3 id="2-1-表锁"><a href="#2-1-表锁" class="headerlink" title="2.1 表锁"></a>2.1 表锁</h3><p>先来说说<strong>表锁</strong>。</p>
 <p>如果我们想对学生表（t_student）加表锁，可以使用下面的命令：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span>表级别的共享锁，也就是读锁；</span><br><span class="line">lock tables t_student read;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>表级别的独占锁，也就是写锁；</span><br><span class="line">lock tables t_stuent write;</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">//表级别的共享锁，也就是读锁；
+lock tables t_student read;
 
+//表级别的独占锁，也就是写锁；
+lock tables t_stuent write;
+</code></pre>
 <p>需要注意的是，表锁除了会限制别的线程的读写外，也会限制本线程接下来的读写操作。</p>
 <p>也就是说如果本线程对学生表加了「共享表锁」，那么本线程接下来如果要对学生表执行写操作的语句，是会被阻塞的，当然其他线程对学生表进行写操作时也会被阻塞，直到锁被释放。</p>
 <p>要释放表锁，可以使用下面这条命令，会释放当前会话的所有表锁：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">unlock tables</span><br></pre></td></tr></table></figure>
-
+<pre><code class="sql">unlock tables
+</code></pre>
 <p>另外，当会话退出后，也会释放所有表锁。</p>
 <p>不过尽量避免在使用 InnoDB 引擎的表使用表锁，因为表锁的颗粒度太大，会影响并发性能，<strong>InnoDB 牛逼的地方在于实现了颗粒度更细的行级锁</strong>。</p>
 <h3 id="2-2-元数据锁"><a href="#2-2-元数据锁" class="headerlink" title="2.2 元数据锁"></a>2.2 元数据锁</h3><p>再来说说<strong>元数据锁</strong>（MDL）。</p>
@@ -510,8 +514,12 @@ flush tables with read lock
 <p>也就是，当执行插入、更新、删除操作，需要先对表加上「意向独占锁」，然后对该记录加独占锁。</p>
 <p>而普通的 select 是不会加行级锁的，普通的 select 语句是利用 MVCC 实现一致性读，是无锁的。</p>
 <p>不过，select 也是可以对记录加共享锁和独占锁的，具体方式如下：</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span>先在表上加上意向共享锁，然后对读取的记录加共享锁</span><br><span class="line"><span class="keyword">select</span> ... lock <span class="keyword">in</span> share mode;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>先表上加上意向独占锁，然后对读取的记录加独占锁</span><br><span class="line"><span class="keyword">select</span> ... <span class="keyword">for</span> <span class="keyword">update</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">//先在表上加上意向共享锁，然后对读取的记录加共享锁
+select ... lock in share mode;
 
+//先表上加上意向独占锁，然后对读取的记录加独占锁
+select ... for update;
+</code></pre>
 <p><strong>意向共享锁和意向独占锁是表级锁，不会和行级的共享锁和独占锁发生冲突，而且意向锁之间也不会发生冲突，只会和共享表锁（</strong>​<em><strong>lock tables … read</strong></em>​<strong>）和独占表锁（</strong>​<em><strong>lock tables … write</strong></em>​<strong>）发生冲突。</strong></p>
 <p>如果没有「意向锁」，那么加「独占表锁」时，就需要遍历表里所有记录，查看是否有记录存在独占锁，这样效率会很慢。</p>
 <p>那么有了「意向锁」，由于在对记录加独占锁前，先会加上表级别的意向独占锁，那么在加「独占表锁」时，直接查该表是否有意向独占锁，如果有就意味着表里已经有记录被加了独占锁，这样就不用去遍历表里的记录。</p>
@@ -525,8 +533,12 @@ flush tables with read lock
 <p>一样也是在插入数据的时候，会为被 <code>AUTO_INCREMENT</code>​​ 修饰的字段加上轻量级锁，<strong>然后给该字段赋值一个自增的值，就把这个轻量级锁释放了，而不需要等待整个插入语句执行完后才释放锁</strong>。</p>
 <h2 id="3-行级锁"><a href="#3-行级锁" class="headerlink" title="3.行级锁"></a>3.行级锁</h2><p>InnoDB 引擎是支持行级锁的，而 MyISAM 引擎并不支持行级锁。</p>
 <p>前面也提到，普通的 select 语句是不会对记录加锁的，因为它属于快照读。如果要在查询时对记录加行锁，可以使用下面这两个方式，这种查询会加锁的语句称为<strong>锁定读</strong>。</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="operator">/</span><span class="operator">/</span>对读取的记录加共享锁</span><br><span class="line"><span class="keyword">select</span> ... lock <span class="keyword">in</span> share mode;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span>对读取的记录加独占锁</span><br><span class="line"><span class="keyword">select</span> ... <span class="keyword">for</span> <span class="keyword">update</span>;</span><br></pre></td></tr></table></figure>
+<pre><code class="sql">//对读取的记录加共享锁
+select ... lock in share mode;
 
+//对读取的记录加独占锁
+select ... for update;
+</code></pre>
 <p>上面这两条语句必须在一个事务中，<strong>因为当事务提交了，锁就会被释放</strong>，所以在使用这两条语句的时候，要加上 begin、start transaction 或者 set autocommit &#x3D; 0。</p>
 <p>共享锁（S 锁）满足读读共享，读写互斥。独占锁（X 锁）满足写写互斥、读写互斥。</p>
 <p>行级锁的类型主要有三类：</p>
@@ -990,7 +1002,7 @@ flush tables with read lock
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">263.1k</span>
+                        class="white-color">263.5k</span>
             
             
             
